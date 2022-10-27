@@ -4,11 +4,10 @@
  *--------------------------------------------------------------------------------------------*/
 
 import { getResourceGroupFromId } from "@microsoft/vscode-azext-azureutils";
-import { AzExtParentTreeItem, AzExtTreeItem, callWithTelemetryAndErrorHandling, IActionContext, ISubscriptionContext, nonNullProp, nonNullValue } from "@microsoft/vscode-azext-utils";
+import { AzExtParentTreeItem, AzExtTreeItem, callWithTelemetryAndErrorHandling, IActionContext, ISubscriptionContext, nonNullProp } from "@microsoft/vscode-azext-utils";
 import { AppResource, AppResourceResolver } from "@microsoft/vscode-azext-utils/hostapi";
 import { tryGetExperience } from "../AzureDBExperiences";
 import { DocDBAccountTreeItem } from "../docdb/tree/DocDBAccountTreeItem";
-import { ext } from "../extensionVariables";
 import { MongoAccountTreeItem } from "../mongo/tree/MongoAccountTreeItem";
 import { PostgresAbstractServer } from "../postgres/abstract/models";
 import { PostgresServerTreeItem } from "../postgres/tree/PostgresServerTreeItem";
@@ -28,7 +27,6 @@ const resourceTypes = [
 export class DatabaseResolver implements AppResourceResolver {
     public async resolveResource(subContext: ISubscriptionContext, resource: AppResource): Promise<ResolvedDatabaseAccountResource | null | undefined> {
         return await callWithTelemetryAndErrorHandling('resolveResource', async (context: IActionContext) => {
-            const subNode: AzExtParentTreeItem | undefined = await ext.rgApi.appResourceTree.findTreeItem(`/subscriptions/${subContext.subscriptionId}`, context);
             try {
                 const resourceGroupName = getResourceGroupFromId(nonNullProp(resource, 'id'));
                 const name = nonNullProp(resource, 'name');
@@ -39,7 +37,10 @@ export class DatabaseResolver implements AppResourceResolver {
                     case resourceTypes[0]:
                         const client = await createCosmosDBClient({ ...context, ...subContext });
                         const databaseAccount = await client.databaseAccounts.get(resourceGroupName, name);
-                        dbChild = await SubscriptionTreeItem.initCosmosDBChild(client, databaseAccount, nonNullValue(subNode));
+                        dbChild = await SubscriptionTreeItem.initCosmosDBChild(client, databaseAccount, {
+                            subscription: subContext,
+                            parent: undefined
+                        } as unknown as AzExtParentTreeItem);
                         const experience = tryGetExperience(databaseAccount);
 
                         return experience?.api === 'MongoDB' ?
@@ -52,7 +53,7 @@ export class DatabaseResolver implements AppResourceResolver {
                             await createPostgreSQLFlexibleClient({ ...context, ...subContext });
 
                         postgresServer = await postgresClient.servers.get(resourceGroupName, name);
-                        dbChild = await SubscriptionTreeItem.initPostgresChild(postgresServer, nonNullValue(subNode));
+                        dbChild = await SubscriptionTreeItem.initPostgresChild(postgresServer, { subscription: subContext } as unknown as AzExtParentTreeItem);
 
                         return new ResolvedPostgresServerResource(dbChild as PostgresServerTreeItem, resource);
                     default:
