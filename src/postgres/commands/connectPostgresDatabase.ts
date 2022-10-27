@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtTreeItem, IActionContext } from "@microsoft/vscode-azext-utils";
+import { IActionContext } from "@microsoft/vscode-azext-utils";
 import { Uri, window } from 'vscode';
 import { connectedPostgresKey, postgresFlexibleFilter, postgresSingleFilter } from '../../constants';
 import { ext } from "../../extensionVariables";
@@ -20,7 +20,6 @@ export async function connectPostgresDatabase(context: IActionContext, treeItem?
         });
     }
 
-    const oldTreeItemId: string | undefined = ext.connectedPostgresDB && ext.connectedPostgresDB.fullId;
     void ext.context.globalState.update(connectedPostgresKey, treeItem.fullId);
     ext.connectedPostgresDB = treeItem;
     const database = treeItem && treeItem.label;
@@ -28,12 +27,4 @@ export async function connectPostgresDatabase(context: IActionContext, treeItem?
         ext.postgresCodeLensProvider.setConnectedDatabase(database);
     }
     await treeItem.refresh(context);
-
-    if (oldTreeItemId) {
-        // We have to use findTreeItem to get the instance of the old tree item that's being displayed in the ext.rgApi.appResourceTree. Our specific instance might have been out-of-date
-        const oldTreeItem: AzExtTreeItem | undefined = await ext.rgApi.appResourceTree.findTreeItem(oldTreeItemId, context);
-        if (oldTreeItem) {
-            await oldTreeItem.refresh(context);
-        }
-    }
 }
