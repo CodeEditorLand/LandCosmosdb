@@ -4,26 +4,26 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface CosmosDBGraphExtensionApi {
-	apiVersion: string;
+    apiVersion: string;
 
-	openGraphExplorer(config: IGraphConfiguration): Promise<void>;
+    openGraphExplorer(config: IGraphConfiguration): Promise<void>;
 }
 
 export interface IGremlinEndpoint {
-	host: string;
-	port: number;
-	ssl: boolean;
+    host: string;
+    port: number;
+    ssl: boolean;
 }
 
 export interface IGraphConfiguration {
-	// e.g. https://graphaccount.documents.azure.com:443
-	documentEndpoint: string;
+    // e.g. https://graphaccount.documents.azure.com:443
+    documentEndpoint: string;
 
-	gremlinEndpoint?: IGremlinEndpoint;
-	possibleGremlinEndpoints: IGremlinEndpoint[];
+    gremlinEndpoint?: IGremlinEndpoint;
+    possibleGremlinEndpoints: IGremlinEndpoint[];
 
-	key: string;
-	databaseName: string;
-	graphName: string;
-	tabTitle: string;
+    key: string;
+    databaseName: string;
+    graphName: string;
+    tabTitle: string;
 }

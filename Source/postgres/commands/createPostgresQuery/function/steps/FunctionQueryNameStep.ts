@@ -9,21 +9,14 @@ import { validateIdentifier } from "../../validateIdentifier";
 import { IPostgresFunctionQueryWizardContext } from "../IPostgresFunctionQueryWizardContext";
 
 export class FunctionQueryNameStep extends AzureWizardPromptStep<IPostgresFunctionQueryWizardContext> {
-	public async prompt(
-		context: IPostgresFunctionQueryWizardContext
-	): Promise<void> {
-		context.name = (
-			await context.ui.showInputBox({
-				prompt: localize(
-					"provideFunctionName",
-					"Provide function name"
-				),
-				validateInput: validateIdentifier,
-			})
-		).trim();
-	}
+    public async prompt(context: IPostgresFunctionQueryWizardContext): Promise<void> {
+        context.name = (await context.ui.showInputBox({
+            prompt: localize('provideFunctionName', 'Provide function name'),
+            validateInput: validateIdentifier
+        })).trim();
+    }
 
-	public shouldPrompt(context: IPostgresFunctionQueryWizardContext): boolean {
-		return !context.name;
-	}
+    public shouldPrompt(context: IPostgresFunctionQueryWizardContext): boolean {
+        return !context.name;
+    }
 }

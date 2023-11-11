@@ -5,119 +5,86 @@
 
 // NOTE: This file may not take a dependencey on vscode or anything that takes a dependency on it (such as @microsoft/vscode-azext-utils)
 
-import { Db } from "mongodb";
-import {
-	getLanguageService,
-	LanguageService as JsonLanguageService,
-	SchemaConfiguration,
-} from "vscode-json-languageservice";
-import {
-	CompletionItem,
-	IConnection,
-	InitializeParams,
-	InitializeResult,
-	TextDocumentPositionParams,
-	TextDocuments,
-	TextDocumentSyncKind,
-} from "vscode-languageserver";
-import { TextDocument } from "vscode-languageserver-textdocument";
-import { connectToMongoClient } from "../connectToMongoClient";
-import { IConnectionParams } from "./IConnectionParams";
-import { MongoScriptDocumentManager } from "./mongoScript";
-import { SchemaService } from "./schemaService";
+import { Db } from 'mongodb';
+import { getLanguageService, LanguageService as JsonLanguageService, SchemaConfiguration } from 'vscode-json-languageservice';
+import { CompletionItem, IConnection, InitializeParams, InitializeResult, TextDocumentPositionParams, TextDocuments, TextDocumentSyncKind } from 'vscode-languageserver';
+import { TextDocument } from 'vscode-languageserver-textdocument';
+import { connectToMongoClient } from '../connectToMongoClient';
+import { IConnectionParams } from './IConnectionParams';
+import { MongoScriptDocumentManager } from './mongoScript';
+import { SchemaService } from './schemaService';
 
 export class LanguageService {
-	private textDocuments: TextDocuments<TextDocument> = new TextDocuments(
-		TextDocument
-	);
-	private readonly mongoDocumentsManager: MongoScriptDocumentManager;
-	private db: Db;
 
-	private jsonLanguageService: JsonLanguageService;
-	private schemaService: SchemaService;
-	private schemas: SchemaConfiguration[];
+    private textDocuments: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
+    private readonly mongoDocumentsManager: MongoScriptDocumentManager;
+    private db: Db;
 
-	constructor(connection: IConnection) {
-		this.schemaService = new SchemaService();
+    private jsonLanguageService: JsonLanguageService;
+    private schemaService: SchemaService;
+    private schemas: SchemaConfiguration[];
 
-		this.textDocuments.listen(connection);
-		// After the server has started the client sends an initilize request. The server receives
-		// in the passed params the rootPath of the workspace plus the client capabilities.
-		connection.onInitialize(
-			(_params: InitializeParams): InitializeResult => {
-				return {
-					capabilities: {
-						textDocumentSync: TextDocumentSyncKind.Full, // Tell the client that the server works in FULL text document sync mode
-						completionProvider: { triggerCharacters: ["."] },
-					},
-				};
-			}
-		);
+    constructor(connection: IConnection) {
 
-		connection.onCompletion((textDocumentPosition) => {
-			return this.provideCompletionItems(textDocumentPosition);
-		});
+        this.schemaService = new SchemaService();
 
-		connection.onRequest(
-			"connect",
-			(connectionParams: IConnectionParams) => {
-				void connectToMongoClient(
-					connectionParams.connectionString,
-					connectionParams.extensionUserAgent
-				).then((account) => {
-					this.db = account.db(connectionParams.databaseName);
-					void this.schemaService
-						.registerSchemas(this.db)
-						.then((schemas) => {
-							this.configureSchemas(schemas);
-						});
-				});
-			}
-		);
+        this.textDocuments.listen(connection);
+        // After the server has started the client sends an initilize request. The server receives
+        // in the passed params the rootPath of the workspace plus the client capabilities.
+        connection.onInitialize((_params: InitializeParams): InitializeResult => {
+            return {
+                capabilities: {
+                    textDocumentSync: TextDocumentSyncKind.Full, // Tell the client that the server works in FULL text document sync mode
+                    completionProvider: { triggerCharacters: ['.'] }
+                }
+            };
+        });
 
-		connection.onRequest("disconnect", () => {
-			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-			this.db = null!;
-			for (const schema of this.schemas) {
-				this.jsonLanguageService.resetSchema(schema.uri);
-			}
-		});
+        connection.onCompletion(textDocumentPosition => {
+            return this.provideCompletionItems(textDocumentPosition);
+        });
 
-		this.jsonLanguageService = getLanguageService({
-			schemaRequestService: (uri) =>
-				this.schemaService.resolveSchema(uri),
-			contributions: [],
-		});
+        connection.onRequest('connect', (connectionParams: IConnectionParams) => {
+            void connectToMongoClient(connectionParams.connectionString, connectionParams.extensionUserAgent)
+                .then(account => {
+                    this.db = account.db(connectionParams.databaseName);
+                    void this.schemaService.registerSchemas(this.db)
+                        .then(schemas => {
+                            this.configureSchemas(schemas);
+                        });
+                });
+        });
 
-		this.mongoDocumentsManager = new MongoScriptDocumentManager(
-			this.schemaService,
-			this.jsonLanguageService
-		);
-	}
+        connection.onRequest('disconnect', () => {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.db = null!;
+            for (const schema of this.schemas) {
+                this.jsonLanguageService.resetSchema(schema.uri);
+            }
+        });
 
-	public provideCompletionItems(
-		positionParams: TextDocumentPositionParams
-	): Promise<CompletionItem[]> {
-		const textDocument = this.textDocuments.get(
-			positionParams.textDocument.uri
-		);
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const mongoScriptDocument = this.mongoDocumentsManager.getDocument(
-			textDocument!,
-			this.db
-		);
-		return mongoScriptDocument.provideCompletionItemsAt(
-			positionParams.position
-		);
-	}
+        this.jsonLanguageService = getLanguageService({
+            schemaRequestService: uri => this.schemaService.resolveSchema(uri),
+            contributions: []
+        });
 
-	public resetSchema(uri: string): void {
-		this.jsonLanguageService.resetSchema(uri);
-	}
+        this.mongoDocumentsManager = new MongoScriptDocumentManager(this.schemaService, this.jsonLanguageService);
+    }
 
-	public configureSchemas(schemas: SchemaConfiguration[]): void {
-		this.jsonLanguageService.configure({
-			schemas,
-		});
-	}
+    public provideCompletionItems(positionParams: TextDocumentPositionParams): Promise<CompletionItem[]> {
+        const textDocument = this.textDocuments.get(positionParams.textDocument.uri);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const mongoScriptDocument = this.mongoDocumentsManager.getDocument(textDocument!, this.db);
+        return mongoScriptDocument.provideCompletionItemsAt(positionParams.position);
+    }
+
+    public resetSchema(uri: string): void {
+        this.jsonLanguageService.resetSchema(uri);
+    }
+
+    public configureSchemas(schemas: SchemaConfiguration[]): void {
+        this.jsonLanguageService.configure({
+            schemas
+        });
+    }
 }

@@ -5,26 +5,20 @@
 
 import { ExecuteActivityContext } from "@microsoft/vscode-azext-utils";
 import { IAzureDBWizardContext } from "../../../tree/IAzureDBWizardContext";
-import {
-	AbstractSku,
-	PostgresAbstractServer,
-	PostgresServerType,
-} from "../../abstract/models";
+import { AbstractSku, PostgresAbstractServer, PostgresServerType } from "../../abstract/models";
 
-export interface IPostgresServerWizardContext
-	extends IAzureDBWizardContext,
-		ExecuteActivityContext {
-	/**
-	 * Username without server, i.e. "user1"
-	 */
-	shortUserName?: string;
-	/**
-	 * Username with server, i.e. "user1@server1"
-	 */
-	longUserName?: string;
-	adminPassword?: string;
+export interface IPostgresServerWizardContext extends IAzureDBWizardContext, ExecuteActivityContext {
+    /**
+     * Username without server, i.e. "user1"
+     */
+    shortUserName?: string;
+    /**
+     * Username with server, i.e. "user1@server1"
+     */
+    longUserName?: string;
+    adminPassword?: string;
 
-	server?: PostgresAbstractServer;
-	sku?: AbstractSku;
-	serverType?: PostgresServerType;
+    server?: PostgresAbstractServer;
+    sku?: AbstractSku;
+    serverType?: PostgresServerType;
 }
