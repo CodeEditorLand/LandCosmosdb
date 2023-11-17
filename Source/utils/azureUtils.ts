@@ -4,11 +4,13 @@
  *--------------------------------------------------------------------------------------------*/
 
 export function getDatabaseAccountNameFromId(id: string): string {
-    const matches: RegExpMatchArray | null = id.match(/\/subscriptions\/(.*)\/resourceGroups\/(.*)\/providers\/(.*)\/databaseAccounts\/(.*)/);
+	const matches: RegExpMatchArray | null = id.match(
+		/\/subscriptions\/(.*)\/resourceGroups\/(.*)\/providers\/(.*)\/databaseAccounts\/(.*)/
+	);
 
-    if (!matches || matches.length < 5) {
-        throw new Error('Invalid Azure Resource Id');
-    }
+	if (!matches || matches.length < 5) {
+		throw new Error("Invalid Azure Resource Id");
+	}
 
-    return matches[4];
+	return matches[4];
 }

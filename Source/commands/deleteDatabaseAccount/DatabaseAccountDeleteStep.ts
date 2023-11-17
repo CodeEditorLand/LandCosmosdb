@@ -7,13 +7,13 @@ import { AzureWizardExecuteStep } from "@microsoft/vscode-azext-utils";
 import { IDeleteWizardContext } from "./IDeleteWizardContext";
 
 export class DatabaseAccountDeleteStep extends AzureWizardExecuteStep<IDeleteWizardContext> {
-    public priority: number = 100;
+	public priority: number = 100;
 
-    public async execute(context: IDeleteWizardContext): Promise<void> {
-        await context.node.deleteTreeItem(context);
-    }
+	public async execute(context: IDeleteWizardContext): Promise<void> {
+		await context.node.deleteTreeItem(context);
+	}
 
-    public shouldExecute(_wizardContext: IDeleteWizardContext): boolean {
-        return true;
-    }
+	public shouldExecute(_wizardContext: IDeleteWizardContext): boolean {
+		return true;
+	}
 }

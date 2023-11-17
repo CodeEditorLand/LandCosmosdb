@@ -6,8 +6,10 @@
 import { ext } from "../extensionVariables";
 import { MongoDatabaseTreeItem } from "./tree/MongoDatabaseTreeItem";
 
-export function setConnectedNode(node: MongoDatabaseTreeItem | undefined): void {
-    ext.connectedMongoDB = node;
-    const dbName = node && node.label;
-    ext.mongoCodeLensProvider.setConnectedDatabase(dbName);
+export function setConnectedNode(
+	node: MongoDatabaseTreeItem | undefined
+): void {
+	ext.connectedMongoDB = node;
+	const dbName = node && node.label;
+	ext.mongoCodeLensProvider.setConnectedDatabase(dbName);
 }

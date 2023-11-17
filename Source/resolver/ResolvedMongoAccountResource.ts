@@ -3,18 +3,24 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AppResource, ResolvedAppResourceBase } from "@microsoft/vscode-azext-utils/hostapi";
+import {
+	AppResource,
+	ResolvedAppResourceBase,
+} from "@microsoft/vscode-azext-utils/hostapi";
 import { IMongoTreeRoot } from "../mongo/tree/IMongoTreeRoot";
 import { MongoAccountTreeItem } from "../mongo/tree/MongoAccountTreeItem";
 import { ResolvedDatabaseAccountResource } from "./ResolvedDatabaseAccountResource";
 
-export class ResolvedMongoAccountResource extends ResolvedDatabaseAccountResource implements ResolvedAppResourceBase {
-    root: IMongoTreeRoot;
+export class ResolvedMongoAccountResource
+	extends ResolvedDatabaseAccountResource
+	implements ResolvedAppResourceBase
+{
+	root: IMongoTreeRoot;
 
-    public constructor(ti: MongoAccountTreeItem, resource: AppResource) {
-        super(ti, resource);
+	public constructor(ti: MongoAccountTreeItem, resource: AppResource) {
+		super(ti, resource);
 
-        this.connectionString = ti.connectionString;
-        this.root = ti.root;
-    }
+		this.connectionString = ti.connectionString;
+		this.root = ti.root;
+	}
 }
