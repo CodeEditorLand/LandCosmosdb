@@ -11,13 +11,19 @@ import { FunctionQueryCreateStep } from "./steps/FunctionQueryCreateStep";
 import { FunctionQueryNameStep } from "./steps/FunctionQueryNameStep";
 import { FunctionQueryReturnTypeStep } from "./steps/FunctionQueryReturnTypeStep";
 
-export async function createPostgresFunctionQuery(context: IActionContext, treeItem?: PostgresFunctionsTreeItem): Promise<void> {
-    const wizardContext: IPostgresFunctionQueryWizardContext = context;
-    const wizard = new AzureWizard(wizardContext, {
-        promptSteps: [new FunctionQueryNameStep(), new FunctionQueryReturnTypeStep()],
-        executeSteps: [new FunctionQueryCreateStep()],
-        title: 'Create PostgreSQL Function Query'
-    });
+export async function createPostgresFunctionQuery(
+	context: IActionContext,
+	treeItem?: PostgresFunctionsTreeItem
+): Promise<void> {
+	const wizardContext: IPostgresFunctionQueryWizardContext = context;
+	const wizard = new AzureWizard(wizardContext, {
+		promptSteps: [
+			new FunctionQueryNameStep(),
+			new FunctionQueryReturnTypeStep(),
+		],
+		executeSteps: [new FunctionQueryCreateStep()],
+		title: "Create PostgreSQL Function Query",
+	});
 
-    await runPostgresQueryWizard(wizard, wizardContext, treeItem);
+	await runPostgresQueryWizard(wizard, wizardContext, treeItem);
 }

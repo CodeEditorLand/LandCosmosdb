@@ -5,6 +5,7 @@
 
 import { IPostgresQueryWizardContext } from "../IPostgresQueryWizardContext";
 
-export interface IPostgresFunctionQueryWizardContext extends IPostgresQueryWizardContext {
-    returnType?: string;
+export interface IPostgresFunctionQueryWizardContext
+	extends IPostgresQueryWizardContext {
+	returnType?: string;
 }
