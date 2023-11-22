@@ -1,30 +1,17 @@
 // Generated from ./grammar/mongo.g4 by ANTLR 4.6-SNAPSHOT
 
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ParseTreeVisitor } from "antlr4ts/tree/ParseTreeVisitor";
-import {
-	ArgumentContext,
-	ArgumentsContext,
-	ArrayLiteralContext,
-	CollectionContext,
-	CommandContext,
-	CommandsContext,
-	CommentContext,
-	ElementListContext,
-	EmptyCommandContext,
-	FunctionCallContext,
-	LiteralContext,
-	MongoCommandsContext,
-	ObjectLiteralContext,
-	PropertyAssignmentContext,
-	PropertyNameAndValueListContext,
-	PropertyNameContext,
-	PropertyValueContext,
-} from "./mongoParser";
+
+
+import { ParseTreeVisitor } from 'antlr4ts/tree/ParseTreeVisitor';
+import { ArgumentContext, ArgumentsContext, ArrayLiteralContext, CollectionContext, CommandContext, CommandsContext, CommentContext, ElementListContext, EmptyCommandContext, FunctionCallContext, LiteralContext, MongoCommandsContext, ObjectLiteralContext, PropertyAssignmentContext, PropertyNameAndValueListContext, PropertyNameContext, PropertyValueContext } from './mongoParser';
+
+
 
 /**
  * This interface defines a complete generic visitor for a parse tree produced
@@ -116,9 +103,7 @@ export interface mongoVisitor<Result> extends ParseTreeVisitor<Result> {
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	visitPropertyNameAndValueList?: (
-		ctx: PropertyNameAndValueListContext
-	) => Result;
+	visitPropertyNameAndValueList?: (ctx: PropertyNameAndValueListContext) => Result;
 
 	/**
 	 * Visit a parse tree produced by `mongoParser.propertyAssignment`.
@@ -155,3 +140,4 @@ export interface mongoVisitor<Result> extends ParseTreeVisitor<Result> {
 	 */
 	visitComment?: (ctx: CommentContext) => Result;
 }
+

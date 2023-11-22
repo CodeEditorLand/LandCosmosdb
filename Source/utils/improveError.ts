@@ -6,12 +6,12 @@
 import { parseError } from "@microsoft/vscode-azext-utils";
 
 export function improveError(error: unknown): unknown {
-	const message = parseError(error).message;
-	// Example: "spawn c:\Program Files\MongoDB\Server\4.0\bin\mongo.exe ENOENT"
-	const match = message.match(/spawn (.*) ENOENT/);
-	if (match) {
-		return new Error(`Could not find ${match[1]}`);
-	}
+    const message = parseError(error).message;
+    // Example: "spawn c:\Program Files\MongoDB\Server\4.0\bin\mongo.exe ENOENT"
+    const match = message.match(/spawn (.*) ENOENT/);
+    if (match) {
+        return new Error(`Could not find ${match[1]}`);
+    }
 
-	return error;
+    return error;
 }
