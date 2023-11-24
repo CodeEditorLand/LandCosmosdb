@@ -9,18 +9,26 @@ import { wrapArgInQuotes } from "../../../../runPostgresQuery";
 import { IPostgresFunctionQueryWizardContext } from "../IPostgresFunctionQueryWizardContext";
 
 export class FunctionQueryCreateStep extends AzureWizardExecuteStep<IPostgresFunctionQueryWizardContext> {
-    public priority: number = 100;
+	public priority: number = 100;
 
-    public async execute(context: IPostgresFunctionQueryWizardContext): Promise<void> {
-        context.query = defaultFunctionQuery(nonNullProp(context, 'name'), nonNullProp(context, 'returnType'));
-    }
+	public async execute(
+		context: IPostgresFunctionQueryWizardContext
+	): Promise<void> {
+		context.query = defaultFunctionQuery(
+			nonNullProp(context, "name"),
+			nonNullProp(context, "returnType")
+		);
+	}
 
-    public shouldExecute(): boolean {
-        return true;
-    }
+	public shouldExecute(): boolean {
+		return true;
+	}
 }
 
-const defaultFunctionQuery = (name: string, returnType: string) => `CREATE OR REPLACE FUNCTION ${wrapArgInQuotes(name)}(/* arguments */)
+const defaultFunctionQuery = (
+	name: string,
+	returnType: string
+) => `CREATE OR REPLACE FUNCTION ${wrapArgInQuotes(name)}(/* arguments */)
  RETURNS ${returnType}
  LANGUAGE plpgsql
 AS $function$

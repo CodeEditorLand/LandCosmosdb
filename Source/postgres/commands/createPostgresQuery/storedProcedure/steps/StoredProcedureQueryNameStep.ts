@@ -9,14 +9,19 @@ import { IPostgresQueryWizardContext } from "../../IPostgresQueryWizardContext";
 import { validateIdentifier } from "../../validateIdentifier";
 
 export class StoredProcedureQueryNameStep extends AzureWizardPromptStep<IPostgresQueryWizardContext> {
-    public async prompt(context: IPostgresQueryWizardContext): Promise<void> {
-        context.name = (await context.ui.showInputBox({
-            prompt: localize('provideStoredProcedureName', 'Provide stored procedure name'),
-            validateInput: validateIdentifier
-        })).trim();
-    }
+	public async prompt(context: IPostgresQueryWizardContext): Promise<void> {
+		context.name = (
+			await context.ui.showInputBox({
+				prompt: localize(
+					"provideStoredProcedureName",
+					"Provide stored procedure name"
+				),
+				validateInput: validateIdentifier,
+			})
+		).trim();
+	}
 
-    public shouldPrompt(context: IPostgresQueryWizardContext): boolean {
-        return !context.name;
-    }
+	public shouldPrompt(context: IPostgresQueryWizardContext): boolean {
+		return !context.name;
+	}
 }

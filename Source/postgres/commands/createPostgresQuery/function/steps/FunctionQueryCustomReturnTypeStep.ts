@@ -8,11 +8,18 @@ import { localize } from "../../../../../utils/localize";
 import { IPostgresFunctionQueryWizardContext } from "../IPostgresFunctionQueryWizardContext";
 
 export class FunctionQueryCustomReturnTypeStep extends AzureWizardPromptStep<IPostgresFunctionQueryWizardContext> {
-    public async prompt(context: IPostgresFunctionQueryWizardContext): Promise<void> {
-        context.returnType = await context.ui.showInputBox({ prompt: localize('provideCustomReturnType', 'Provide custom return type') });
-    }
+	public async prompt(
+		context: IPostgresFunctionQueryWizardContext
+	): Promise<void> {
+		context.returnType = await context.ui.showInputBox({
+			prompt: localize(
+				"provideCustomReturnType",
+				"Provide custom return type"
+			),
+		});
+	}
 
-    public shouldPrompt(context: IPostgresFunctionQueryWizardContext): boolean {
-        return !context.returnType;
-    }
+	public shouldPrompt(context: IPostgresFunctionQueryWizardContext): boolean {
+		return !context.returnType;
+	}
 }
