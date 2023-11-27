@@ -140,8 +140,8 @@ export class SchemaService {
 		return Array.isArray(document)
 			? "array"
 			: document === null
-			? "null"
-			: typeof document;
+			  ? "null"
+			  : typeof document;
 	}
 
 	private setSchemaForDocument(

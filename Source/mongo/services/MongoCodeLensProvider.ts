@@ -47,8 +47,8 @@ export class MongoCodeLensProvider implements vscode.CodeLensProvider {
 						title: !isInitialized
 							? "Initializing..."
 							: isConnected
-							? `Connected to ${database}`
-							: `Connect to a database`,
+							  ? `Connected to ${database}`
+							  : `Connect to a database`,
 						command: isInitialized && "cosmosDB.connectMongoDB",
 					},
 					range: new vscode.Range(
