@@ -1,30 +1,17 @@
 // Generated from ./grammar/mongo.g4 by ANTLR 4.6-SNAPSHOT
 
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ParseTreeListener } from "antlr4ts/tree/ParseTreeListener";
-import {
-	ArgumentContext,
-	ArgumentsContext,
-	ArrayLiteralContext,
-	CollectionContext,
-	CommandContext,
-	CommandsContext,
-	CommentContext,
-	ElementListContext,
-	EmptyCommandContext,
-	FunctionCallContext,
-	LiteralContext,
-	MongoCommandsContext,
-	ObjectLiteralContext,
-	PropertyAssignmentContext,
-	PropertyNameAndValueListContext,
-	PropertyNameContext,
-	PropertyValueContext,
-} from "./mongoParser";
+
+
+import { ParseTreeListener } from 'antlr4ts/tree/ParseTreeListener';
+import { ArgumentContext, ArgumentsContext, ArrayLiteralContext, CollectionContext, CommandContext, CommandsContext, CommentContext, ElementListContext, EmptyCommandContext, FunctionCallContext, LiteralContext, MongoCommandsContext, ObjectLiteralContext, PropertyAssignmentContext, PropertyNameAndValueListContext, PropertyNameContext, PropertyValueContext } from './mongoParser';
+
+
 
 /**
  * This interface defines a complete listener for a parse tree produced by
@@ -156,16 +143,12 @@ export interface mongoListener extends ParseTreeListener {
 	 * Enter a parse tree produced by `mongoParser.propertyNameAndValueList`.
 	 * @param ctx the parse tree
 	 */
-	enterPropertyNameAndValueList?: (
-		ctx: PropertyNameAndValueListContext
-	) => void;
+	enterPropertyNameAndValueList?: (ctx: PropertyNameAndValueListContext) => void;
 	/**
 	 * Exit a parse tree produced by `mongoParser.propertyNameAndValueList`.
 	 * @param ctx the parse tree
 	 */
-	exitPropertyNameAndValueList?: (
-		ctx: PropertyNameAndValueListContext
-	) => void;
+	exitPropertyNameAndValueList?: (ctx: PropertyNameAndValueListContext) => void;
 
 	/**
 	 * Enter a parse tree produced by `mongoParser.propertyAssignment`.
@@ -222,3 +205,4 @@ export interface mongoListener extends ParseTreeListener {
 	 */
 	exitComment?: (ctx: CommentContext) => void;
 }
+

@@ -3,88 +3,81 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ParserRuleContext } from "antlr4ts/ParserRuleContext";
-import { ErrorNode } from "antlr4ts/tree/ErrorNode";
-import { ParseTree } from "antlr4ts/tree/ParseTree";
-import { TerminalNode } from "antlr4ts/tree/TerminalNode";
-import {
-	ArgumentContext,
-	ArgumentsContext,
-	CollectionContext,
-	CommandContext,
-	CommandsContext,
-	FunctionCallContext,
-	MongoCommandsContext,
-} from "./mongoParser";
-import { mongoVisitor } from "./mongoVisitor";
+import { ParserRuleContext } from 'antlr4ts/ParserRuleContext';
+import { ErrorNode } from 'antlr4ts/tree/ErrorNode';
+import { ParseTree } from 'antlr4ts/tree/ParseTree';
+import { TerminalNode } from 'antlr4ts/tree/TerminalNode';
+import { ArgumentContext, ArgumentsContext, CollectionContext, CommandContext, CommandsContext, FunctionCallContext, MongoCommandsContext } from './mongoParser';
+import { mongoVisitor } from './mongoVisitor';
 
 export class MongoVisitor<T> implements mongoVisitor<T> {
-	visitMongoCommands(ctx: MongoCommandsContext): T {
-		return this.visitChildren(ctx);
-	}
 
-	visitCommands(ctx: CommandsContext): T {
-		return this.visitChildren(ctx);
-	}
+    visitMongoCommands(ctx: MongoCommandsContext): T {
+        return this.visitChildren(ctx);
+    }
 
-	visitCommand(ctx: CommandContext): T {
-		return this.visitChildren(ctx);
-	}
+    visitCommands(ctx: CommandsContext): T {
+        return this.visitChildren(ctx);
+    }
 
-	visitCollection(ctx: CollectionContext): T {
-		return this.visitChildren(ctx);
-	}
+    visitCommand(ctx: CommandContext): T {
+        return this.visitChildren(ctx);
+    }
 
-	visitFunctionCall(ctx: FunctionCallContext): T {
-		return this.visitChildren(ctx);
-	}
+    visitCollection(ctx: CollectionContext): T {
+        return this.visitChildren(ctx);
+    }
 
-	visitArgument(ctx: ArgumentContext): T {
-		return this.visitChildren(ctx);
-	}
+    visitFunctionCall(ctx: FunctionCallContext): T {
+        return this.visitChildren(ctx);
+    }
 
-	visitArguments(ctx: ArgumentsContext): T {
-		return this.visitChildren(ctx);
-	}
+    visitArgument(ctx: ArgumentContext): T {
+        return this.visitChildren(ctx);
+    }
 
-	visit(tree: ParseTree): T {
-		return tree.accept(this);
-	}
+    visitArguments(ctx: ArgumentsContext): T {
+        return this.visitChildren(ctx);
+    }
 
-	visitChildren(ctx: ParserRuleContext): T {
-		let result = this.defaultResult(ctx);
-		const n = ctx.childCount;
-		for (let i = 0; i < n; i++) {
-			if (!this.shouldVisitNextChild(ctx, result)) {
-				break;
-			}
+    visit(tree: ParseTree): T {
+        return tree.accept(this);
+    }
 
-			const childNode = ctx.getChild(i);
-			const childResult = childNode.accept(this);
-			result = this.aggregateResult(result, childResult);
-		}
-		return result;
-	}
+    visitChildren(ctx: ParserRuleContext): T {
+        let result = this.defaultResult(ctx);
+        const n = ctx.childCount
+        for (let i = 0; i < n; i++) {
+            if (!this.shouldVisitNextChild(ctx, result)) {
+                break;
+            }
 
-	visitTerminal(node: TerminalNode): T {
-		return this.defaultResult(node);
-	}
+            const childNode = ctx.getChild(i);
+            const childResult = childNode.accept(this);
+            result = this.aggregateResult(result, childResult);
+        }
+        return result;
+    }
 
-	visitErrorNode(node: ErrorNode): T {
-		return this.defaultResult(node);
-	}
+    visitTerminal(node: TerminalNode): T {
+        return this.defaultResult(node);
+    }
 
-	protected defaultResult(_node: ParseTree): T {
-		// grandfathered-in. Unclear why this is null instead of type T
-		return <T>(<unknown>null);
-	}
+    visitErrorNode(node: ErrorNode): T {
+        return this.defaultResult(node);
+    }
 
-	protected aggregateResult(aggregate: T, nextResult: T): T {
-		return !nextResult ? aggregate : nextResult;
-	}
+    protected defaultResult(_node: ParseTree): T {
+        // grandfathered-in. Unclear why this is null instead of type T
+        return <T><unknown>null;
+    }
 
-	// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-	shouldVisitNextChild(_node, _currentResult: T): boolean {
-		return true;
-	}
+    protected aggregateResult(aggregate: T, nextResult: T): T {
+        return !nextResult ? aggregate : nextResult;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+    shouldVisitNextChild(_node, _currentResult: T): boolean {
+        return true;
+    }
 }

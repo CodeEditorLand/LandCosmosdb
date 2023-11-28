@@ -8,5 +8,5 @@
  * Learn more at: https://github.com/ljharb/qs#rfc-3986-and-rfc-1738-space-encoding
  */
 export function sanitizeId(id: string): string {
-	return id.replace(/\+/g, " ");
+    return id.replace(/\+/g, ' ');
 }

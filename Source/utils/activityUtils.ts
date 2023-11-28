@@ -8,13 +8,8 @@ import { ext } from "../extensionVariables";
 import { getWorkspaceSetting } from "./settingUtils";
 
 export async function createActivityContext(): Promise<ExecuteActivityContext> {
-	return {
-		registerActivity: async (activity) =>
-			ext.rgApi.registerActivity(activity),
-		suppressNotification: await getWorkspaceSetting(
-			"suppressActivityNotifications",
-			undefined,
-			"azureResourceGroups"
-		),
-	};
+    return {
+        registerActivity: async (activity) => ext.rgApi.registerActivity(activity),
+        suppressNotification: await getWorkspaceSetting('suppressActivityNotifications', undefined, 'azureResourceGroups'),
+    };
 }

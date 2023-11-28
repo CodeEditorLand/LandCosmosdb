@@ -9,15 +9,12 @@ import { runPostgresQueryWizard } from "../runPostgresQueryWizard";
 import { StoredProcedureQueryCreateStep } from "./steps/StoredProcedureQueryCreateStep";
 import { StoredProcedureQueryNameStep } from "./steps/StoredProcedureQueryNameStep";
 
-export async function createPostgresStoredProcedureQuery(
-	context: IActionContext,
-	treeItem?: PostgresStoredProceduresTreeItem
-): Promise<void> {
-	const wizard = new AzureWizard(context, {
-		promptSteps: [new StoredProcedureQueryNameStep()],
-		executeSteps: [new StoredProcedureQueryCreateStep()],
-		title: "Create PostgreSQL Stored Procedure Query",
-	});
+export async function createPostgresStoredProcedureQuery(context: IActionContext, treeItem?: PostgresStoredProceduresTreeItem): Promise<void> {
+    const wizard = new AzureWizard(context, {
+        promptSteps: [new StoredProcedureQueryNameStep()],
+        executeSteps: [new StoredProcedureQueryCreateStep()],
+        title: 'Create PostgreSQL Stored Procedure Query'
+    });
 
-	await runPostgresQueryWizard(wizard, context, treeItem);
+    await runPostgresQueryWizard(wizard, context, treeItem);
 }

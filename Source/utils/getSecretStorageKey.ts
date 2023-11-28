@@ -4,5 +4,5 @@
  *--------------------------------------------------------------------------------------------*/
 
 export function getSecretStorageKey(serviceName: string, id: string): string {
-	return `${serviceName}.${id}`;
+    return `${serviceName}.${id}`;
 }

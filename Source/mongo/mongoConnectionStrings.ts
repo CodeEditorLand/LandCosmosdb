@@ -3,11 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import {
-	appendExtensionUserAgent,
-	IParsedError,
-	parseError,
-} from "@microsoft/vscode-azext-utils";
+import { appendExtensionUserAgent, IParsedError, parseError } from "@microsoft/vscode-azext-utils";
 import { MongoClient } from "mongodb";
 import { testDb } from "../constants";
 import { ParsedConnectionString } from "../ParsedConnectionString";
@@ -25,118 +21,84 @@ import { connectToMongoClient } from "./connectToMongoClient";
 //   mongodb[username:password@]host1[:port1][,host2[:port2],...[,hostN[:portN]]]
 //   [database]
 
-const parsePrefix = "([a-zA-Z]+://[^/]*)";
-const parseDatabaseName = "/?([^/?]+)?";
+const parsePrefix = '([a-zA-Z]+:\/\/[^\/]*)';
+const parseDatabaseName = '\/?([^/?]+)?';
 const mongoConnectionStringRegExp = new RegExp(parsePrefix + parseDatabaseName);
 
-export function getDatabaseNameFromConnectionString(
-	connectionString: string
-): string | undefined {
-	try {
-		const [, , databaseName] = nonNullValue(
-			connectionString.match(mongoConnectionStringRegExp),
-			"databaseNameMatch"
-		);
-		return databaseName;
-	} catch (error) {
-		// Shouldn't happen, but ignore if does
-	}
+export function getDatabaseNameFromConnectionString(connectionString: string): string | undefined {
+    try {
+        const [, , databaseName] = nonNullValue(connectionString.match(mongoConnectionStringRegExp), 'databaseNameMatch');
+        return databaseName;
+    } catch (error) {
+        // Shouldn't happen, but ignore if does
+    }
 
-	return undefined;
+    return undefined;
 }
 
-export function addDatabaseToAccountConnectionString(
-	connectionString: string,
-	databaseName: string
-): string {
-	try {
-		return connectionString.replace(
-			mongoConnectionStringRegExp,
-			`$1\/${encodeURIComponent(databaseName)}`
-		);
-	} catch (error) {
-		// Shouldn't happen, but ignore if does. Original connection string could be in a format we don't expect, but might already have the db name or might still work without it
-		return connectionString;
-	}
+export function addDatabaseToAccountConnectionString(connectionString: string, databaseName: string): string {
+    try {
+        return connectionString.replace(mongoConnectionStringRegExp, `$1\/${encodeURIComponent(databaseName)}`);
+    } catch (error) {
+        // Shouldn't happen, but ignore if does. Original connection string could be in a format we don't expect, but might already have the db name or might still work without it
+        return connectionString;
+    }
 }
 
-export async function parseMongoConnectionString(
-	connectionString: string
-): Promise<ParsedMongoConnectionString> {
-	let mongoClient: MongoClient;
-	try {
-		mongoClient = await connectToMongoClient(
-			connectionString,
-			appendExtensionUserAgent()
-		);
-	} catch (error) {
-		const parsedError: IParsedError = parseError(error);
-		if (parsedError.message.match(/unescaped/i)) {
-			// Prevents https://github.com/microsoft/vscode-cosmosdb/issues/1209
-			connectionString = encodeMongoConnectionString(connectionString);
-			mongoClient = await connectToMongoClient(
-				connectionString,
-				appendExtensionUserAgent()
-			);
-		} else {
-			throw error;
-		}
-	}
+export async function parseMongoConnectionString(connectionString: string): Promise<ParsedMongoConnectionString> {
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const serverConfig: any = mongoClient.db(testDb).serverConfig;
+    let mongoClient: MongoClient;
+    try {
+        mongoClient = await connectToMongoClient(connectionString, appendExtensionUserAgent());
+    } catch (error) {
+        const parsedError: IParsedError = parseError(error);
+        if (parsedError.message.match(/unescaped/i)) {
+            // Prevents https://github.com/microsoft/vscode-cosmosdb/issues/1209
+            connectionString = encodeMongoConnectionString(connectionString);
+            mongoClient = await connectToMongoClient(connectionString, appendExtensionUserAgent());
+        } else {
+            throw error;
+        }
+    }
 
-	// get the first connection string from the servers list
-	// this may not be best solution, but the connection (below) gives
-	// host name of single server, mongos instance or the primany from replicaSet which is different than what is in the connection string (espcially for Replica sets)
-	// "s" is not part of the static definition but can't find any official documentation on it. Yet it is definitely there at runtime. Grandfathering in.
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-	const host: string =
-		serverConfig?.s?.options?.servers[0]?.host || serverConfig.host;
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-	const port: string =
-		serverConfig?.s?.options?.servers[0]?.port || serverConfig.port;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const serverConfig: any = mongoClient.db(testDb).serverConfig;
 
-	return new ParsedMongoConnectionString(
-		connectionString,
-		host,
-		port,
-		getDatabaseNameFromConnectionString(connectionString)
-	);
+    // get the first connection string from the servers list
+    // this may not be best solution, but the connection (below) gives
+    // host name of single server, mongos instance or the primany from replicaSet which is different than what is in the connection string (espcially for Replica sets)
+    // "s" is not part of the static definition but can't find any official documentation on it. Yet it is definitely there at runtime. Grandfathering in.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const host: string = serverConfig?.s?.options?.servers[0]?.host || serverConfig.host;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    const port: string = serverConfig?.s?.options?.servers[0]?.port || serverConfig.port;
+
+    return new ParsedMongoConnectionString(connectionString, host, port, getDatabaseNameFromConnectionString(connectionString));
 }
 
 export class ParsedMongoConnectionString extends ParsedConnectionString {
-	public readonly hostName: string;
-	public readonly port: string;
+    public readonly hostName: string;
+    public readonly port: string;
 
-	constructor(
-		connectionString: string,
-		hostName: string,
-		port: string,
-		databaseName: string | undefined
-	) {
-		super(connectionString, databaseName);
-		this.hostName = hostName;
-		this.port = port;
-	}
+    constructor(connectionString: string, hostName: string, port: string, databaseName: string | undefined) {
+        super(connectionString, databaseName);
+        this.hostName = hostName;
+        this.port = port;
+    }
 }
 
 /**
  * Encodes the username and password in the given Mongo DB connection string.
  */
 export function encodeMongoConnectionString(connectionString: string): string {
-	const matches: RegExpMatchArray | null = connectionString.match(
-		/^(.*):\/\/(.*):(.*)@(.*)/
-	);
-	if (matches) {
-		const prefix: string = matches[1];
-		const username: string = matches[2];
-		const password: string = matches[3];
-		const hostAndQuery: string = matches[4];
-		connectionString = `${prefix}://${encodeURIComponent(
-			username
-		)}:${encodeURIComponent(password)}@${hostAndQuery}`;
-	}
+    const matches: RegExpMatchArray | null = connectionString.match(/^(.*):\/\/(.*):(.*)@(.*)/);
+    if (matches) {
+        const prefix: string = matches[1];
+        const username: string = matches[2];
+        const password: string = matches[3];
+        const hostAndQuery: string = matches[4];
+        connectionString = `${prefix}://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostAndQuery}`;
+    }
 
-	return connectionString;
+    return connectionString;
 }
