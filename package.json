@@ -29,7 +29,7 @@
     "bugs": {
         "url": "https://github.com/microsoft/vscode-cosmosdb/issues"
     },
-    "license": "SEE LICENSE IN LICENSE.md",
+    "license": "SEE LICENSE IN LICENSE",
     "repository": {
         "type": "git",
         "url": "https://github.com/microsoft/vscode-cosmosdb"
