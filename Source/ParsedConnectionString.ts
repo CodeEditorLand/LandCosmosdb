@@ -4,25 +4,27 @@
  *--------------------------------------------------------------------------------------------*/
 
 export abstract class ParsedConnectionString {
-    public abstract readonly hostName: string;
-    public abstract readonly port: string;
+	public abstract readonly hostName: string;
+	public abstract readonly port: string;
 
-    /**
-     * databaseName may be undefined if this is an account-level connection string
-     */
-    public readonly databaseName: string | undefined;
-    public readonly connectionString: string;
+	/**
+	 * databaseName may be undefined if this is an account-level connection string
+	 */
+	public readonly databaseName: string | undefined;
+	public readonly connectionString: string;
 
-    constructor(connectionString: string, databaseName: string | undefined) {
-        this.connectionString = connectionString;
-        this.databaseName = databaseName;
-    }
+	constructor(connectionString: string, databaseName: string | undefined) {
+		this.connectionString = connectionString;
+		this.databaseName = databaseName;
+	}
 
-    public get accountId(): string {
-        return `${this.hostName}:${this.port}`;
-    }
+	public get accountId(): string {
+		return `${this.hostName}:${this.port}`;
+	}
 
-    public get fullId(): string {
-        return `${this.accountId}${this.databaseName ? '/' + this.databaseName : ''}`;
-    }
+	public get fullId(): string {
+		return `${this.accountId}${
+			this.databaseName ? "/" + this.databaseName : ""
+		}`;
+	}
 }
