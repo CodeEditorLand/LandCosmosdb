@@ -1084,9 +1084,9 @@
 	],
 	"dependencies": {
 		"antlr4ts": "0.5.0-alpha.4",
-		"bson": "6.6.0",
+		"bson": "6.7.0",
 		"fs-extra": "11.2.0",
-		"mongodb": "6.5.0",
+		"mongodb": "6.6.0",
 		"open": "10.1.0",
 		"pg": "8.11.5",
 		"pg-connection-string": "2.6.4",
@@ -1099,8 +1099,8 @@
 		"@playform/document": "0.0.6",
 		"@types/documentdb": "1.10.13",
 		"@types/fs-extra": "11.0.4",
-		"@types/node": "20.12.7",
-		"@types/pg": "8.11.5",
+		"@types/node": "20.12.10",
+		"@types/pg": "8.11.6",
 		"antlr4ts-cli": "0.5.0-alpha.4",
 		"glob": "10.3.12"
 	},
