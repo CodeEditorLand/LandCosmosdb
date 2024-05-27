@@ -190,6 +190,7 @@ ClientBin/
 *.dbproj.schemaview
 *.pfx
 *.publishsettings
+node_modules/
 out/
 orleans.codegen.cs
 
@@ -270,4 +271,5 @@ stats.json
 # Scrapbooks
 *.mongo
 
+.DS_Store
 
