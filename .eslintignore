@@ -1,0 +1,4 @@
+gulpfile.ts
+.eslintrc.js
+**/*.d.ts
+test/
