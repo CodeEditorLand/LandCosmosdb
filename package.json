@@ -1061,24 +1061,24 @@
 		"onView:azureWorkspace"
 	],
 	"dependencies": {
-		"antlr4ts": "0.4.1-alpha.0",
-		"bson": "6.0.0",
-		"fs-extra": "8.0.0",
-		"mongodb": "6.0.0",
-		"open": "8.0.0",
-		"pg": "8.11.2",
-		"pg-connection-string": "2.6.2",
-		"pg-structure": "7.15.0",
-		"semver": "7.5.2",
-		"underscore": "1.12.1"
+		"antlr4ts": "0.5.0-dev",
+		"bson": "6.8.0",
+		"fs-extra": "11.2.0",
+		"mongodb": "6.8.0",
+		"open": "10.1.0",
+		"pg": "8.12.0",
+		"pg-connection-string": "2.6.4",
+		"pg-structure": "7.15.3",
+		"semver": "7.6.3",
+		"underscore": "1.13.6"
 	},
 	"devDependencies": {
-		"@types/documentdb": "1.10.2",
-		"@types/fs-extra": "8.1.0",
-		"@types/node": "14.0.0",
-		"@types/pg": "8.10.2",
-		"antlr4ts-cli": "0.4.0-alpha.4",
-		"glob": "7.1.6"
+		"@types/documentdb": "1.10.13",
+		"@types/fs-extra": "11.0.4",
+		"@types/node": "20.14.12",
+		"@types/pg": "8.11.6",
+		"antlr4ts-cli": "0.5.0-dev",
+		"glob": "11.0.0"
 	},
 	"extensionDependencies": [
 		"ms-azuretools.vscode-azureresourcegroups"
