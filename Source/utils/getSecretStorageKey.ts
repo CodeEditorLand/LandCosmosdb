@@ -3,8 +3,6 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscodeUtil from "../../utils/vscodeUtils";
-
-export async function createMongoSrapbook(): Promise<void> {
-    await vscodeUtil.showNewFile('', 'Scrapbook', '.mongo');
+export function getSecretStorageKey(serviceName: string, id: string): string {
+    return `${serviceName}.${id}`;
 }
