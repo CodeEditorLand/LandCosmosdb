@@ -3,17 +3,21 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { Client, type ClientConfig } from 'pg';
-import { type ConnectionOptions } from 'tls';
-import { postgresDefaultPort } from '../constants';
-import { nonNullProp } from '../utils/nonNull';
-import { PostgresServerType } from './abstract/models';
-import { addDatabaseToConnectionString, type ParsedPostgresConnectionString } from './postgresConnectionStrings';
+import { type ConnectionOptions } from "tls";
+import { Client, type ClientConfig } from "pg";
+
+import { postgresDefaultPort } from "../constants";
+import { nonNullProp } from "../utils/nonNull";
+import { PostgresServerType } from "./abstract/models";
+import {
+	addDatabaseToConnectionString,
+	type ParsedPostgresConnectionString,
+} from "./postgresConnectionStrings";
 
 export type PostgresClientConfigs = {
-    password: ClientConfig | undefined;
-    azureAd: ClientConfig | undefined;
-    connectionString: ClientConfig | undefined;
+	password: ClientConfig | undefined;
+	azureAd: ClientConfig | undefined;
+	connectionString: ClientConfig | undefined;
 };
 export type PostgresClientConfigType = keyof PostgresClientConfigs;
 
@@ -21,109 +25,133 @@ export type PostgresClientConfigType = keyof PostgresClientConfigs;
  * Test if the database can be connected to using the given client config.
  * @throws if the client failed to connect to the database.
  */
-export async function testClientConfig(clientConfig: ClientConfig): Promise<void> {
-    const client = new Client(clientConfig);
-    try {
-        await client.connect();
-    } finally {
-        await client.end();
-    }
+export async function testClientConfig(
+	clientConfig: ClientConfig,
+): Promise<void> {
+	const client = new Client(clientConfig);
+	try {
+		await client.connect();
+	} finally {
+		await client.end();
+	}
 }
 
 async function getConnectionStringClientConfig(
-    parsedConnectionString: ParsedPostgresConnectionString,
-    databaseName: string,
+	parsedConnectionString: ParsedPostgresConnectionString,
+	databaseName: string,
 ): Promise<ClientConfig> {
-    let connectionString = parsedConnectionString.connectionString;
-    if (!parsedConnectionString.databaseName) {
-        connectionString = addDatabaseToConnectionString(connectionString, databaseName);
-    }
-    return { connectionString: connectionString };
+	let connectionString = parsedConnectionString.connectionString;
+	if (!parsedConnectionString.databaseName) {
+		connectionString = addDatabaseToConnectionString(
+			connectionString,
+			databaseName,
+		);
+	}
+	return { connectionString: connectionString };
 }
 
 async function getUsernamePasswordClientConfig(
-    parsedConnectionString: ParsedPostgresConnectionString,
-    sslAzure: ConnectionOptions,
-    databaseName: string,
+	parsedConnectionString: ParsedPostgresConnectionString,
+	sslAzure: ConnectionOptions,
+	databaseName: string,
 ): Promise<ClientConfig | undefined> {
-    const host = nonNullProp(parsedConnectionString, 'hostName');
-    const port: number = parsedConnectionString.port
-        ? parseInt(parsedConnectionString.port)
-        : parseInt(postgresDefaultPort);
-    const username: string | undefined = parsedConnectionString.username;
-    const password: string | undefined = parsedConnectionString.password;
+	const host = nonNullProp(parsedConnectionString, "hostName");
+	const port: number = parsedConnectionString.port
+		? parseInt(parsedConnectionString.port)
+		: parseInt(postgresDefaultPort);
+	const username: string | undefined = parsedConnectionString.username;
+	const password: string | undefined = parsedConnectionString.password;
 
-    if (!!username && !!password && !!host && !!port) {
-        return { user: username, password, ssl: sslAzure, host, port, database: databaseName };
-    } else {
-        return undefined;
-    }
+	if (!!username && !!password && !!host && !!port) {
+		return {
+			user: username,
+			password,
+			ssl: sslAzure,
+			host,
+			port,
+			database: databaseName,
+		};
+	} else {
+		return undefined;
+	}
 }
 
 async function getAzureAdClientConfig(
-    parsedConnectionString: ParsedPostgresConnectionString,
-    sslAzure: ConnectionOptions,
-    databaseName: string,
-    azureAdUserId: string,
-    getToken: () => Promise<string>,
+	parsedConnectionString: ParsedPostgresConnectionString,
+	sslAzure: ConnectionOptions,
+	databaseName: string,
+	azureAdUserId: string,
+	getToken: () => Promise<string>,
 ): Promise<ClientConfig> {
-    const host = nonNullProp(parsedConnectionString, 'hostName');
-    const port: number = parsedConnectionString.port
-        ? parseInt(parsedConnectionString.port)
-        : parseInt(postgresDefaultPort);
-    return { user: azureAdUserId, password: getToken, ssl: sslAzure, host, port, database: databaseName };
+	const host = nonNullProp(parsedConnectionString, "hostName");
+	const port: number = parsedConnectionString.port
+		? parseInt(parsedConnectionString.port)
+		: parseInt(postgresDefaultPort);
+	return {
+		user: azureAdUserId,
+		password: getToken,
+		ssl: sslAzure,
+		host,
+		port,
+		database: databaseName,
+	};
 }
 
 export async function getClientConfigs(
-    parsedConnectionString: ParsedPostgresConnectionString,
-    serverType: PostgresServerType,
-    hasSubscription: boolean,
-    databaseName: string,
-    azureUserId?: string,
-    getToken?: () => Promise<string>,
+	parsedConnectionString: ParsedPostgresConnectionString,
+	serverType: PostgresServerType,
+	hasSubscription: boolean,
+	databaseName: string,
+	azureUserId?: string,
+	getToken?: () => Promise<string>,
 ): Promise<PostgresClientConfigs> {
-    const clientConfigs: PostgresClientConfigs = {
-        password: undefined,
-        azureAd: undefined,
-        connectionString: undefined,
-    };
-    if (hasSubscription) {
-        const sslAzure: ConnectionOptions = {
-            // Always provide the certificate since it is accepted even when SSL is disabled
-            // Single Server Root Cert --> BaltimoreCyberTrustRoot (Current), DigiCertGlobalRootG2 (TBA)
-            // Flexible Server Root Cert --> DigiCertGlobalRootCA. More info: https://aka.ms/AAd75x5
-            ca:
-                serverType === PostgresServerType.Single
-                    ? [BaltimoreCyberTrustRoot, DigiCertGlobalRootG2]
-                    : [DigiCertGlobalRootCA],
-        };
-        const passwordClientConfig = await getUsernamePasswordClientConfig(
-            parsedConnectionString,
-            sslAzure,
-            databaseName,
-        );
-        if (passwordClientConfig) {
-            clientConfigs.password = passwordClientConfig;
-        }
-        if (serverType === PostgresServerType.Flexible && !!azureUserId && !!getToken) {
-            const azureAdClientConfig = await getAzureAdClientConfig(
-                parsedConnectionString,
-                sslAzure,
-                databaseName,
-                azureUserId,
-                getToken,
-            );
-            clientConfigs.azureAd = azureAdClientConfig;
-        }
-    } else {
-        const connectionStringClientConfig = await getConnectionStringClientConfig(
-            parsedConnectionString,
-            databaseName,
-        );
-        clientConfigs.connectionString = connectionStringClientConfig;
-    }
+	const clientConfigs: PostgresClientConfigs = {
+		password: undefined,
+		azureAd: undefined,
+		connectionString: undefined,
+	};
+	if (hasSubscription) {
+		const sslAzure: ConnectionOptions = {
+			// Always provide the certificate since it is accepted even when SSL is disabled
+			// Single Server Root Cert --> BaltimoreCyberTrustRoot (Current), DigiCertGlobalRootG2 (TBA)
+			// Flexible Server Root Cert --> DigiCertGlobalRootCA. More info: https://aka.ms/AAd75x5
+			ca:
+				serverType === PostgresServerType.Single
+					? [BaltimoreCyberTrustRoot, DigiCertGlobalRootG2]
+					: [DigiCertGlobalRootCA],
+		};
+		const passwordClientConfig = await getUsernamePasswordClientConfig(
+			parsedConnectionString,
+			sslAzure,
+			databaseName,
+		);
+		if (passwordClientConfig) {
+			clientConfigs.password = passwordClientConfig;
+		}
+		if (
+			serverType === PostgresServerType.Flexible &&
+			!!azureUserId &&
+			!!getToken
+		) {
+			const azureAdClientConfig = await getAzureAdClientConfig(
+				parsedConnectionString,
+				sslAzure,
+				databaseName,
+				azureUserId,
+				getToken,
+			);
+			clientConfigs.azureAd = azureAdClientConfig;
+		}
+	} else {
+		const connectionStringClientConfig =
+			await getConnectionStringClientConfig(
+				parsedConnectionString,
+				databaseName,
+			);
+		clientConfigs.connectionString = connectionStringClientConfig;
+	}
 
-    return clientConfigs;
+	return clientConfigs;
 }
 
 // Postgres Single Server Root Cert, https://aka.ms/AA7wnvl

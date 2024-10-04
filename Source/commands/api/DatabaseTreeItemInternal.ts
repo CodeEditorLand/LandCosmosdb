@@ -4,49 +4,71 @@
  *--------------------------------------------------------------------------------------------*/
 
 import {
-    callWithTelemetryAndErrorHandling,
-    type AzExtTreeItem,
-    type IActionContext,
-} from '@microsoft/vscode-azext-utils';
-import { type DocDBAccountTreeItemBase } from '../../docdb/tree/DocDBAccountTreeItemBase';
-import { type DocDBDatabaseTreeItemBase } from '../../docdb/tree/DocDBDatabaseTreeItemBase';
-import { ext } from '../../extensionVariables';
-import { type MongoAccountTreeItem } from '../../mongo/tree/MongoAccountTreeItem';
-import { type MongoDatabaseTreeItem } from '../../mongo/tree/MongoDatabaseTreeItem';
-import { type ParsedConnectionString } from '../../ParsedConnectionString';
-import { type PostgresDatabaseTreeItem } from '../../postgres/tree/PostgresDatabaseTreeItem';
-import { type PostgresServerTreeItem } from '../../postgres/tree/PostgresServerTreeItem';
-import { type DatabaseTreeItem } from '../../vscode-cosmosdb.api';
-import { DatabaseAccountTreeItemInternal } from './DatabaseAccountTreeItemInternal';
+	callWithTelemetryAndErrorHandling,
+	type AzExtTreeItem,
+	type IActionContext,
+} from "@microsoft/vscode-azext-utils";
 
-export class DatabaseTreeItemInternal extends DatabaseAccountTreeItemInternal implements DatabaseTreeItem {
-    public databaseName: string;
-    private _dbNode: AzExtTreeItem | undefined;
+import { type DocDBAccountTreeItemBase } from "../../docdb/tree/DocDBAccountTreeItemBase";
+import { type DocDBDatabaseTreeItemBase } from "../../docdb/tree/DocDBDatabaseTreeItemBase";
+import { ext } from "../../extensionVariables";
+import { type MongoAccountTreeItem } from "../../mongo/tree/MongoAccountTreeItem";
+import { type MongoDatabaseTreeItem } from "../../mongo/tree/MongoDatabaseTreeItem";
+import { type ParsedConnectionString } from "../../ParsedConnectionString";
+import { type PostgresDatabaseTreeItem } from "../../postgres/tree/PostgresDatabaseTreeItem";
+import { type PostgresServerTreeItem } from "../../postgres/tree/PostgresServerTreeItem";
+import { type DatabaseTreeItem } from "../../vscode-cosmosdb.api";
+import { DatabaseAccountTreeItemInternal } from "./DatabaseAccountTreeItemInternal";
 
-    constructor(
-        parsedCS: ParsedConnectionString,
-        databaseName: string,
-        accountNode?: MongoAccountTreeItem | DocDBAccountTreeItemBase | PostgresServerTreeItem,
-        dbNode?: MongoDatabaseTreeItem | DocDBDatabaseTreeItemBase | PostgresDatabaseTreeItem,
-    ) {
-        super(parsedCS, accountNode);
-        this.databaseName = databaseName;
-        this._dbNode = dbNode;
-    }
+export class DatabaseTreeItemInternal
+	extends DatabaseAccountTreeItemInternal
+	implements DatabaseTreeItem
+{
+	public databaseName: string;
+	private _dbNode: AzExtTreeItem | undefined;
 
-    public async reveal(): Promise<void> {
-        await callWithTelemetryAndErrorHandling('api.db.reveal', async (context: IActionContext) => {
-            context.errorHandling.suppressDisplay = true;
-            context.errorHandling.rethrow = true;
+	constructor(
+		parsedCS: ParsedConnectionString,
+		databaseName: string,
+		accountNode?:
+			| MongoAccountTreeItem
+			| DocDBAccountTreeItemBase
+			| PostgresServerTreeItem,
+		dbNode?:
+			| MongoDatabaseTreeItem
+			| DocDBDatabaseTreeItemBase
+			| PostgresDatabaseTreeItem,
+	) {
+		super(parsedCS, accountNode);
+		this.databaseName = databaseName;
+		this._dbNode = dbNode;
+	}
 
-            const accountNode: MongoAccountTreeItem | DocDBAccountTreeItemBase | PostgresServerTreeItem =
-                await this.getAccountNode(context);
-            if (!this._dbNode) {
-                const databaseId = `${accountNode.fullId}/${this.databaseName}`;
-                this._dbNode = await ext.rgApi.workspaceResourceTree.findTreeItem(databaseId, context);
-            }
+	public async reveal(): Promise<void> {
+		await callWithTelemetryAndErrorHandling(
+			"api.db.reveal",
+			async (context: IActionContext) => {
+				context.errorHandling.suppressDisplay = true;
+				context.errorHandling.rethrow = true;
 
-            await ext.rgApi.workspaceResourceTreeView.reveal(this._dbNode || accountNode);
-        });
-    }
+				const accountNode:
+					| MongoAccountTreeItem
+					| DocDBAccountTreeItemBase
+					| PostgresServerTreeItem =
+					await this.getAccountNode(context);
+				if (!this._dbNode) {
+					const databaseId = `${accountNode.fullId}/${this.databaseName}`;
+					this._dbNode =
+						await ext.rgApi.workspaceResourceTree.findTreeItem(
+							databaseId,
+							context,
+						);
+				}
+
+				await ext.rgApi.workspaceResourceTreeView.reveal(
+					this._dbNode || accountNode,
+				);
+			},
+		);
+	}
 }

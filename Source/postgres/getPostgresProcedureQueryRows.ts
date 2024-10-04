@@ -3,22 +3,23 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type QueryResult } from 'pg';
-import { runPostgresQuery } from './runPostgresQuery';
-import { PostgresFunctionsTreeItem } from './tree/PostgresFunctionsTreeItem';
-import { type PostgresResourcesTreeItemBase } from './tree/PostgresResourcesTreeItemBase';
+import { type QueryResult } from "pg";
+
+import { runPostgresQuery } from "./runPostgresQuery";
+import { PostgresFunctionsTreeItem } from "./tree/PostgresFunctionsTreeItem";
+import { type PostgresResourcesTreeItemBase } from "./tree/PostgresResourcesTreeItemBase";
 
 export interface IPostgresProceduresQueryRow {
-    schema: string;
-    name: string;
-    oid: number;
-    args: string;
-    definition: string;
+	schema: string;
+	name: string;
+	oid: number;
+	args: string;
+	definition: string;
 }
 
 function getProceduresQuery(conditions: string): string {
-    // Adapted from https://aka.ms/AA83fg8
-    return `select n.nspname as schema,
+	// Adapted from https://aka.ms/AA83fg8
+	return `select n.nspname as schema,
         p.proname as name,
         p.oid as oid,
         pg_get_function_arguments(p.oid) as args,
@@ -34,27 +35,30 @@ function getProceduresQuery(conditions: string): string {
 }
 
 export async function getPostgresProcedureQueryRows(
-    treeItem: PostgresResourcesTreeItemBase,
+	treeItem: PostgresResourcesTreeItemBase,
 ): Promise<IPostgresProceduresQueryRow[]> {
-    let conditions: string;
+	let conditions: string;
 
-    if (treeItem instanceof PostgresFunctionsTreeItem) {
-        conditions = `and p.proname not in ('pg_buffercache_pages', 'pg_stat_statements_reset', 'pg_stat_statements')
-        ${(await treeItem.parent.parent.supportsStoredProcedures(treeItem.clientConfig)) ? "and p.prokind = 'f'" : ''}`;
-    } else {
-        // Assume stored procedures
-        conditions = "and p.prokind = 'p'";
-    }
+	if (treeItem instanceof PostgresFunctionsTreeItem) {
+		conditions = `and p.proname not in ('pg_buffercache_pages', 'pg_stat_statements_reset', 'pg_stat_statements')
+        ${(await treeItem.parent.parent.supportsStoredProcedures(treeItem.clientConfig)) ? "and p.prokind = 'f'" : ""}`;
+	} else {
+		// Assume stored procedures
+		conditions = "and p.prokind = 'p'";
+	}
 
-    const query: string = getProceduresQuery(conditions);
-    const queryResult: QueryResult = await runPostgresQuery(treeItem.clientConfig, query);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const rows: IPostgresProceduresQueryRow[] = queryResult.rows || [];
+	const query: string = getProceduresQuery(conditions);
+	const queryResult: QueryResult = await runPostgresQuery(
+		treeItem.clientConfig,
+		query,
+	);
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+	const rows: IPostgresProceduresQueryRow[] = queryResult.rows || [];
 
-    treeItem.resourcesAndSchemas = {};
-    for (const row of rows) {
-        treeItem.addResourcesAndSchemasEntry(row.name, row.schema);
-    }
+	treeItem.resourcesAndSchemas = {};
+	for (const row of rows) {
+		treeItem.addResourcesAndSchemasEntry(row.name, row.schema);
+	}
 
-    return rows;
+	return rows;
 }

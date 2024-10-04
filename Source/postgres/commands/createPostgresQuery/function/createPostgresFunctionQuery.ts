@@ -3,24 +3,31 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizard, type IActionContext } from '@microsoft/vscode-azext-utils';
-import { type PostgresFunctionsTreeItem } from '../../../tree/PostgresFunctionsTreeItem';
-import { runPostgresQueryWizard } from '../runPostgresQueryWizard';
-import { type IPostgresFunctionQueryWizardContext } from './IPostgresFunctionQueryWizardContext';
-import { FunctionQueryCreateStep } from './steps/FunctionQueryCreateStep';
-import { FunctionQueryNameStep } from './steps/FunctionQueryNameStep';
-import { FunctionQueryReturnTypeStep } from './steps/FunctionQueryReturnTypeStep';
+import {
+	AzureWizard,
+	type IActionContext,
+} from "@microsoft/vscode-azext-utils";
+
+import { type PostgresFunctionsTreeItem } from "../../../tree/PostgresFunctionsTreeItem";
+import { runPostgresQueryWizard } from "../runPostgresQueryWizard";
+import { type IPostgresFunctionQueryWizardContext } from "./IPostgresFunctionQueryWizardContext";
+import { FunctionQueryCreateStep } from "./steps/FunctionQueryCreateStep";
+import { FunctionQueryNameStep } from "./steps/FunctionQueryNameStep";
+import { FunctionQueryReturnTypeStep } from "./steps/FunctionQueryReturnTypeStep";
 
 export async function createPostgresFunctionQuery(
-    context: IActionContext,
-    treeItem?: PostgresFunctionsTreeItem,
+	context: IActionContext,
+	treeItem?: PostgresFunctionsTreeItem,
 ): Promise<void> {
-    const wizardContext: IPostgresFunctionQueryWizardContext = context;
-    const wizard = new AzureWizard(wizardContext, {
-        promptSteps: [new FunctionQueryNameStep(), new FunctionQueryReturnTypeStep()],
-        executeSteps: [new FunctionQueryCreateStep()],
-        title: 'Create PostgreSQL Function Query',
-    });
+	const wizardContext: IPostgresFunctionQueryWizardContext = context;
+	const wizard = new AzureWizard(wizardContext, {
+		promptSteps: [
+			new FunctionQueryNameStep(),
+			new FunctionQueryReturnTypeStep(),
+		],
+		executeSteps: [new FunctionQueryCreateStep()],
+		title: "Create PostgreSQL Function Query",
+	});
 
-    await runPostgresQueryWizard(wizard, wizardContext, treeItem);
+	await runPostgresQueryWizard(wizard, wizardContext, treeItem);
 }
