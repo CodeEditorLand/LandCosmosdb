@@ -4,5 +4,5 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface IMongoTreeRoot {
-    isEmulator: boolean | undefined;
+	isEmulator: boolean | undefined;
 }

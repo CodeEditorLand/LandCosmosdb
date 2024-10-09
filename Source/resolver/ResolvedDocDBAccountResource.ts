@@ -4,33 +4,43 @@
  *--------------------------------------------------------------------------------------------*/
 
 import {
-    type CosmosClient,
-    type DatabaseDefinition,
-    type FeedOptions,
-    type QueryIterator,
-    type Resource,
-} from '@azure/cosmos';
-import { type AzExtTreeItem } from '@microsoft/vscode-azext-utils';
-import { type AppResource, type ResolvedAppResourceBase } from '@microsoft/vscode-azext-utils/hostapi';
-import { type DocDBAccountTreeItemBase } from '../docdb/tree/DocDBAccountTreeItemBase';
-import { type IDocDBTreeRoot } from '../docdb/tree/IDocDBTreeRoot';
-import { ResolvedDatabaseAccountResource } from './ResolvedDatabaseAccountResource';
+	type CosmosClient,
+	type DatabaseDefinition,
+	type FeedOptions,
+	type QueryIterator,
+	type Resource,
+} from "@azure/cosmos";
+import { type AzExtTreeItem } from "@microsoft/vscode-azext-utils";
+import {
+	type AppResource,
+	type ResolvedAppResourceBase,
+} from "@microsoft/vscode-azext-utils/hostapi";
 
-export class ResolvedDocDBAccountResource extends ResolvedDatabaseAccountResource implements ResolvedAppResourceBase {
-    public root: IDocDBTreeRoot;
+import { type DocDBAccountTreeItemBase } from "../docdb/tree/DocDBAccountTreeItemBase";
+import { type IDocDBTreeRoot } from "../docdb/tree/IDocDBTreeRoot";
+import { ResolvedDatabaseAccountResource } from "./ResolvedDatabaseAccountResource";
 
-    initChild: (resource: Resource) => AzExtTreeItem;
-    isServerless?: boolean;
-    getIterator?: (client: CosmosClient, feedOptions: FeedOptions) => QueryIterator<DatabaseDefinition & Resource>;
+export class ResolvedDocDBAccountResource
+	extends ResolvedDatabaseAccountResource
+	implements ResolvedAppResourceBase
+{
+	public root: IDocDBTreeRoot;
 
-    public constructor(ti: DocDBAccountTreeItemBase, resource: AppResource) {
-        super(ti, resource);
+	initChild: (resource: Resource) => AzExtTreeItem;
+	isServerless?: boolean;
+	getIterator?: (
+		client: CosmosClient,
+		feedOptions: FeedOptions,
+	) => QueryIterator<DatabaseDefinition & Resource>;
 
-        this.connectionString = ti.connectionString;
-        this.root = ti.root;
+	public constructor(ti: DocDBAccountTreeItemBase, resource: AppResource) {
+		super(ti, resource);
 
-        this.isServerless = ti.isServerless;
-        this.getIterator = ti.getIterator;
-        this.initChild = ti.initChild;
-    }
+		this.connectionString = ti.connectionString;
+		this.root = ti.root;
+
+		this.isServerless = ti.isServerless;
+		this.getIterator = ti.getIterator;
+		this.initChild = ti.initChild;
+	}
 }

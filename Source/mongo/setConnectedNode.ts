@@ -3,11 +3,13 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { ext } from '../extensionVariables';
-import { type MongoDatabaseTreeItem } from './tree/MongoDatabaseTreeItem';
+import { ext } from "../extensionVariables";
+import { type MongoDatabaseTreeItem } from "./tree/MongoDatabaseTreeItem";
 
-export function setConnectedNode(node: MongoDatabaseTreeItem | undefined): void {
-    ext.connectedMongoDB = node;
-    const dbName = node && node.label;
-    ext.mongoCodeLensProvider.setConnectedDatabase(dbName);
+export function setConnectedNode(
+	node: MongoDatabaseTreeItem | undefined,
+): void {
+	ext.connectedMongoDB = node;
+	const dbName = node && node.label;
+	ext.mongoCodeLensProvider.setConnectedDatabase(dbName);
 }

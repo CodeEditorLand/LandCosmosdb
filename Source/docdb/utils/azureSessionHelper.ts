@@ -4,17 +4,24 @@
  *--------------------------------------------------------------------------------------------*/
 
 // eslint-disable-next-line import/no-internal-modules
-import { getSessionFromVSCode } from '@microsoft/vscode-azext-azureauth/out/src/getSessionFromVSCode';
-import type * as vscode from 'vscode';
+import { getSessionFromVSCode } from "@microsoft/vscode-azext-azureauth/out/src/getSessionFromVSCode";
+import type * as vscode from "vscode";
 
-export async function getSignedInPrincipalIdForAccountEndpoint(accountEndpoint: string): Promise<string | undefined> {
-    const session = await getSessionForDatabaseAccount(accountEndpoint);
-    const principalId = session?.account.id.split('/')[1] ?? session?.account.id;
-    return principalId;
+export async function getSignedInPrincipalIdForAccountEndpoint(
+	accountEndpoint: string,
+): Promise<string | undefined> {
+	const session = await getSessionForDatabaseAccount(accountEndpoint);
+	const principalId =
+		session?.account.id.split("/")[1] ?? session?.account.id;
+	return principalId;
 }
 
-async function getSessionForDatabaseAccount(endpoint: string): Promise<vscode.AuthenticationSession | undefined> {
-    const endpointUrl = new URL(endpoint);
-    const scrope = `${endpointUrl.origin}${endpointUrl.pathname}.default`;
-    return await getSessionFromVSCode(scrope, undefined, { createIfNone: false });
+async function getSessionForDatabaseAccount(
+	endpoint: string,
+): Promise<vscode.AuthenticationSession | undefined> {
+	const endpointUrl = new URL(endpoint);
+	const scrope = `${endpointUrl.origin}${endpointUrl.pathname}.default`;
+	return await getSessionFromVSCode(scrope, undefined, {
+		createIfNone: false,
+	});
 }

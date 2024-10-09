@@ -4,15 +4,17 @@
  *--------------------------------------------------------------------------------------------*/
 
 import {
-    type AzExtTreeItem,
-    type ExecuteActivityContext,
-    type IActionContext,
-    type ISubscriptionContext,
-} from '@microsoft/vscode-azext-utils';
+	type AzExtTreeItem,
+	type ExecuteActivityContext,
+	type IActionContext,
+	type ISubscriptionContext,
+} from "@microsoft/vscode-azext-utils";
 
-export interface IDeleteWizardContext extends IActionContext, ExecuteActivityContext {
-    node: AzExtTreeItem;
-    deletePostgres: boolean;
-    resourceGroupToDelete?: string;
-    subscription: ISubscriptionContext;
+export interface IDeleteWizardContext
+	extends IActionContext,
+		ExecuteActivityContext {
+	node: AzExtTreeItem;
+	deletePostgres: boolean;
+	resourceGroupToDelete?: string;
+	subscription: ISubscriptionContext;
 }

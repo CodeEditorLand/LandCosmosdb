@@ -3,17 +3,18 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzureWizardExecuteStep } from '@microsoft/vscode-azext-utils';
-import { type IDeleteWizardContext } from './IDeleteWizardContext';
+import { AzureWizardExecuteStep } from "@microsoft/vscode-azext-utils";
+
+import { type IDeleteWizardContext } from "./IDeleteWizardContext";
 
 export class DatabaseAccountDeleteStep extends AzureWizardExecuteStep<IDeleteWizardContext> {
-    public priority: number = 100;
+	public priority: number = 100;
 
-    public async execute(context: IDeleteWizardContext): Promise<void> {
-        await context.node.deleteTreeItem(context);
-    }
+	public async execute(context: IDeleteWizardContext): Promise<void> {
+		await context.node.deleteTreeItem(context);
+	}
 
-    public shouldExecute(_wizardContext: IDeleteWizardContext): boolean {
-        return true;
-    }
+	public shouldExecute(_wizardContext: IDeleteWizardContext): boolean {
+		return true;
+	}
 }

@@ -3,52 +3,56 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-const timedOutMessage = 'Execution timed out';
+const timedOutMessage = "Execution timed out";
 
 /**
  * Returns the result of awaiting a specified action. Rejects if the action throws. Returns timeoutValue if a time-out occurs.
  */
-export async function valueOnTimeout<T>(timeoutMs: number, timeoutValue: T, action: () => Promise<T> | T): Promise<T> {
-    try {
-        return await rejectOnTimeout(timeoutMs, action);
-    } catch (err) {
-        const error = <{ message?: string }>err;
-        if (error && error.message === timedOutMessage) {
-            return timeoutValue;
-        }
+export async function valueOnTimeout<T>(
+	timeoutMs: number,
+	timeoutValue: T,
+	action: () => Promise<T> | T,
+): Promise<T> {
+	try {
+		return await rejectOnTimeout(timeoutMs, action);
+	} catch (err) {
+		const error = <{ message?: string }>err;
+		if (error && error.message === timedOutMessage) {
+			return timeoutValue;
+		}
 
-        throw err;
-    }
+		throw err;
+	}
 }
 
 /**
  * Returns the result of awaiting a specified action. Rejects if the action throws or if the time-out occurs.
  */
 export async function rejectOnTimeout<T>(
-    timeoutMs: number,
-    action: () => Promise<T> | T,
-    callerTimeOutMessage?: string,
+	timeoutMs: number,
+	action: () => Promise<T> | T,
+	callerTimeOutMessage?: string,
 ): Promise<T> {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
-    return await new Promise<T>(async (resolve, reject) => {
-        let timer: NodeJS.Timeout | undefined = setTimeout(() => {
-            timer = undefined;
-            reject(new Error(callerTimeOutMessage || timedOutMessage));
-        }, timeoutMs);
+	// eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
+	return await new Promise<T>(async (resolve, reject) => {
+		let timer: NodeJS.Timeout | undefined = setTimeout(() => {
+			timer = undefined;
+			reject(new Error(callerTimeOutMessage || timedOutMessage));
+		}, timeoutMs);
 
-        let value: T;
-        let error;
+		let value: T;
+		let error;
 
-        try {
-            value = await action();
-            clearTimeout(timer);
-            resolve(value);
-        } catch (err) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            error = err;
-            clearTimeout(timer);
-            // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
-            reject(error);
-        }
-    });
+		try {
+			value = await action();
+			clearTimeout(timer);
+			resolve(value);
+		} catch (err) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			error = err;
+			clearTimeout(timer);
+			// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+			reject(error);
+		}
+	});
 }
