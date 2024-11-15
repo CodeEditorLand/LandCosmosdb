@@ -1,9 +1,0 @@
-{
-    "recommendations": [
-        "dbaeumer.vscode-eslint",
-        "ms-azuretools.vscode-azureresourcegroups",
-        "mike-lischke.vscode-antlr4",
-        "amodio.tsl-problem-matcher",
-        "Orta.vscode-jest"
-    ]
-}

@@ -3,23 +3,28 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IActionContext } from "@microsoft/vscode-azext-utils";
-import { commands } from "vscode";
+import { type IActionContext } from '@microsoft/vscode-azext-utils';
+import { ViewColumn } from 'vscode';
+import { DocumentTab } from '../../panels/DocumentTab';
+import { DocDBCollectionTreeItem } from '../tree/DocDBCollectionTreeItem';
+import { type DocDBDocumentsTreeItem } from '../tree/DocDBDocumentsTreeItem';
+import { createNoSqlQueryConnection } from './connectNoSqlContainer';
+import { pickDocDBAccount } from './pickDocDBAccount';
 
-import { DocDBDocumentsTreeItem } from "../tree/DocDBDocumentsTreeItem";
-import { type DocDBDocumentTreeItem } from "../tree/DocDBDocumentTreeItem";
-import { pickDocDBAccount } from "./pickDocDBAccount";
+export async function createDocDBDocument(context: IActionContext, node?: DocDBDocumentsTreeItem): Promise<void> {
+    let collectionNode: DocDBCollectionTreeItem | undefined;
 
-export async function createDocDBDocument(
-	context: IActionContext,
-	node?: DocDBDocumentsTreeItem,
-): Promise<void> {
-	if (!node) {
-		node = await pickDocDBAccount<DocDBDocumentsTreeItem>(
-			context,
-			DocDBDocumentsTreeItem.contextValue,
-		);
-	}
-	const documentNode = <DocDBDocumentTreeItem>await node.createChild(context);
-	await commands.executeCommand("cosmosDB.openDocument", documentNode);
+    if (!node) {
+        collectionNode = await pickDocDBAccount<DocDBCollectionTreeItem>(context, DocDBCollectionTreeItem.contextValue);
+    } else {
+        collectionNode = node.parent;
+    }
+
+    const connection = collectionNode ? createNoSqlQueryConnection(collectionNode) : undefined;
+
+    if (!connection) {
+        return;
+    }
+
+    DocumentTab.render(connection, 'add', undefined, ViewColumn.Active);
 }
