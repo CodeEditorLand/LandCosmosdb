@@ -3,27 +3,23 @@
  *  Licensed under the MIT License. See LICENSE.md in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-"use strict";
+'use strict';
 
 // This is the extension entrypoint module, which imports extension.bundle.js, the actual extension code.
 //
 // This is in a separate file so we can properly measure extension.bundle.js load time.
 
 let perfStats = {
-	loadStartTime: Date.now(),
-	loadEndTime: undefined,
+    loadStartTime: Date.now(),
+    loadEndTime: undefined,
 };
 
-Object.defineProperty(exports, "__esModule", { value: true });
+Object.defineProperty(exports, '__esModule', { value: true });
 
 const extension = require("./out/src/extension");
 
 async function activate(ctx) {
-	return await extension.activateInternal(
-		ctx,
-		perfStats,
-		true /* ignoreBundle */,
-	);
+    return await extension.activateInternal(ctx, perfStats);
 }
 
 async function deactivate(ctx) {
