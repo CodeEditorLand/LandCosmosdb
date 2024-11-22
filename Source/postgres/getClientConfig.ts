@@ -29,6 +29,7 @@ export async function testClientConfig(
 	clientConfig: ClientConfig,
 ): Promise<void> {
 	const client = new Client(clientConfig);
+
 	try {
 		await client.connect();
 	} finally {
@@ -41,6 +42,7 @@ async function getConnectionStringClientConfig(
 	databaseName: string,
 ): Promise<ClientConfig> {
 	let connectionString = parsedConnectionString.connectionString;
+
 	if (!parsedConnectionString.databaseName) {
 		connectionString = addDatabaseToConnectionString(
 			connectionString,
@@ -56,10 +58,13 @@ async function getUsernamePasswordClientConfig(
 	databaseName: string,
 ): Promise<ClientConfig | undefined> {
 	const host = nonNullProp(parsedConnectionString, "hostName");
+
 	const port: number = parsedConnectionString.port
 		? parseInt(parsedConnectionString.port)
 		: parseInt(postgresDefaultPort);
+
 	const username: string | undefined = parsedConnectionString.username;
+
 	const password: string | undefined = parsedConnectionString.password;
 
 	if (!!username && !!password && !!host && !!port) {
@@ -84,9 +89,11 @@ async function getAzureAdClientConfig(
 	getToken: () => Promise<string>,
 ): Promise<ClientConfig> {
 	const host = nonNullProp(parsedConnectionString, "hostName");
+
 	const port: number = parsedConnectionString.port
 		? parseInt(parsedConnectionString.port)
 		: parseInt(postgresDefaultPort);
+
 	return {
 		user: azureAdUserId,
 		password: getToken,
@@ -110,6 +117,7 @@ export async function getClientConfigs(
 		azureAd: undefined,
 		connectionString: undefined,
 	};
+
 	if (hasSubscription) {
 		const sslAzure: ConnectionOptions = {
 			// Always provide the certificate since it is accepted even when SSL is disabled
@@ -120,11 +128,13 @@ export async function getClientConfigs(
 					? [BaltimoreCyberTrustRoot, DigiCertGlobalRootG2]
 					: [DigiCertGlobalRootCA],
 		};
+
 		const passwordClientConfig = await getUsernamePasswordClientConfig(
 			parsedConnectionString,
 			sslAzure,
 			databaseName,
 		);
+
 		if (passwordClientConfig) {
 			clientConfigs.password = passwordClientConfig;
 		}

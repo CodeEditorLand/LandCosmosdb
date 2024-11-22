@@ -29,6 +29,7 @@ import { type MongoAccountTreeItem } from './MongoAccountTreeItem';
 import { MongoCollectionTreeItem } from './MongoCollectionTreeItem';
 
 const mongoExecutableFileName = process.platform === 'win32' ? 'mongo.exe' : 'mongo';
+
 const executingInShellMsg = 'Executing command in Mongo shell';
 
 export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
@@ -74,7 +75,9 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 
     public async loadMoreChildrenImpl(_clearCache: boolean): Promise<MongoCollectionTreeItem[]> {
         const db: Db = await this.connectToDb();
+
         const collections: Collection[] = await db.collections();
+
         return collections.map((collection) => new MongoCollectionTreeItem(this, collection));
     }
 
@@ -87,6 +90,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
         });
 
         context.showCreatingTreeItem(collectionName);
+
         return await this.createCollection(collectionName);
     }
 
@@ -97,22 +101,28 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
             { modal: true, stepName: 'deleteMongoDatabase' },
             DialogResponses.deleteResponse,
         );
+
         const db = await this.connectToDb();
         await db.dropDatabase();
     }
 
     public async connectToDb(): Promise<Db> {
         const accountConnection = await connectToMongoClient(this.connectionString, appendExtensionUserAgent());
+
         return accountConnection.db(this.databaseName);
     }
 
     public async executeCommand(command: MongoCommand, context: IActionContext): Promise<string> {
         if (command.collection) {
             const db = await this.connectToDb();
+
             const collection = db.collection(command.collection);
+
             if (collection) {
                 const collectionTreeItem = new MongoCollectionTreeItem(this, collection, command.arguments);
+
                 const result = await collectionTreeItem.tryExecuteCommandDirectly(command);
+
                 if (!result.deferToShell) {
                     return result.result;
                 }
@@ -139,12 +149,14 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
         options?: CreateCollectionOptions,
     ): Promise<MongoCollectionTreeItem> {
         const db: Db = await this.connectToDb();
+
         const newCollection: Collection = await db.createCollection(collectionName, options);
         // db.createCollection() doesn't create empty collections for some reason
         // However, we can 'insert' and then 'delete' a document, which has the side-effect of creating an empty collection
         const result = await newCollection.insertOne({});
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         await newCollection.deleteOne({ _id: result.insertedId });
+
         return new MongoCollectionTreeItem(this, newCollection);
     }
 
@@ -160,8 +172,10 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
         //  (JavaScript variables, etc.), but we would need to deal with concurrent requests, or timed-out
         //  requests.
         const shell = await this.createShell(context);
+
         try {
             await shell.useDatabase(this.databaseName);
+
             return await shell.executeScript(command.text);
         } finally {
             shell.dispose();
@@ -170,7 +184,9 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 
     private async createShell(context: IActionContext): Promise<MongoShell> {
         const config = vscode.workspace.getConfiguration();
+
         let shellPath: string | undefined = config.get(ext.settingsKeys.mongoShellPath);
+
         const shellArgs: string[] = config.get(ext.settingsKeys.mongoShellArgs, []);
 
         if (!shellPath || !this._cachedShellPathOrCmd || this._previousShellPathSetting !== shellPath) {
@@ -182,6 +198,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 
         const timeout =
             1000 * nonNullValue(config.get<number>(ext.settingsKeys.mongoShellTimeout), 'mongoShellTimeout');
+
         return MongoShell.create(
             shellPath,
             shellArgs,
@@ -204,15 +221,19 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
             } else {
                 // If all else fails, prompt the user for the mongo path
                 const openFile: vscode.MessageItem = { title: `Browse to ${mongoExecutableFileName}` };
+
                 const browse: vscode.MessageItem = { title: 'Open installation page' };
+
                 const noMongoError: string =
                     'This functionality requires the Mongo DB shell, but we could not find it in the path or using the mongo.shell.path setting.';
+
                 const response = await context.ui.showWarningMessage(
                     noMongoError,
                     { stepName: 'promptForMongoPath' },
                     browse,
                     openFile,
                 );
+
                 if (response === openFile) {
                     // eslint-disable-next-line no-constant-condition
                     while (true) {
@@ -221,17 +242,23 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
                             openLabel: `Select ${mongoExecutableFileName}`,
                             stepName: 'openMongoExeFile',
                         });
+
                         const fsPath = newPath[0].fsPath;
+
                         const baseName = path.basename(fsPath);
+
                         if (baseName !== mongoExecutableFileName) {
                             const useAnyway: vscode.MessageItem = { title: 'Use anyway' };
+
                             const tryAgain: vscode.MessageItem = { title: 'Try again' };
+
                             const response2 = await context.ui.showWarningMessage(
                                 `Expected a file named "${mongoExecutableFileName}, but the selected filename is "${baseName}"`,
                                 { stepName: 'confirmMongoExeFile' },
                                 useAnyway,
                                 tryAgain,
                             );
+
                             if (response2 === tryAgain) {
                                 continue;
                             }
@@ -240,6 +267,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
                         await vscode.workspace
                             .getConfiguration()
                             .update(ext.settingsKeys.mongoShellPath, fsPath, vscode.ConfigurationTarget.Global);
+
                         return fsPath;
                     }
                 } else if (response === browse) {
@@ -256,6 +284,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
             // User has specified the path or command.  Sometimes they set the folder instead of a path to the file, let's check that and auto fix
             if (await fse.pathExists(shellPathSetting)) {
                 const stat = await fse.stat(shellPathSetting);
+
                 if (stat.isDirectory()) {
                     return path.join(shellPathSetting, mongoExecutableFileName);
                 }
@@ -272,6 +301,7 @@ export function validateMongoCollectionName(collectionName: string): string | un
         return 'Collection name cannot be empty';
     }
     const systemPrefix = 'system.';
+
     if (collectionName.startsWith(systemPrefix)) {
         return `"${systemPrefix}" prefix is reserved for internal use`;
     }

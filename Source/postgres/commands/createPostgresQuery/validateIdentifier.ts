@@ -10,6 +10,7 @@ export function validateIdentifier(identifier: string): string | undefined {
 	identifier = identifier.trim();
 
 	const min = 1;
+
 	const max = 63;
 
 	if (identifier.length < min || identifier.length > max) {

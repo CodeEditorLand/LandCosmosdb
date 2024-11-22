@@ -117,6 +117,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
     // Function to generate examples based on type
     function generateExamples(type: string): unknown[] {
         let examples;
+
         if (type === 'number') {
             examples = [42, 100];
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -140,6 +141,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
     // Function to generate examples for operator-based queries
     function generateOperatorExamples(type: string): unknown[] {
         let examples;
+
         if (type === 'number') {
             examples = [{ $gt: 25 }, { $in: [20, 30, 40] }];
         } else if (type === 'string') {
@@ -161,6 +163,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
         currentPath: string = '',
     ) {
         const fieldName = pathComponents[0];
+
         const newPath = currentPath ? `${currentPath}.${fieldName}` : fieldName;
 
         fullPathsSet.add(newPath);
@@ -168,6 +171,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
         if (pathComponents.length === 1) {
             // Leaf node
             const examples = generateExamples(type);
+
             const operatorExamples = generateOperatorExamples(type);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             obj[fieldName] = {
@@ -226,7 +230,9 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
     // Create properties with full paths at the root level
     for (const fullPath of fullPathsSet) {
         const type = getTypeForFullPath(fullPath) || 'string';
+
         const examples = generateExamples(type);
+
         const operatorExamples = generateOperatorExamples(type);
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -248,6 +254,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
 
     // Add logical operators
     const logicalOperators = ['$or', '$and', '$not', '$nor'];
+
     for (const operator of logicalOperators) {
         if (operator === '$not') {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access

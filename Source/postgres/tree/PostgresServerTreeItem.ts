@@ -63,6 +63,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
     ) {
         super(parent);
         this.partialConnectionString = connectionString;
+
         if (server) {
             this.azureId = server?.id;
             this.serverVersion = server?.version;
@@ -79,6 +80,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
             connectionString.hostName,
             connectionString.port,
         );
+
         if (connectionString.databaseName) {
             this.valuesToMask.push(connectionString.databaseName);
         }
@@ -103,8 +105,10 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
         switch (this.serverType) {
             case PostgresServerType.Flexible:
                 return 'PostgreSQL Flexible';
+
             case PostgresServerType.Single:
                 return 'PostgreSQL Single';
+
             default:
                 return 'PostgreSQL';
         }
@@ -116,12 +120,15 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 
     public async loadMoreChildrenImpl(_clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {
         context.telemetry.properties.serverType = this.serverType;
+
         let dbNames: (string | undefined)[];
+
         if (this.azureName) {
             const client: AbstractPostgresClient = await createAbstractPostgresClient(this.serverType, [
                 context,
                 this.subscription,
             ]);
+
             const listOfDatabases: (SingleModels.Database | FlexibleModels.Database)[] = await uiUtils.listAllIterator(
                 client.databases.listByServer(nonNullProp(this, 'resourceGroup'), nonNullProp(this, 'azureName')),
             );
@@ -133,7 +140,9 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
                 this,
                 postgresDefaultDatabase,
             );
+
             const query = `SELECT datname FROM pg_catalog.pg_database WHERE datistemplate = false;`;
+
             const queryResult = await runPostgresQuery(clientConfig, query);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-return
             dbNames = queryResult.rows.map((db) => db?.datname);
@@ -160,6 +169,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
             case PostgresStoredProceduresTreeItem.contextValue:
             case PostgresStoredProcedureTreeItem.contextValue:
                 return true;
+
             default:
                 return false;
         }
@@ -175,23 +185,27 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
             );
         }
         const getChildrenTask: Promise<AzExtTreeItem[]> = this.getCachedChildren(context);
+
         const databaseName = await context.ui.showInputBox({
             placeHolder: 'Database Name',
             prompt: 'Enter the name of the database',
             stepName: 'createPostgresDatabase',
             validateInput: (name: string) => validateDatabaseName(name, getChildrenTask),
         });
+
         const { clientConfig } = await PostgresClientConfigFactory.getClientConfigFromNode(
             this,
             postgresDefaultDatabase,
         );
         context.showCreatingTreeItem(databaseName);
         await runPostgresQuery(clientConfig, `Create Database ${wrapArgInQuotes(databaseName)};`);
+
         return new PostgresDatabaseTreeItem(this, databaseName);
     }
 
     public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
         const client = await createAbstractPostgresClient(this.serverType, [context, this.subscription]);
+
         const deletingMessage: string = `Deleting server "${this.label}"...`;
         await vscode.window.withProgress(
             { location: vscode.ProgressLocation.Notification, title: deletingMessage },
@@ -239,6 +253,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 
     public async deletePostgresCredentials(): Promise<void> {
         const serviceName: string = PostgresServerTreeItem.serviceName;
+
         const storedValue: string | undefined = ext.context.globalState.get(serviceName);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         let servers: IPersistedServer[] = storedValue ? JSON.parse(storedValue) : [];
@@ -255,9 +270,11 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
     public async getFullConnectionString(): Promise<ParsedPostgresConnectionString> {
         if (this.azureId && !(this.partialConnectionString.username && this.partialConnectionString.password)) {
             const storedValue: string | undefined = ext.context.globalState.get(PostgresServerTreeItem.serviceName);
+
             if (storedValue) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const servers: IPersistedServer[] = JSON.parse(storedValue);
+
                 for (const server of servers) {
                     if (server.id === this.id) {
                         this.partialConnectionString.username = server.username;
@@ -266,6 +283,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
                             (await ext.secretStorage.get(
                                 getSecretStorageKey(PostgresServerTreeItem.serviceName, this.id),
                             )) || undefined;
+
                         break;
                     }
                 }
@@ -280,13 +298,16 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
     public async isFirewallRuleSet(context: IActionContext): Promise<boolean> {
         try {
             const serverType: PostgresServerType = nonNullProp(this, 'serverType');
+
             const client: AbstractPostgresClient = await createAbstractPostgresClient(serverType, [
                 context,
                 this.subscription,
             ]);
+
             const results: SingleModels.FirewallRule[] = await uiUtils.listAllIterator(
                 client.firewallRules.listByServer(nonNullProp(this, 'resourceGroup'), nonNullProp(this, 'azureName')),
             );
+
             const publicIp: string = await getPublicIp(context);
 
             // Cache/update the ip address for potential error reporting.
@@ -309,7 +330,9 @@ async function validateDatabaseName(
         return localize('NameCannotBeEmpty', 'Name cannot be empty.');
     }
     const currDatabaseList = await getChildrenTask;
+
     const currDatabaseNames: string[] = [];
+
     for (const db of currDatabaseList) {
         if (db instanceof PostgresDatabaseTreeItem) {
             currDatabaseNames.push(db.databaseName);

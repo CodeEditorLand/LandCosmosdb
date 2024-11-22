@@ -6,16 +6,24 @@
 export function hexToHue(hexColor: string): number {
     // Parse the hex color string into its red, green, and blue components
     const red = parseInt(hexColor.substring(1, 3), 16);
+
     const green = parseInt(hexColor.substring(3, 5), 16);
+
     const blue = parseInt(hexColor.substring(5, 7), 16);
 
     // Convert the RGB color to HSL color space
     const r = red / 255;
+
     const g = green / 255;
+
     const b = blue / 255;
+
     const cmax = Math.max(r, g, b);
+
     const cmin = Math.min(r, g, b);
+
     const delta = cmax - cmin;
+
     let hue: number;
 
     // Calculate the hue value based on the RGB color values
@@ -31,6 +39,7 @@ export function hexToHue(hexColor: string): number {
 
     // Convert the hue value to degrees and return it
     hue = Math.round(hue * 60);
+
     if (hue < 0) {
         hue += 360;
     }

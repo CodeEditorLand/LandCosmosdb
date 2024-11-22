@@ -8,6 +8,7 @@ import ConnectionString from 'mongodb-connection-string-url';
 export const removePasswordFromConnectionString = (connectionString: string): string => {
     const connectionStringOb = new ConnectionString(connectionString);
     connectionStringOb.password = '';
+
     return connectionStringOb.toString();
 };
 
@@ -19,6 +20,7 @@ export const addAuthenticationDataToConnectionString = (
     const connectionStringOb = new ConnectionString(connectionString);
     connectionStringOb.username = username;
     connectionStringOb.password = password ?? '';
+
     return connectionStringOb.toString();
 };
 
@@ -33,5 +35,6 @@ export const getPasswordFromConnectionString = (connectionString: string): strin
 export const addDatabasePathToConnectionString = (connectionString: string, databaseName: string): string => {
     const connectionStringOb = new ConnectionString(connectionString);
     connectionStringOb.pathname = databaseName;
+
     return connectionStringOb.toString();
 };

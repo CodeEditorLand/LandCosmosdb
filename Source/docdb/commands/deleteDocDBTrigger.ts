@@ -17,6 +17,7 @@ export async function deleteDocDBTrigger(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await pickDocDBAccount<DocDBTriggerTreeItem>(
 			context,

@@ -50,6 +50,7 @@ export abstract class DocDBTreeItemBase<T> extends AzExtParentTreeItem {
 	): Promise<AzExtTreeItem[]> {
 		if (clearCache || this._iterator === undefined) {
 			this._hasMoreChildren = true;
+
 			const client = this.root.getCosmosClient();
 			this._iterator = this.getIterator(client, {
 				maxItemCount: this._batchSize,
@@ -57,8 +58,10 @@ export abstract class DocDBTreeItemBase<T> extends AzExtParentTreeItem {
 		}
 
 		const resourceArray: T[] = [];
+
 		const resourceFeed: T[] | undefined = (await this._iterator.fetchNext())
 			.resources;
+
 		if (resourceFeed) {
 			resourceArray.push(...resourceFeed);
 		}

@@ -28,6 +28,7 @@ export function registerGraphCommands(): void {
 		async (context: IActionContext, node?: GraphDatabaseTreeItem) => {
 			const suppressCreateContext: ITreeItemPickerContext = context;
 			suppressCreateContext.suppressCreatePick = true;
+
 			if (!node) {
 				node = await pickGraph<GraphDatabaseTreeItem>(
 					context,
@@ -42,6 +43,7 @@ export function registerGraphCommands(): void {
 		async (context: IActionContext, node?: GraphCollectionTreeItem) => {
 			const suppressCreateContext: ITreeItemPickerContext = context;
 			suppressCreateContext.suppressCreatePick = true;
+
 			if (!node) {
 				node = await pickGraph<GraphCollectionTreeItem>(
 					context,

@@ -87,6 +87,7 @@ export class DatabaseAccountTreeItemInternal
 			const keyCred = getCosmosKeyCredential(
 				this._accountNode.root.credentials,
 			);
+
 			if (keyCred) {
 				return {
 					documentEndpoint: this._accountNode.root.endpoint,
@@ -105,6 +106,7 @@ export class DatabaseAccountTreeItemInternal
 		| undefined {
 		if (this._parsedCS instanceof ParsedPostgresConnectionString) {
 			const connectionString = this._parsedCS;
+
 			return {
 				username: connectionString.username,
 				password: connectionString.password,
@@ -135,6 +137,7 @@ export class DatabaseAccountTreeItemInternal
 		// If this._accountNode is undefined, attach a new node based on connection string
 		if (!this._accountNode) {
 			let apiType: API;
+
 			if (this._parsedCS instanceof ParsedMongoConnectionString) {
 				apiType = API.MongoDB;
 			} else if (

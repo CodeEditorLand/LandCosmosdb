@@ -30,22 +30,39 @@ import { type SharedWorkspaceResourceProvider } from './tree/workspace/sharedWor
  */
 export namespace ext {
     export let connectedMongoDB: MongoDatabaseTreeItem | undefined;
+
     export let connectedPostgresDB: PostgresDatabaseTreeItem | undefined;
+
     export let context: ExtensionContext;
+
     export let outputChannel: IAzExtLogOutputChannel;
+
     export let tree: AzExtTreeDataProvider;
+
     export let treeView: TreeView<AzExtTreeItem>;
+
     export let attachedAccountsNode: AttachedAccountsTreeItem;
+
     export let isBundle: boolean | undefined;
+
     export let azureAccountTreeItem: AzureAccountTreeItemWithAttached;
+
     export let secretStorage: SecretStorage;
+
     export let postgresCodeLensProvider: PostgresCodeLensProvider | undefined;
+
     export const prefix: string = 'azureDatabases';
+
     export let fileSystem: DatabasesFileSystem;
+
     export let mongoCodeLensProvider: MongoCodeLensProvider;
+
     export let noSqlCodeLensProvider: NoSqlCodeLensProvider;
+
     export let mongoLanguageClient: MongoDBLanguageClient;
+
     export let rgApi: AzureHostExtensionApi;
+
     export let rgApiV2: AzureResourcesExtensionApi;
 
     export let state: TreeElementStateManager;
@@ -61,12 +78,19 @@ export namespace ext {
 
     export namespace settingsKeys {
         export const mongoShellPath = 'mongo.shell.path';
+
         export const mongoShellArgs = 'mongo.shell.args';
+
         export const documentLabelFields = 'cosmosDB.documentLabelFields';
+
         export const enableEndpointDiscovery = 'cosmosDB.enableEndpointDiscovery';
+
         export const mongoShellTimeout = 'mongo.shell.timeout';
+
         export const batchSize = 'azureDatabases.batchSize';
+
         export const confirmationStyle = 'azureDatabases.confirmationStyle';
+
         export const showOperationSummaries = 'azureDatabases.showOperationSummaries';
 
         export namespace vsCode {

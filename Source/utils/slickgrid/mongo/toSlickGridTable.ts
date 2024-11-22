@@ -37,8 +37,10 @@ export function getDataAtPath(documents: WithId<Document>[], path: string[]): Ta
     const randomId = Date.now().toString().slice(-6);
 
     let i = 0;
+
     for (const doc of documents) {
         i++;
+
         const row: TableDataEntry = { id: `${i}/${randomId}` }; // inject the randomId to make sure the IDs are unique
 
         // at the root level, extract the objectId for further data edits
@@ -54,12 +56,14 @@ export function getDataAtPath(documents: WithId<Document>[], path: string[]): Ta
 
         // traverse the path to get the level required
         let subdocument: Document = doc;
+
         for (const key of path) {
             if (subdocument instanceof Object && subdocument[key]) {
                 subdocument = subdocument[key] as Document;
             } else {
                 // easy, just abort here, and set the subdocument to an empty object
                 subdocument = {};
+
                 break;
             }
         }
@@ -72,6 +76,7 @@ export function getDataAtPath(documents: WithId<Document>[], path: string[]): Ta
                     continue;
                 } else {
                     const value: unknown = subdocument[key];
+
                     const type: MongoBSONTypes = MongoBSONTypes.inferType(value);
 
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

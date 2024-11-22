@@ -43,6 +43,7 @@ async function getUsernamePassword(
 	// Username doesn't contain servername prefix for Postgres Flexible Servers only
 	// As present on the portal for any Flexible Server instance
 	const usernameSuffix: string = `@${serverName}`;
+
 	if (
 		serverType === PostgresServerType.Single &&
 		!username.includes(usernameSuffix)
@@ -85,6 +86,7 @@ async function persistUsernamePassword(
 		'Setting up credentials for server "{0}"...',
 		serverName,
 	);
+
 	const options: vscode.ProgressOptions = {
 		location: vscode.ProgressLocation.Notification,
 		title: progressMessage,
@@ -117,8 +119,11 @@ export async function enterPostgresCredentials(
 	}
 
 	const serverType = treeItem.serverType;
+
 	const serverName: string = nonNullProp(treeItem, "azureName");
+
 	const serverDisplayName: string = treeItem.label;
+
 	const id: string = nonNullProp(treeItem, "id");
 
 	const { username, password } = await getUsernamePassword(

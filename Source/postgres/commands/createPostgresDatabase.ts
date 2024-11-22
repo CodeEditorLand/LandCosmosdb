@@ -28,6 +28,7 @@ export async function createPostgresDatabase(
 	const newDatabase: PostgresDatabaseTreeItem =
 		await node.createChild(context);
 	await connectPostgresDatabase(context, newDatabase);
+
 	const createMessage: string = localize(
 		"createPostgresDatabaseMsg",
 		'Successfully created database "{0}".',

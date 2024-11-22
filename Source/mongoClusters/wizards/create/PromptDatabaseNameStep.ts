@@ -39,6 +39,7 @@ export class DatabaseNameStep extends AzureWizardPromptStep<CreateDatabaseWizard
         }
 
         const forbiddenCharsLinux = /[\\/."$ ]/;
+
         const forbiddenCharsWindows = /[\\/."$*<>:|?]/;
 
         if (forbiddenCharsLinux.test(databaseName) || forbiddenCharsWindows.test(databaseName)) {
@@ -71,6 +72,7 @@ export class DatabaseNameStep extends AzureWizardPromptStep<CreateDatabaseWizard
 
         try {
             const client = await MongoClustersClient.getClient(context.credentialsId);
+
             const databases = await client.listDatabases();
 
             if (

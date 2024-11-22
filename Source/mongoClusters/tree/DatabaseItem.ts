@@ -24,6 +24,7 @@ export class DatabaseItem {
 
     async getChildren(): Promise<TreeElementBase[]> {
         const client: MongoClustersClient = await MongoClustersClient.getClient(this.mongoCluster.id);
+
         const collections = await client.listCollections(this.databaseInfo.name);
 
         if (collections.length === 0) {

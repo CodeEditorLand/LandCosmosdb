@@ -10,8 +10,10 @@ export async function runPostgresQuery(
 	query: string,
 ): Promise<QueryResult> {
 	const client: Client = new Client(clientConfig);
+
 	try {
 		await client.connect();
+
 		return await client.query(query);
 	} finally {
 		await client.end();

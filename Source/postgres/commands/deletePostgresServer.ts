@@ -19,6 +19,7 @@ export async function deletePostgresServer(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await ext.rgApi.pickAppResource<PostgresServerTreeItem>(
 			context,

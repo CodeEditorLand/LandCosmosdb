@@ -82,6 +82,7 @@ export class DocDBDocumentTreeItem extends AzExtTreeItem implements IEditableTre
             { modal: true, stepName: 'deleteDocument' },
             DialogResponses.deleteResponse,
         );
+
         const client = this.root.getCosmosClient();
         await this.getDocumentClient(client).delete();
     }
@@ -89,6 +90,7 @@ export class DocDBDocumentTreeItem extends AzExtTreeItem implements IEditableTre
     public async getFileContent(): Promise<string> {
         // eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
         const clonedDoc: Object = { ...this.document };
+
         for (const field of hiddenFields) {
             delete clonedDoc[field];
         }
@@ -98,6 +100,7 @@ export class DocDBDocumentTreeItem extends AzExtTreeItem implements IEditableTre
     public async writeFileContent(_context: IActionContext, content: string): Promise<void> {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const newData = JSON.parse(content);
+
         for (const field of hiddenFields) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             newData[field] = this.document[field];
@@ -110,6 +113,7 @@ export class DocDBDocumentTreeItem extends AzExtTreeItem implements IEditableTre
         } else {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             const options: RequestOptions = { accessCondition: { type: 'IfMatch', condition: newData._etag } };
+
             const response = await this.getDocumentClient(client).replace(newData, options);
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             this._document = response.resource;
@@ -118,18 +122,22 @@ export class DocDBDocumentTreeItem extends AzExtTreeItem implements IEditableTre
 
     private getPartitionKeyValue(): string | number | undefined {
         const partitionKey = this.parent.parent.partitionKey;
+
         if (!partitionKey) {
             //Fixed collections -> no partitionKeyValue
             return undefined;
         }
         const fields = partitionKey.paths[0].split('/');
+
         if (fields[0] === '') {
             fields.shift();
         }
         let value;
+
         for (const field of fields) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             value = value ? value[field] : this.document[field];
+
             if (!value) {
                 //Partition Key exists, but this document doesn't have a value
                 return '';

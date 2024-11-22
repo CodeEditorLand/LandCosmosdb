@@ -70,6 +70,7 @@ export class GraphCollectionTreeItem extends AzExtParentTreeItem {
             { modal: true, stepName: 'deleteGraphCollection' },
             DialogResponses.deleteResponse,
         );
+
         const client = this.root.getCosmosClient();
         await this.getContainerClient(client).delete();
     }
@@ -79,6 +80,7 @@ export class GraphCollectionTreeItem extends AzExtParentTreeItem {
             switch (expectedContextValue) {
                 case GraphTreeItem.contextValue:
                     return this._graphTreeItem;
+
                 case DocDBStoredProceduresTreeItem.contextValue:
                 case DocDBStoredProcedureTreeItem.contextValue:
                     return this._storedProceduresTreeItem;

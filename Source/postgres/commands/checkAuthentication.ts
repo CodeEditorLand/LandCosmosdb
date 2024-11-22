@@ -21,11 +21,14 @@ export async function checkAuthentication(
 	treeItem: PostgresDatabaseTreeItem,
 ): Promise<ClientConfig> {
 	let clientConfig: ClientConfig | undefined;
+
 	while (!clientConfig) {
 		const isFirewallRuleSet =
 			await treeItem.parent.isFirewallRuleSet(context);
+
 		if (!isFirewallRuleSet) {
 			await configurePostgresFirewall(context, treeItem.parent);
+
 			continue;
 		}
 		try {

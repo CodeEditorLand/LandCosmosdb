@@ -34,6 +34,7 @@ export class AzureAccountTreeItemWithAttached extends AzureAccountTreeItemBase {
 			clearCache,
 			context,
 		);
+
 		return children.concat(ext.attachedAccountsNode);
 	}
 

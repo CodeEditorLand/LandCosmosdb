@@ -13,6 +13,7 @@ export function parsePostgresConnectionString(
 	connectionString: string,
 ): ParsedPostgresConnectionString {
 	const config: ConnectionOptions = parse(connectionString.trim());
+
 	return new ParsedPostgresConnectionString(connectionString, config);
 }
 
@@ -22,6 +23,7 @@ export function addDatabaseToConnectionString(
 ): string {
 	const url = new URL(connectionString);
 	url.pathname = encodeURIComponent(databaseName);
+
 	return url.toString();
 }
 
@@ -33,8 +35,10 @@ export function createPostgresConnectionString(
 	databaseName?: string,
 ): string {
 	let connectionString: string = `postgres://`;
+
 	if (username) {
 		const encodedUsername = encodeURIComponent(username);
+
 		if (password) {
 			const encodedPassword = encodeURIComponent(password);
 			connectionString += `${encodedUsername}:${encodedPassword}@`;
@@ -43,6 +47,7 @@ export function createPostgresConnectionString(
 		}
 	}
 	connectionString += `${hostName}:${port}`;
+
 	if (databaseName) {
 		const encodeDatabaseName = encodeURIComponent(databaseName);
 		connectionString += `/${encodeDatabaseName}`;
@@ -58,10 +63,13 @@ export function copyPostgresConnectionString(
 	databaseName?: string,
 ): string {
 	let connectionString: string = `postgres://`;
+
 	if (username) {
 		const encodedUsername = encodeURIComponent(username);
+
 		if (password) {
 			const encodedPassword = encodeURIComponent(password);
+
 			const encodedPasswordWithQuotes = "'" + encodedPassword + "'";
 			connectionString += `${encodedUsername}:${encodedPasswordWithQuotes}@`;
 		} else {
@@ -69,6 +77,7 @@ export function copyPostgresConnectionString(
 		}
 	}
 	connectionString += `${hostName}:${port}`;
+
 	if (databaseName) {
 		const encodeDatabaseName = encodeURIComponent(databaseName);
 		connectionString += `/${encodeDatabaseName}`;

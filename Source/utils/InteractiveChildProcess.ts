@@ -14,7 +14,9 @@ import { improveError } from "./improveError";
 
 // We add these when we display to the output window
 const stdInPrefix = "> ";
+
 const stdErrPrefix = "ERR> ";
+
 const errorPrefix = "Error running process: ";
 
 const processStartupTimeout = 60;
@@ -66,6 +68,7 @@ export class InteractiveChildProcess {
 			options,
 		);
 		await child.startCore();
+
 		return child;
 	}
 
@@ -81,9 +84,11 @@ export class InteractiveChildProcess {
 
 	private async startCore(): Promise<void> {
 		this._startTime = Date.now();
+
 		const formattedArgs: string = this._options.args.join(" ");
 
 		const workingDirectory = this._options.workingDirectory || os.tmpdir();
+
 		const options: cp.SpawnOptions = {
 			cwd: workingDirectory,
 
@@ -136,14 +141,17 @@ export class InteractiveChildProcess {
 				if (!!this._error || this._isKilling) {
 					// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 					reject(this._error);
+
 					break;
 				} else if (this._childProc.pid) {
 					resolve();
+
 					break;
 				} else {
 					if (Date.now() > started + processStartupTimeout) {
 						// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 						reject("The process did not start in a timely manner");
+
 						break;
 					}
 					await delay(50);
@@ -157,11 +165,13 @@ export class InteractiveChildProcess {
 		displayPrefix?: string,
 	): void {
 		const filteredText = this.filterText(text);
+
 		const changedIntoEmptyString =
 			filteredText !== text && filteredText === "";
 
 		if (!changedIntoEmptyString) {
 			text = filteredText;
+
 			if (this._options.outputChannel) {
 				if (this._options.showTimeInOutputChannel) {
 					const ms = Date.now() - this._startTime;

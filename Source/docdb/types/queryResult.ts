@@ -43,6 +43,7 @@ export type CosmosDbRecordIdentifier = {
 
 export type QueryResult = {
     activityId?: string;
+
     documents: QueryResultRecord[];
     iteration: number;
     metadata: ResultViewMetadata;
@@ -55,6 +56,7 @@ export type QueryResult = {
 
 export type SerializedQueryMetrics = {
     documentLoadTime: number;
+
     documentWriteTime: number;
     indexHitDocumentCount: number;
     outputDocumentCount: number;
@@ -73,6 +75,7 @@ export type SerializedQueryMetrics = {
 
 export type SerializedQueryResult = {
     activityId?: string;
+
     documents: QueryResultRecord[];
     iteration: number;
     metadata: ResultViewMetadata;

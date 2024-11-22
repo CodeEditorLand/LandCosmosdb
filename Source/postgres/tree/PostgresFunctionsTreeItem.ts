@@ -39,6 +39,7 @@ export class PostgresFunctionsTreeItem extends PostgresResourcesTreeItemBase {
 	public async loadMoreChildrenImpl(): Promise<PostgresFunctionTreeItem[]> {
 		const rows: IPostgresProceduresQueryRow[] =
 			await getPostgresProcedureQueryRows(this);
+
 		return rows.map(
 			(row) =>
 				new PostgresFunctionTreeItem(

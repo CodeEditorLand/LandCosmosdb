@@ -68,6 +68,7 @@ export class LanguageService {
         connection.onRequest('disconnect', () => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.db = null!;
+
             for (const schema of this.schemas) {
                 this.jsonLanguageService.resetSchema(schema.uri);
             }
@@ -85,6 +86,7 @@ export class LanguageService {
         const textDocument = this.textDocuments.get(positionParams.textDocument.uri);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const mongoScriptDocument = this.mongoDocumentsManager.getDocument(textDocument!, this.db);
+
         return mongoScriptDocument.provideCompletionItemsAt(positionParams.position);
     }
 

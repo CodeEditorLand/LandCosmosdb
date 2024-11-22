@@ -17,6 +17,7 @@ export class WebviewTransport<StateType = unknown> implements Transport {
 
     post(message: TransportMessage): PromiseLike<boolean> {
         this.vscodeApi.postMessage(message);
+
         return Promise.resolve(true); // Can't actually know if the message was sent
     }
 
@@ -36,6 +37,7 @@ export class WebviewTransport<StateType = unknown> implements Transport {
         try {
             if (!isTransportMessage(msg)) {
                 console.warn(`[WebviewTransport] Received message that is not a transport message`, msg);
+
                 return;
             }
 

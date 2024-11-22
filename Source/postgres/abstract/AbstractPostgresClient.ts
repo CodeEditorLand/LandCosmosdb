@@ -24,8 +24,10 @@ export async function createAbstractPostgresClient(
 	switch (serverType) {
 		case PostgresServerType.Flexible:
 			return await createPostgreSQLFlexibleClient(context);
+
 		case PostgresServerType.Single:
 			return await createPostgreSQLClient(context);
+
 		default:
 			throw new Error("Service not implemented.");
 	}

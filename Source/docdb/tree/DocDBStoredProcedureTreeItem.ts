@@ -69,6 +69,7 @@ export class DocDBStoredProcedureTreeItem extends AzExtTreeItem implements IEdit
 
     public async writeFileContent(_context: IActionContext, content: string): Promise<void> {
         const client = this.root.getCosmosClient();
+
         const replace = await this.parent
             .getContainerClient(client)
             .scripts.storedProcedure(this.id)
@@ -91,12 +92,14 @@ export class DocDBStoredProcedureTreeItem extends AzExtTreeItem implements IEdit
             { modal: true, stepName: 'deleteStoredProcedure' },
             DialogResponses.deleteResponse,
         );
+
         const client = this.root.getCosmosClient();
         await this.parent.getContainerClient(client).scripts.storedProcedure(this.id).delete();
     }
 
     public async execute(context: IActionContext, partitionKey: string, parameters?: unknown[]): Promise<void> {
         const client = this.root.getCosmosClient();
+
         const result = await this.parent
             .getContainerClient(client)
             .scripts.storedProcedure(this.id)

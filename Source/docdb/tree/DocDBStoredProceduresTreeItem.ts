@@ -46,8 +46,11 @@ export class DocDBStoredProceduresTreeItem extends DocDBTreeItemBase<StoredProce
 
     public async createChildImpl(context: ICreateChildImplContext): Promise<DocDBStoredProcedureTreeItem> {
         const client = this.root.getCosmosClient();
+
         const currStoredProcedureList: AzExtTreeItem[] = await this.getCachedChildren(context);
+
         const currStoredProcedureNames: string[] = [];
+
         for (const sp of currStoredProcedureList) {
             currStoredProcedureNames.push(nonNullProp(sp, 'id'));
         }
@@ -58,8 +61,10 @@ export class DocDBStoredProceduresTreeItem extends DocDBTreeItemBase<StoredProce
                 validateInput: (name: string) => this.validateStoredProcedureName(name, currStoredProcedureNames),
             })
         ).trim();
+
         const body: StoredProcedureDefinition = { id: spID, body: defaultStoredProcedure };
         context.showCreatingTreeItem(spID);
+
         const sproc = await this.getContainerClient(client).scripts.storedProcedures.create(body);
 
         return this.initChild(nonNullProp(sproc, 'resource'));

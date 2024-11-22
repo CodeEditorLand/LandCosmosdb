@@ -44,8 +44,10 @@ export async function findTreeItem(
 			context.errorHandling.rethrow = true;
 
 			let parsedCS: ParsedConnectionString;
+
 			if (query.postgresData) {
 				const postgresData = query.postgresData;
+
 				const connectionString: string = createPostgresConnectionString(
 					postgresData.hostName,
 					postgresData.port,
@@ -56,6 +58,7 @@ export async function findTreeItem(
 				parsedCS = parsePostgresConnectionString(connectionString);
 			} else {
 				const connectionString = nonNullProp(query, "connectionString");
+
 				if (/^mongodb[^:]*:\/\//i.test(connectionString)) {
 					parsedCS =
 						await parseMongoConnectionString(connectionString);
@@ -87,6 +90,7 @@ export async function findTreeItem(
 			// 3. Search subscriptions
 			if (!result) {
 				const rootNodes = await ext.rgApi.appResourceTree.getChildren();
+
 				for (const rootNode of rootNodes) {
 					if (Date.now() > maxTime) {
 						break;
@@ -101,6 +105,7 @@ export async function findTreeItem(
 							context,
 							maxTime,
 						);
+
 						if (result) {
 							break;
 						}
@@ -140,6 +145,7 @@ async function searchDbAccounts(
 			}
 
 			let actual: ParsedConnectionString;
+
 			if (dbAccount instanceof MongoAccountTreeItem) {
 				actual = await parseMongoConnectionString(
 					dbAccount.connectionString,
@@ -155,6 +161,7 @@ async function searchDbAccounts(
 			if (expected.accountId === actual.accountId) {
 				if (expected.databaseName) {
 					const dbs = await dbAccount.getCachedChildren(context);
+
 					for (const db of dbs) {
 						if (
 							(db instanceof MongoDatabaseTreeItem ||
@@ -175,6 +182,7 @@ async function searchDbAccounts(
 						) {
 							const fullConnectionString =
 								await dbAccount.getFullConnectionString();
+
 							return new DatabaseTreeItemInternal(
 								fullConnectionString,
 								expected.databaseName,
@@ -188,6 +196,7 @@ async function searchDbAccounts(
 					if (dbAccount instanceof PostgresServerTreeItem) {
 						const fullConnectionString =
 							await dbAccount.getFullConnectionString();
+
 						return new DatabaseTreeItemInternal(
 							fullConnectionString,
 							expected.databaseName,
@@ -205,6 +214,7 @@ async function searchDbAccounts(
 				if (dbAccount instanceof PostgresServerTreeItem) {
 					const fullConnectionString =
 						await dbAccount.getFullConnectionString();
+
 					return new DatabaseAccountTreeItemInternal(
 						fullConnectionString,
 						dbAccount,

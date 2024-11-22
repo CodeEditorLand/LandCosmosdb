@@ -13,7 +13,9 @@ import { pickDocDBAccount } from './pickDocDBAccount';
 
 export function createNoSqlQueryConnection(node: DocDBCollectionTreeItem): NoSqlQueryConnection {
     const root = node.root;
+
     const keyCred = getCosmosKeyCredential(root.credentials);
+
     return {
         databaseId: node.parent.id,
         containerId: node.id,
@@ -31,12 +33,14 @@ export function setConnectedNoSqlContainer(node: DocDBCollectionTreeItem): void 
 
 export async function connectNoSqlContainer(context: IActionContext): Promise<void> {
     const node = await pickDocDBAccount<DocDBCollectionTreeItem>(context, DocDBCollectionTreeItem.contextValue);
+
     setConnectedNoSqlContainer(node);
 }
 
 export async function getNoSqlQueryConnection(): Promise<NoSqlQueryConnection | undefined> {
     return callWithTelemetryAndErrorHandling<NoSqlQueryConnection>('cosmosDB.connectToDatabase', async (context) => {
         const node = await pickDocDBAccount<DocDBCollectionTreeItem>(context, DocDBCollectionTreeItem.contextValue);
+
         return createNoSqlQueryConnection(node);
     });
 }

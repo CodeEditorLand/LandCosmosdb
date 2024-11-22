@@ -27,6 +27,7 @@ export function getPossibleGremlinEndpoints(
 	// E.g., given a document endpoint from Azure such as https://<graphname>.documents.azure.com:443/
 
 	const documentSuffix = ".documents.azure.com";
+
 	if (documentEndpoint.indexOf(documentSuffix) >= 0) {
 		// Pre-GA style (Dec 2017)
 		const preGAEndpoint = documentEndpoint.replace(
@@ -46,6 +47,7 @@ export function getPossibleGremlinEndpoints(
 		];
 	} else {
 		console.warn(`Unexpected document URL format: ${documentEndpoint}`);
+
 		return [parseEndpointUrl(documentEndpoint)];
 	}
 }
@@ -60,7 +62,9 @@ function parseEndpointUrl(url: string): IGremlinEndpoint {
 		"urlMatch",
 	);
 	console.assert(!!protocol && !!host, "Unexpected endpoint format");
+
 	const port = parseInt(portString || "443", 10);
 	console.assert(port > 0, "Unexpected port");
+
 	return { host, port, ssl: protocol.toLowerCase() === "https" };
 }

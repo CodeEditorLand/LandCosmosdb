@@ -46,9 +46,12 @@ export function getBrandTokensFromPalette(keyColor: string, options: Options = {
         lightCp,
         hueTorsion,
     };
+
     const hexColors = hexColorsFromPalette(keyColor, brandPalette, 16, 1);
+
     return hexColors.reduce((acc: Record<string, string>, hexColor, h) => {
         acc[`${(h + 1) * 10}`] = hexColor;
+
         return acc;
     }, {}) as BrandVariants;
 }
@@ -56,7 +59,9 @@ export function getBrandTokensFromPalette(keyColor: string, options: Options = {
 // https://react.fluentui.dev/?path=/docs/concepts-developer-theming--page#overriding-existing-tokens
 export const generateAdaptiveLightTheme = (): Theme => {
     const style = getComputedStyle(document.documentElement);
+
     const buttonBackground = style.getPropertyValue('--vscode-button-background');
+
     const brandVSCode: BrandVariants = getBrandTokensFromPalette(buttonBackground);
 
     return {
@@ -74,7 +79,9 @@ export const generateAdaptiveLightTheme = (): Theme => {
 
 export const generateAdaptiveDarkTheme = (): Theme => {
     const style = getComputedStyle(document.documentElement);
+
     const buttonBackground = style.getPropertyValue('--vscode-button-background');
+
     const brandVSCode: BrandVariants = getBrandTokensFromPalette(buttonBackground);
 
     return {
@@ -96,9 +103,11 @@ export const generateAdaptiveDarkTheme = (): Theme => {
 
 export const generateMonacoTheme = (baseTheme: MonacoBuiltinTheme): MonacoThemeData => {
     const style = getComputedStyle(document.documentElement);
+
     const colors = vscodeThemeTokens
         .map((token) => {
             let color = style.getPropertyValue(vscodeThemeTokenToCSSVar(token));
+
             if (!color.startsWith('#')) {
                 if (color.startsWith('rgb')) {
                     color = RGBAToHexA(color);

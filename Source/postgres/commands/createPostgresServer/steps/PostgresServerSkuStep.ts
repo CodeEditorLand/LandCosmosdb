@@ -20,6 +20,7 @@ interface ISkuOption {
 export class PostgresServerSkuStep extends AzureWizardPromptStep<IPostgresServerWizardContext> {
     public async prompt(context: IPostgresServerWizardContext): Promise<void> {
         const placeHolder: string = localize('selectPostgresSku', 'Select the Postgres SKU and options.');
+
         const pricingTiers: IAzureQuickPickItem<AbstractSku | undefined>[] = await this.getPicks(
             nonNullProp(context, 'serverType'),
         );
@@ -46,6 +47,7 @@ export class PostgresServerSkuStep extends AzureWizardPromptStep<IPostgresServer
 
     public async getPicks(serverType: PostgresServerType): Promise<IAzureQuickPickItem<AbstractSku | undefined>[]> {
         const options: IAzureQuickPickItem<AbstractSku | undefined>[] = [];
+
         const skuOptions: ISkuOption[] =
             serverType === PostgresServerType.Single ? singleServerSkus : flexibleServerSkus;
 
@@ -57,11 +59,13 @@ export class PostgresServerSkuStep extends AzureWizardPromptStep<IPostgresServer
                 group: option.group || localize('addlOptions', 'Additional Options'),
             });
         });
+
         return options;
     }
 }
 
 const recommendedGroup = localize('recommendGroup', 'Recommended');
+
 const singleServerSkus: ISkuOption[] = [
     {
         label: 'B1',

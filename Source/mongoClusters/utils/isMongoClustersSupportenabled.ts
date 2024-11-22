@@ -16,6 +16,7 @@ import * as vscode from 'vscode';
 export function isMongoClustersSupportenabled() {
     const vsCodeCosmosDBConfiguration = vscode.extensions.getExtension('ms-azuretools.vscode-cosmosdb')
         ?.packageJSON as ExtensionPackageMongoClustersEnabled;
+
     return vsCodeCosmosDBConfiguration && vsCodeCosmosDBConfiguration.enableMongoClusters;
 }
 

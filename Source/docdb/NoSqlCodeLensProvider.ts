@@ -50,7 +50,9 @@ export class NoSqlCodeLensProvider implements CodeLensProvider {
 			"nosql.provideCodeLenses",
 			(context: IActionContext) => {
 				context.telemetry.suppressIfSuccessful = true;
+
 				const text = document.getText();
+
 				const queryText = text;
 
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
@@ -58,7 +60,9 @@ export class NoSqlCodeLensProvider implements CodeLensProvider {
 					KeyValueStore.instance.get(
 						noSqlQueryConnectionKey,
 					) as unknown as NoSqlQueryConnection;
+
 				let connectCodeLens: CodeLens;
+
 				if (!connectedCollection) {
 					connectCodeLens = new CodeLens(
 						new Range(new Position(0, 0), new Position(0, 0)),

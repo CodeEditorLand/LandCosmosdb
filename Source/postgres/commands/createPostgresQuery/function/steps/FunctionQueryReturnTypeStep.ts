@@ -21,6 +21,7 @@ export class FunctionQueryReturnTypeStep extends AzureWizardPromptStep<IPostgres
 			returnTypes.map((r) => {
 				return { label: r, data: r };
 			});
+
 		returnTypeQuickPicks.push({
 			label: localize(
 				"enterCustomReturnType",

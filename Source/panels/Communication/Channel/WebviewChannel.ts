@@ -10,6 +10,7 @@ import { CommonChannel } from './CommonChannel';
 export class WebviewChannel<StateType = unknown> extends CommonChannel {
     constructor(webviewApi: WebviewApi<StateType>) {
         const transport = new WebviewTransport(webviewApi);
+
         super('webview', transport);
     }
 

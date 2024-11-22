@@ -18,6 +18,7 @@ export async function executeDocDBStoredProcedure(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await pickDocDBAccount<DocDBStoredProcedureTreeItem>(
 			context,
@@ -40,6 +41,7 @@ export async function executeDocDBStoredProcedure(
 	});
 
 	let parameters: (string | number | object)[] | undefined = undefined;
+
 	if (paramString !== "") {
 		try {
 			parameters = JSON.parse(paramString) as (

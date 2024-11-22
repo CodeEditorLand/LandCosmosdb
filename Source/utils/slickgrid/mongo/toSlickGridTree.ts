@@ -95,9 +95,11 @@ export function documentToSlickGridTree(document: WithId<Document>, idPrefix?: s
 
     while (stack.length > 0) {
         localEntryId++;
+
         const globalEntryId = `${idPrefix}${localEntryId}`; // combines the global prefix with the local id
 
         const stackEntry = stack.pop();
+
         if (!stackEntry) {
             continue;
         }
@@ -118,6 +120,7 @@ export function documentToSlickGridTree(document: WithId<Document>, idPrefix?: s
                 Object.entries(stackEntry.value as ObjectId).map(([key, value]) => {
                     stack.push({ key: `${key}`, value: value, parentId: globalEntryId });
                 });
+
                 break;
             }
             case MongoBSONTypes.Array: {
@@ -149,6 +152,7 @@ export function documentToSlickGridTree(document: WithId<Document>, idPrefix?: s
                     type: MongoBSONTypes.toDisplayString(MongoBSONTypes.inferType(stackEntry.value)),
                     parentId: stackEntry.parentId,
                 });
+
                 break;
             }
         }

@@ -30,9 +30,11 @@ export async function importDocuments(
             return true;
         } else {
             ignoredUris.push(uri);
+
             return false;
         }
     });
+
     if (ignoredUris.length) {
         ext.outputChannel.appendLog(`Ignoring the following files that do not match the "*.json" file name pattern:`);
         ignoredUris.forEach((uri) => ext.outputChannel.appendLog(`${uri.fsPath}`));
@@ -66,6 +68,7 @@ export async function importDocuments(
             const documents: unknown[] = await parseDocuments(uris, supportEJSON);
 
             progress.report({ increment: 30, message: `Loaded ${documents.length} document(s). Importing...` });
+
             if (collectionNode instanceof MongoCollectionTreeItem) {
                 result = await insertDocumentsIntoMongo(collectionNode, documents);
             } else if (collectionNode instanceof CollectionItem) {
@@ -74,6 +77,7 @@ export async function importDocuments(
                 result = await insertDocumentsIntoDocdb(collectionNode, documents, uris);
             }
             progress.report({ increment: 50, message: 'Finished importing' });
+
             return result;
         },
     );
@@ -93,7 +97,9 @@ async function askForDocuments(context: IActionContext): Promise<vscode.Uri[]> {
             JSON: ['json'],
         },
     };
+
     const rootPath: string | undefined = getRootPath();
+
     if (rootPath) {
         openDialogOptions.defaultUri = vscode.Uri.file(rootPath);
     }
@@ -114,9 +120,12 @@ async function askForDocuments(context: IActionContext): Promise<vscode.Uri[]> {
 async function parseDocuments(uris: vscode.Uri[], supportEJSON: boolean = false): Promise<unknown[]> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let documents: any[] = [];
+
     let errorFoundFlag: boolean = false;
+
     for (const uri of uris) {
         let parsed;
+
         try {
             if (supportEJSON) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -157,11 +166,15 @@ async function insertDocumentsIntoDocdb(
     uris: vscode.Uri[],
 ): Promise<string> {
     const ids: string[] = [];
+
     let i = 0;
+
     const erroneousFiles: vscode.Uri[] = [];
+
     for (i = 0; i < documents.length; i++) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const document: ItemDefinition = documents[i];
+
         if (!collectionNode.documentsTreeItem.documentHasPartitionKey(document)) {
             erroneousFiles.push(uris[i]);
         }
@@ -170,6 +183,7 @@ async function insertDocumentsIntoDocdb(
         ext.outputChannel.appendLog(`The following documents do not contain the required partition key:`);
         erroneousFiles.forEach((file) => ext.outputChannel.appendLog(file.path));
         ext.outputChannel.show();
+
         throw new Error(
             `See output for list of documents that do not contain the partition key '${nonNullProp(collectionNode, 'partitionKey').paths[0]}' required by collection '${collectionNode.label}'`,
         );
@@ -177,11 +191,13 @@ async function insertDocumentsIntoDocdb(
     for (const document of documents) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         const retrieved: ItemDefinition = await collectionNode.documentsTreeItem.createDocument(document);
+
         if (retrieved.id) {
             ids.push(retrieved.id);
         }
     }
     const result: string = `Import into NoSQL successful. Inserted ${ids.length} document(s). See output for more details.`;
+
     for (const id of ids) {
         ext.outputChannel.appendLog(`Inserted document: ${id}`);
     }
@@ -193,8 +209,10 @@ async function insertDocumentsIntoMongo(node: MongoCollectionTreeItem, documents
     let output = '';
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     const parsed = await node.collection.insertMany(documents);
+
     if (parsed.acknowledged) {
         output = `Import into mongo successful. Inserted ${parsed.insertedCount} document(s). See output for more details.`;
+
         for (const inserted of Object.values(parsed.insertedIds)) {
             ext.outputChannel.appendLog(`Inserted document: ${inserted}`);
         }
@@ -210,6 +228,7 @@ async function insertDocumentsIntoMongoCluster(
     const result = await node.insertDocuments(context, documents as Document[]);
 
     let message: string;
+
     if (result.acknowledged) {
         message = `Import successful. Inserted ${result.insertedCount} document(s).`;
     } else {
@@ -217,5 +236,6 @@ async function insertDocumentsIntoMongoCluster(
     }
 
     ext.outputChannel.appendLog('MongoDB Clusters ' + message);
+
     return message;
 }

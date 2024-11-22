@@ -73,6 +73,7 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
                 context.telemetry.properties.parentContext = this.contextValue;
 
                 let mongoClient: MongoClient | undefined;
+
                 try {
                     let databases: IDatabaseInfo[];
 
@@ -87,6 +88,7 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
                     );
 
                     const databaseInConnectionString = getDatabaseNameFromConnectionString(this.connectionString);
+
                     if (databaseInConnectionString && !this.root.isEmulator) {
                         // emulator violates the connection string format
                         // If the database is in the connection string, that's all we connect to (we might not even have permissions to list databases)
@@ -116,6 +118,7 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
                         );
                 } catch (error) {
                     const message = parseError(error).message;
+
                     if (this.root?.isEmulator && message.includes('ECONNREFUSED')) {
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         error.message = `Unable to reach emulator. See ${Links.LocalConnectionDebuggingTips} for debugging tips.\n${message}`;
@@ -150,6 +153,7 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
             case MongoCollectionTreeItem.contextValue:
             case MongoDocumentTreeItem.contextValue:
                 return true;
+
             default:
                 return false;
         }
@@ -164,7 +168,9 @@ export function validateDatabaseName(database: string): string | undefined | nul
     // https://docs.mongodb.com/manual/reference/limits/#naming-restrictions
     // "#?" are restricted characters for CosmosDB - MongoDB accounts
     const min = 1;
+
     const max = 63;
+
     if (!database || database.length < min || database.length > max) {
         return `Database name must be between ${min} and ${max} characters.`;
     }

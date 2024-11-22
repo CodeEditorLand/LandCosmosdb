@@ -26,7 +26,9 @@ import { connectToMongoClient } from "./connectToMongoClient";
 //   [database]
 
 const parsePrefix = "([a-zA-Z]+://[^/]*)";
+
 const parseDatabaseName = "/?([^/?]+)?";
+
 const mongoConnectionStringRegExp = new RegExp(parsePrefix + parseDatabaseName);
 
 export function getDatabaseNameFromConnectionString(
@@ -37,6 +39,7 @@ export function getDatabaseNameFromConnectionString(
 			connectionString.match(mongoConnectionStringRegExp),
 			"databaseNameMatch",
 		);
+
 		return databaseName;
 	} catch {
 		// Shouldn't happen, but ignore if does
@@ -64,6 +67,7 @@ export async function parseMongoConnectionString(
 	connectionString: string,
 ): Promise<ParsedMongoConnectionString> {
 	let mongoClient: MongoClient;
+
 	try {
 		mongoClient = await connectToMongoClient(
 			connectionString,
@@ -71,6 +75,7 @@ export async function parseMongoConnectionString(
 		);
 	} catch (error) {
 		const parsedError: IParsedError = parseError(error);
+
 		if (parsedError.message.match(/unescaped/i)) {
 			// Prevents https://github.com/microsoft/vscode-cosmosdb/issues/1209
 			connectionString = encodeMongoConnectionString(connectionString);
@@ -116,10 +121,14 @@ export function encodeMongoConnectionString(connectionString: string): string {
 	const matches: RegExpMatchArray | null = connectionString.match(
 		/^(.*):\/\/(.*):(.*)@(.*)/,
 	);
+
 	if (matches) {
 		const prefix: string = matches[1];
+
 		const username: string = matches[2];
+
 		const password: string = matches[3];
+
 		const hostAndQuery: string = matches[4];
 		connectionString = `${prefix}://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostAndQuery}`;
 	}

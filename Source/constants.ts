@@ -32,6 +32,7 @@ export function getThemedIconPath(iconName: string): IThemedIconPath {
         dark: path.join(getResourcesPath(), 'icons', 'dark', iconName),
     };
     assert.ok(fs.existsSync(a.light));
+
     return a;
 }
 
@@ -41,6 +42,7 @@ export function getThemeAgnosticIconPath(iconName: string): IThemedIconPath {
         dark: path.join(getResourcesPath(), 'icons', 'theme-agnostic', iconName),
     };
     assert.ok(fs.existsSync(a.light));
+
     return a;
 }
 
@@ -50,6 +52,7 @@ export function getThemeAgnosticIconURI(iconName: string): IThemedIconURI {
         dark: Utils.joinPath(ext.context.extensionUri, 'resources', 'icons', 'theme-agnostic', iconName),
     };
     assert.ok(fs.existsSync(a.light.path));
+
     return a;
 }
 
@@ -78,6 +81,7 @@ export const defaultStoredProcedure = `function sample(prefix) {
 
             else {
                 var response = getContext().getResponse();
+
                 var body = { prefix: prefix, feed: feed[0] };
                 response.setBody(JSON.stringify(body));
             }

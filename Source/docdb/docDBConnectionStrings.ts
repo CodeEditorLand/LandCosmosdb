@@ -15,14 +15,17 @@ export function parseDocDBConnectionString(
 		connectionString,
 		"AccountEndpoint",
 	);
+
 	const masterKey = getPropertyFromConnectionString(
 		connectionString,
 		"AccountKey",
 	);
+
 	const databaseName = getPropertyFromConnectionString(
 		connectionString,
 		"Database",
 	);
+
 	if (!endpoint || !masterKey) {
 		throw new Error("Invalid Document DB connection string.");
 	}
@@ -39,7 +42,9 @@ function getPropertyFromConnectionString(
 	property: string,
 ): string | undefined {
 	const regexp = new RegExp(`(?:^|;)\\s*${property}=([^;]+)(?:;|$)`, "i");
+
 	const match = connectionString.match(regexp);
+
 	return match ? match[1] : undefined;
 }
 

@@ -27,14 +27,18 @@ export class CosmosDBAccountCreateStep extends AzureWizardExecuteStep<ICosmosDBW
 		const locationName: string = (
 			await LocationListStep.getLocation(context)
 		).name;
+
 		const defaultExperience = nonNullProp(context, "defaultExperience");
+
 		const rgName: string = nonNullProp(
 			nonNullProp(context, "resourceGroup"),
 			"name",
 		);
+
 		const accountName = nonNullProp(context, "newServerName");
 
 		const client = await createCosmosDBClient(context);
+
 		const creatingMessage: string = localize(
 			"creatingCosmosDBAccount",
 			'Creating Cosmos DB account "{0}" with the "{1}" API... It should be ready in several minutes.',

@@ -17,6 +17,7 @@ export async function deleteMongoCollection(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await pickMongo<MongoCollectionTreeItem>(
 			context,

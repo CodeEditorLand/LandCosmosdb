@@ -44,10 +44,13 @@ export class PostgresServerSetCredentialsStep extends AzureWizardExecuteStep<IPo
 		);
 		progress.report({ message: setupMessage });
 		ext.outputChannel.appendLog(setupMessage);
+
 		const password: string = nonNullProp(context, "adminPassword");
+
 		const server: PostgresAbstractServer = nonNullProp(context, "server");
 
 		await setPostgresCredentials(user, password, nonNullProp(server, "id"));
+
 		const completedMessage: string = localize(
 			"addedCredentialsMessage",
 			'Successfully setup credentials for server "{0}".',

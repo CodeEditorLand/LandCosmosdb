@@ -42,12 +42,17 @@ export class PostgresClientConfigFactory {
 		const parsedConnectionString = await treeItem.getFullConnectionString();
 
 		let hasSubscription: boolean = false;
+
 		let azureUserId: string | undefined = undefined;
+
 		let tokenFunction: (() => Promise<string>) | undefined = undefined;
+
 		try {
 			const subscription = treeItem.subscription as ISubscriptionContext &
 				AzureSubscription;
+
 			const session = await subscription.authentication.getSession();
+
 			if (session) {
 				hasSubscription = true;
 				azureUserId = session?.account.label;
@@ -79,6 +84,7 @@ export class PostgresClientConfigFactory {
 		for (const clientConfigType of clientConfigTypeOrder) {
 			const clientConfig: ClientConfig | undefined =
 				clientConfigs[clientConfigType];
+
 			if (!clientConfig) {
 				continue;
 			}
@@ -94,12 +100,14 @@ export class PostgresClientConfigFactory {
 						await testClientConfig(clientConfig);
 					},
 				);
+
 				return {
 					type: clientConfigType,
 					clientConfig,
 				};
 			} catch (error) {
 				const parsedError = parseError(error);
+
 				if (parsedError.errorType === invalidCredentialsErrorType) {
 					// If the client config failed with invalid credential error, skip and try the next available one.
 				} else if (
@@ -109,7 +117,9 @@ export class PostgresClientConfigFactory {
 					// The time out error are common when the firewall rules doesn't grant access from the current IP address.
 					// If the client is blocked by the firewall, let the user go to Azure Portal to grant access.
 					const publicIp = PostgresServerTreeItem.ipAddr;
+
 					let ipMessage: string;
+
 					if (publicIp !== undefined) {
 						ipMessage = localize(
 							"ipAlreadyInFirewall",

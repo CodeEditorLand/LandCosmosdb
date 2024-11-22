@@ -45,6 +45,7 @@ export class MongoDBLanguageClient {
             serverOptions,
             clientOptions,
         );
+
         const disposable = this.client.start();
 
         // Push the disposable to the context's subscriptions so that the

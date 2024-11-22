@@ -35,6 +35,7 @@ export async function mongoClustersExportQueryResults(
     const client = await MongoClustersClient.getClient(node.mongoCluster.id);
 
     const docStreamAbortController = new AbortController();
+
     const docStream = client.streamDocuments(
         node.databaseInfo.name,
         node.collectionInfo.name,
@@ -109,10 +110,12 @@ async function exportDocumentsToFile(
                 documentStreamAbortController.abort();
                 await vscode.workspace.fs.delete(vscode.Uri.file(filePath)); // Clean up the file if canceled
                 vscode.window.showWarningMessage('The export operation was canceled.');
+
                 return documentCount;
             }
 
             documentCount += 1;
+
             const docString = EJSON.stringify(doc, undefined, 4);
 
             // Progress reporting for every 100 documents
@@ -140,6 +143,7 @@ async function exportDocumentsToFile(
         vscode.window.showInformationMessage(`Exported document count: ${documentCount}`);
     } catch (error) {
         vscode.window.showErrorMessage(`Error exporting documents: ${error}`);
+
         throw error; // Re-throw the error to be caught by the outer error handler
     }
 
@@ -148,7 +152,9 @@ async function exportDocumentsToFile(
 
 async function askForTargetFile(_context: IActionContext): Promise<vscode.Uri | undefined> {
     const rootPath: string | undefined = getRootPath();
+
     let defaultUri: vscode.Uri | undefined;
+
     if (rootPath) {
         defaultUri = vscode.Uri.joinPath(vscode.Uri.file(rootPath), 'export.json');
     } else {

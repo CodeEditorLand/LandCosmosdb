@@ -53,17 +53,22 @@ export class SharedWorkspaceStorage {
      */
     public static async getItems(workspaceType: WorkspaceResourceType): Promise<SharedWorkspaceStorageItem[]> {
         const storageKeyPrefix = `${SharedWorkspaceStorage.storageName}/${workspaceType}/`;
+
         const keys = ext.context.globalState.keys().filter((key) => key.startsWith(storageKeyPrefix));
+
         const items: SharedWorkspaceStorageItem[] = [];
 
         for (const key of keys) {
             const item = ext.context.globalState.get<SharedWorkspaceStorageItem>(key);
+
             if (item) {
                 // Read secrets associated with the item
                 const secretKey = `${key}/secrets`;
+
                 const secretsJson = await ext.secretStorage.get(secretKey);
 
                 let secrets: string[] = [];
+
                 if (secretsJson) {
                     try {
                         secrets = JSON.parse(secretsJson) as string[];
@@ -100,6 +105,7 @@ export class SharedWorkspaceStorage {
 
         // Check for existing item
         const existingItem = ext.context.globalState.get<SharedWorkspaceStorageItem>(storageKey);
+
         if (existingItem && !overwrite) {
             throw new Error(`An item with id '${item.id}' already exists for workspaceType '${workspaceType}'.`);
         }
@@ -107,11 +113,14 @@ export class SharedWorkspaceStorage {
         // Save all secrets
         if (item.secrets && item.secrets.length > 0) {
             const secretKey = `${storageKey}/secrets`;
+
             const secretsJson = JSON.stringify(item.secrets);
+
             try {
                 await ext.secretStorage.store(secretKey, secretsJson);
             } catch (error) {
                 console.error(`Failed to store secrets for key ${secretKey}:`, error);
+
                 throw error;
             }
         }
@@ -150,6 +159,7 @@ export class SharedWorkspaceStorage {
      */
     keys(workspaceType: WorkspaceResourceType): string[] {
         const storageKeyPrefix = `${SharedWorkspaceStorage.storageName}/${workspaceType}/`;
+
         const keys = ext.context.globalState
             .keys()
             .filter((key) => key.startsWith(storageKeyPrefix))

@@ -17,6 +17,7 @@ export async function valueOnTimeout<T>(
 		return await rejectOnTimeout(timeoutMs, action);
 	} catch (err) {
 		const error = <{ message?: string }>err;
+
 		if (error && error.message === timedOutMessage) {
 			return timeoutValue;
 		}
@@ -41,6 +42,7 @@ export async function rejectOnTimeout<T>(
 		}, timeoutMs);
 
 		let value: T;
+
 		let error;
 
 		try {

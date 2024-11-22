@@ -48,6 +48,7 @@ export async function getPostgresProcedureQueryRows(
 	}
 
 	const query: string = getProceduresQuery(conditions);
+
 	const queryResult: QueryResult = await runPostgresQuery(
 		treeItem.clientConfig,
 		query,
@@ -56,6 +57,7 @@ export async function getPostgresProcedureQueryRows(
 	const rows: IPostgresProceduresQueryRow[] = queryResult.rows || [];
 
 	treeItem.resourcesAndSchemas = {};
+
 	for (const row of rows) {
 		treeItem.addResourcesAndSchemasEntry(row.name, row.schema);
 	}

@@ -241,8 +241,10 @@ export class QuerySession {
 
     private async errorHandling(error: unknown, context: IActionContext): Promise<void> {
         const isObject = error && typeof error === 'object';
+
         if (error instanceof ErrorResponse) {
             const code: string = `${error.code ?? 'Unknown'}`;
+
             const message: string = error.body?.message ?? `Query failed with status code ${code}`;
             await this.channel.postMessage({
                 type: 'event',
@@ -318,12 +320,14 @@ export class QuerySession {
             }
 
             const showLogButton = localize('goToOutput', 'Go to output');
+
             if (await vscode.window.showErrorMessage(message, showLogButton)) {
                 ext.outputChannel.show();
             }
             throw new Error(`${message}, ${parsedError.message}`);
         } else {
             await vscode.window.showErrorMessage(message);
+
             throw new Error(message);
         }
     }

@@ -30,6 +30,7 @@ export async function connectToMongoClient(
 	} catch (err) {
 		// Note: This file can't use `parseError` from `@microsoft/vscode-azext-utils` because it's used by languageService.ts - see that file for more info
 		const error = <{ message?: string; name?: string }>err;
+
 		const message = error && error.message;
 
 		// Example error: "failed to connect to server [localhost:10255] on first connect [MongoError: connect ECONNREFUSED 127.0.0.1:10255]"

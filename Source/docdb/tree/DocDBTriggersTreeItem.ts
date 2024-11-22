@@ -53,8 +53,11 @@ export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> 
 
     public async createChildImpl(context: ICreateChildImplContext): Promise<DocDBTriggerTreeItem> {
         const client = this.root.getCosmosClient();
+
         const currTriggerList: AzExtTreeItem[] = await this.getCachedChildren(context);
+
         const currTriggerNames: string[] = [];
+
         for (const sp of currTriggerList) {
             currTriggerNames.push(nonNullProp(sp, 'id'));
         }
@@ -68,6 +71,7 @@ export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> 
         ).trim();
 
         const triggerType = await getTriggerType(context);
+
         const triggerOperation = await getTriggerOperation(context);
 
         const body: TriggerDefinition = {
@@ -77,6 +81,7 @@ export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> 
             triggerOperation: triggerOperation,
         };
         context.showCreatingTreeItem(triggerID);
+
         const response = await this.getContainerClient(client).scripts.triggers.create(body);
 
         return this.initChild(nonNullProp(response, 'resource'));
@@ -123,16 +128,20 @@ export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> 
 
 export async function getTriggerType(context: IActionContext): Promise<TriggerType> {
     const options = Object.keys(TriggerType).map((type) => ({ label: type }));
+
     const triggerTypeOption = await context.ui.showQuickPick<vscode.QuickPickItem>(options, {
         placeHolder: localize('createDocDBTriggerSelectType', 'Select the trigger type'),
     });
+
     return triggerTypeOption.label === 'Pre' ? TriggerType.Pre : TriggerType.Post;
 }
 
 export async function getTriggerOperation(context: IActionContext): Promise<TriggerOperation> {
     const options = Object.keys(TriggerOperation).map((key) => ({ label: key }));
+
     const triggerOperationOption = await context.ui.showQuickPick<vscode.QuickPickItem>(options, {
         placeHolder: localize('createDocDBTriggerSelectOperation', 'Select the trigger operation'),
     });
+
     return TriggerOperation[triggerOperationOption.label as keyof typeof TriggerOperation];
 }

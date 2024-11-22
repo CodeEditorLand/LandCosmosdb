@@ -73,6 +73,7 @@ export class MongoClustersClient {
         }
 
         this._credentialId = credentialId;
+
         const cStringPassword = CredentialCache.getConnectionStringWithPassword(credentialId);
 
         this._mongoClient = await MongoClient.connect(cStringPassword as string);
@@ -112,6 +113,7 @@ export class MongoClustersClient {
 
     async listDatabases(): Promise<DatabaseItemModel[]> {
         const rawDatabases: ListDatabasesResult = await this._mongoClient.db().admin().listDatabases();
+
         const databases: DatabaseItemModel[] = rawDatabases.databases;
 
         return databases;
@@ -119,6 +121,7 @@ export class MongoClustersClient {
 
     async listCollections(databaseName: string): Promise<CollectionItemModel[]> {
         const rawCollections = await this._mongoClient.db(databaseName).listCollections().toArray();
+
         const collections: CollectionItemModel[] = rawCollections;
 
         return collections;
@@ -126,6 +129,7 @@ export class MongoClustersClient {
 
     async listIndexes(databaseName: string, collectionName: string): Promise<IndexItemModel[]> {
         const collection = this._mongoClient.db(databaseName).collection(collectionName);
+
         const indexes = await collection.indexes();
 
         let i = 0; // backup for indexes with no names
@@ -155,6 +159,7 @@ export class MongoClustersClient {
         };
 
         const collection = this._mongoClient.db(databaseName).collection(collectionName);
+
         const documents = await collection.find(findQueryObj, options).toArray();
 
         //TODO: add the FindCursor to the return type for paging
@@ -198,11 +203,13 @@ export class MongoClustersClient {
             while (await cursor.hasNext()) {
                 if (abortSignal.aborted) {
                     console.log('streamDocuments: Aborted by an abort signal.');
+
                     return;
                 }
 
                 // Fetch the next document and yield it to the consumer
                 const doc = await cursor.next();
+
                 if (doc !== null) {
                     yield doc;
                 }
@@ -219,6 +226,7 @@ export class MongoClustersClient {
         const parsedDocumentIds: any[] = documentIds.map((id) => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let parsedId: any;
+
             try {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 parsedId = EJSON.parse(id);
@@ -235,6 +243,7 @@ export class MongoClustersClient {
 
         // connect and extecute
         const collection = this._mongoClient.db(databaseName).collection(collectionName);
+
         const deleteResult: DeleteResult = await collection.deleteMany({ _id: { $in: parsedDocumentIds } });
 
         return deleteResult.acknowledged;
@@ -243,6 +252,7 @@ export class MongoClustersClient {
     async pointRead(databaseName: string, collectionName: string, documentId: string) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let parsedDocumentId: any;
+
         try {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             parsedDocumentId = EJSON.parse(documentId);
@@ -321,6 +331,7 @@ export class MongoClustersClient {
 
     async createCollection(databaseName: string, collectionName: string): Promise<boolean> {
         let newCollection;
+
         try {
             newCollection = await this._mongoClient.db(databaseName).createCollection(collectionName);
         } catch (_e) {

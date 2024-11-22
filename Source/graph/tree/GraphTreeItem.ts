@@ -44,8 +44,11 @@ export class GraphTreeItem extends AzExtTreeItem {
 
     public async showExplorer(_context: IActionContext): Promise<void> {
         const message: string = localize('mustInstallGraph', 'Cosmos DB Graph extension has been retired.');
+
         const alternativeToolsOption = 'Alternative Tools';
+
         const result = await vscode.window.showErrorMessage(message, alternativeToolsOption);
+
         if (result === alternativeToolsOption) {
             await openUrl(alternativeGraphVisualizationToolsDocLink);
         }

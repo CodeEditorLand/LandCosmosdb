@@ -68,7 +68,9 @@ export class DocDBTriggerTreeItem extends AzExtTreeItem implements IEditableTree
         const client = this.root.getCosmosClient();
 
         const readResponse = await this.parent.getContainerClient(client).scripts.trigger(this.id).read();
+
         let triggerType = readResponse.resource?.triggerType;
+
         let triggerOperation = readResponse.resource?.triggerOperation;
 
         if (!triggerType) {
@@ -102,6 +104,7 @@ export class DocDBTriggerTreeItem extends AzExtTreeItem implements IEditableTree
             { modal: true, stepName: 'deleteTrigger' },
             DialogResponses.deleteResponse,
         );
+
         const client = this.root.getCosmosClient();
         await this.parent.getContainerClient(client).scripts.trigger(this.id).delete();
     }

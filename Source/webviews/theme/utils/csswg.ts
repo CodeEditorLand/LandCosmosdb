@@ -37,6 +37,7 @@ export function multiplyMatrices(AMatrixOrVector: MatrixIO, BMatrixOrVector: Mat
         : BMatrixOrVector;
 
     const p = B[0].length;
+
     const B_cols = B[0].map((_, i) => B.map((x) => x[i])); // transpose B
     let product: MatrixIO = A.map((row) =>
         B_cols.map((col) => {
@@ -69,6 +70,7 @@ export function lin_sRGB(RGB: Vec3) {
     // then reflected power function is used.
     return RGB.map((val) => {
         const sign = val < 0 ? -1 : 1;
+
         const abs = Math.abs(val);
 
         if (abs < 0.04045) {
@@ -88,6 +90,7 @@ export function gam_sRGB(RGB: Vec3) {
     // of axis, then uses reflected pow below that
     return RGB.map((val) => {
         const sign = val < 0 ? -1 : 1;
+
         const abs = Math.abs(val);
 
         if (abs > 0.0031308) {
@@ -107,6 +110,7 @@ export function lin_sRGB_to_XYZ(rgb: Vec3) {
         [0.21263900587151027, 0.715168678767756, 0.07219231536073371],
         [0.01933081871559182, 0.11919477979462598, 0.9505321522496607],
     ];
+
     return multiplyMatrices(M, rgb) as Vec3;
 }
 
@@ -200,6 +204,7 @@ export function Lab_to_XYZ(Lab: Vec3) {
 export function Lab_to_LCH(Lab: Vec3) {
     // Convert to polar form
     const hue = (Math.atan2(Lab[2], Lab[1]) * 180) / Math.PI;
+
     return [
         Lab[0], // L is still L
         Math.sqrt(Math.pow(Lab[1], 2) + Math.pow(Lab[2], 2)), // Chroma
@@ -256,7 +261,9 @@ export function LAB_to_sRGB(LAB: Vec3) {
 
 function is_LCH_inside_sRGB(l: number, c: number, h: number): boolean {
     const eps = 0.000005;
+
     const rgb = LCH_to_sRGB([+l, +c, +h]);
+
     return rgb.reduce((a: boolean, b: number) => a && b >= 0 - eps && b <= 1 + eps, true);
 }
 
@@ -270,8 +277,11 @@ export function snap_into_gamut(Lab: Vec3): Vec3 {
     const eps = 0.0001;
 
     const LCH = Lab_to_LCH(Lab);
+
     const l = LCH[0];
+
     let c = LCH[1];
+
     const h = LCH[2];
 
     if (is_LCH_inside_sRGB(l, c, h)) {
@@ -279,6 +289,7 @@ export function snap_into_gamut(Lab: Vec3): Vec3 {
     }
 
     let hiC = c;
+
     let loC = 0;
     c /= 2;
 

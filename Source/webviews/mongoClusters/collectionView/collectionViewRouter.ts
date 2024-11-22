@@ -47,6 +47,7 @@ export const collectionsViewRouter = router({
 
             // run query
             const session: MongoClustersSession = MongoClustersSession.getSession(myCtx.sessionId);
+
             const size = await session.runQueryWithCache(
                 myCtx.databaseName,
                 myCtx.collectionName,
@@ -65,6 +66,7 @@ export const collectionsViewRouter = router({
             const session: MongoClustersSession = MongoClustersSession.getSession(myCtx.sessionId);
 
             const _currentJsonSchema = session.getCurrentSchema();
+
             const autoCompletionData: FieldEntry[] = getKnownFields(_currentJsonSchema);
 
             let querySchema: JSONSchema;
@@ -86,6 +88,7 @@ export const collectionsViewRouter = router({
             const myCtx = ctx as RouterContext;
 
             const session: MongoClustersSession = MongoClustersSession.getSession(myCtx.sessionId);
+
             const tableData = session.getCurrentPageAsTable(input);
 
             return tableData;
@@ -96,6 +99,7 @@ export const collectionsViewRouter = router({
             const myCtx = ctx as RouterContext;
 
             const session: MongoClustersSession = MongoClustersSession.getSession(myCtx.sessionId);
+
             const treeData = session.getCurrentPageAsTree();
 
             return treeData;
@@ -106,6 +110,7 @@ export const collectionsViewRouter = router({
             const myCtx = ctx as RouterContext;
 
             const session: MongoClustersSession = MongoClustersSession.getSession(myCtx.sessionId);
+
             const jsonData = session.getCurrentPageAsJson();
 
             return jsonData;

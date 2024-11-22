@@ -74,6 +74,7 @@ export class MongoDocumentTreeItem extends AzExtTreeItem implements IEditableTre
         const filter: object = { _id: newDocument._id };
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const result: MongoDocument | UpdateResult = await collection.replaceOne(filter, omit(newDocument, '_id'));
+
         if (result.modifiedCount !== 1) {
             throw new Error(`Failed to update document with _id '${newDocument._id}'.`);
         }
@@ -97,7 +98,9 @@ export class MongoDocumentTreeItem extends AzExtTreeItem implements IEditableTre
             { modal: true, stepName: 'deleteMongoDocument' },
             DialogResponses.deleteResponse,
         );
+
         const deleteResult: DeleteResult = await this.parent.collection.deleteOne({ _id: this.document._id });
+
         if (deleteResult.deletedCount !== 1) {
             throw new Error(`Failed to delete document with _id '${this.document._id}'.`);
         }

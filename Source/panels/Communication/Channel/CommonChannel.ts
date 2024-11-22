@@ -89,7 +89,9 @@ export class CommonChannel implements Channel {
         }
 
         const now = Date.now();
+
         const id = 'id' in message ? message.id : uuid();
+
         const payload = 'id' in message ? message.payload : message;
 
         if (payload.type === 'request') {
@@ -181,6 +183,7 @@ export class CommonChannel implements Channel {
         try {
             if (typeof msg.payload !== 'object' || !msg.payload || !isChannelPayload(msg.payload)) {
                 console.warn('Received message with unknown payload', msg);
+
                 return;
             }
 
@@ -188,8 +191,10 @@ export class CommonChannel implements Channel {
 
             if (payload.type === 'response' || payload.type === 'error') {
                 const request = this.pendingRequests[msg.id];
+
                 if (!request) {
                     console.warn('Received response for unknown request', msg);
+
                     return;
                 }
 
@@ -245,6 +250,7 @@ export class CommonChannel implements Channel {
             }
         } catch (error: unknown) {
             const errorMessage = getErrorMessage(error);
+
             if (this.pendingRequests[msg.id]) {
                 this.pendingRequests[msg.id].deferred.reject(
                     new Error(`Error occurred handling received message : ${errorMessage}`),

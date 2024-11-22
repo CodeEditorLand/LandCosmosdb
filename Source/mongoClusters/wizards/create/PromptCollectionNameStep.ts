@@ -80,6 +80,7 @@ export class CollectionNameStep extends AzureWizardPromptStep<CreateCollectionWi
 
         try {
             const client = await MongoClustersClient.getClient(context.credentialsId);
+
             const collections = await client.listCollections(context.databaseItem.databaseInfo.name);
 
             if (collections.filter((c) => c.name === name).length > 0) {

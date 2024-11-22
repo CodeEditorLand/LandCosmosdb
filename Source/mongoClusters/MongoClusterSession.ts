@@ -154,6 +154,7 @@ export class MongoClustersSession {
      */
     public static getSession(sessionId: string): MongoClustersSession {
         const session = this._sessions.get(sessionId);
+
         if (session === undefined) {
             throw new Error(`No session found for id ${sessionId}`);
         }

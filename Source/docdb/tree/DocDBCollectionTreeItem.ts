@@ -80,6 +80,7 @@ export class DocDBCollectionTreeItem extends AzExtParentTreeItem {
             { modal: true, stepName: 'deleteCollection' },
             DialogResponses.deleteResponse,
         );
+
         const client = this.root.getCosmosClient();
         await this.getContainerClient(client).delete();
     }
@@ -98,12 +99,15 @@ export class DocDBCollectionTreeItem extends AzExtParentTreeItem {
                 case DocDBDocumentsTreeItem.contextValue:
                 case DocDBDocumentTreeItem.contextValue:
                     return this.documentsTreeItem;
+
                 case DocDBStoredProceduresTreeItem.contextValue:
                 case DocDBStoredProcedureTreeItem.contextValue:
                     return this._storedProceduresTreeItem;
+
                 case DocDBTriggersTreeItem.contextValue:
                 case DocDBTriggerTreeItem.contextValue:
                     return this._triggersTreeItem;
+
                 default:
             }
         }

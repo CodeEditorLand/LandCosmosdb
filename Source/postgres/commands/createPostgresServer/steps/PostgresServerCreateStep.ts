@@ -24,13 +24,18 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
         progress: Progress<{ message?: string; increment?: number }>,
     ): Promise<void> {
         const locationName: string = (await LocationListStep.getLocation(context)).name;
+
         const rgName: string = nonNullProp(nonNullProp(context, 'resourceGroup'), 'name');
+
         const size: string = nonNullProp(nonNullProp(context, 'sku'), 'size');
+
         const newServerName = nonNullProp(context, 'newServerName');
+
         const password: string = nonNullProp(context, 'adminPassword');
 
         return await callWithMaskHandling(async () => {
             const serverType = nonNullProp(context, 'serverType');
+
             const createMessage: string = localize(
                 'creatingPostgresServer',
                 'Creating PostgreSQL Server "{0}"... It should be ready in several minutes.',
@@ -39,6 +44,7 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
 
             ext.outputChannel.appendLog(createMessage);
             progress.report({ message: createMessage });
+
             const options: AbstractServerCreate = {
                 location: locationName,
                 sku: nonNullProp(context, 'sku'),
@@ -55,6 +61,7 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
                         newServerName,
                         this.asSingleParameters(options),
                     );
+
                     break;
                 }
                 case PostgresServerType.Flexible: {
@@ -65,6 +72,7 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
                         newServerName,
                         this.asFlexibleParameters(options),
                     );
+
                     break;
                 }
             }

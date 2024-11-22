@@ -21,6 +21,7 @@ export async function deletePostgresTable(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await ext.rgApi.pickAppResource<PostgresTableTreeItem>(
 			{ ...context, suppressCreatePick: true },
@@ -41,6 +42,7 @@ export async function deletePostgresTable(
 		DialogResponses.deleteResponse,
 	);
 	await node.deleteTreeItem(context);
+
 	const deleteMessage: string = localize(
 		"successfullyDeletedTable",
 		'Successfully deleted table "{0}".',

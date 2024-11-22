@@ -43,23 +43,29 @@ export class DatabaseResolver implements AppResourceResolver {
                 `/subscriptions/${subContext.subscriptionId}`,
                 context,
             );
+
             try {
                 const resourceGroupName = getResourceGroupFromId(nonNullProp(resource, 'id'));
+
                 const name = nonNullProp(resource, 'name');
                 context.valuesToMask.push(resource.id);
                 context.valuesToMask.push(resource.name);
+
                 let postgresServer: PostgresAbstractServer;
+
                 let dbChild: AzExtTreeItem;
 
                 switch (resource.type.toLowerCase()) {
                     case resourceTypes[0]: {
                         const client = await createCosmosDBClient({ ...context, ...subContext });
+
                         const databaseAccount = await client.databaseAccounts.get(resourceGroupName, name);
                         dbChild = await SubscriptionTreeItem.initCosmosDBChild(
                             client,
                             databaseAccount,
                             nonNullValue(subNode),
                         );
+
                         const experience = tryGetExperience(databaseAccount);
 
                         return experience?.api === API.MongoDB
@@ -83,6 +89,7 @@ export class DatabaseResolver implements AppResourceResolver {
                 }
             } catch (e) {
                 console.error({ ...context, ...subContext });
+
                 throw e;
             }
         });

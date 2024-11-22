@@ -14,9 +14,12 @@ export function wrapError(outerError?: unknown, innerError?: unknown): unknown {
 	}
 
 	const innerMessage = parseError(innerError).message;
+
 	const outerMessage = parseError(outerError).message;
+
 	if (outerError instanceof Error) {
 		outerError.message = `${outerError.message}${os.EOL}${innerMessage}`;
+
 		return outerError;
 	}
 

@@ -33,6 +33,7 @@ export async function ensureRbacPermission(
 				const accountName: string = getDatabaseAccountNameFromId(
 					docDbItem.fullId,
 				);
+
 				if (
 					await askForRbacPermissions(
 						accountName,
@@ -42,9 +43,11 @@ export async function ensureRbacPermission(
 				) {
 					context.telemetry.properties.lastStep =
 						"addRbacContributorPermission";
+
 					const resourceGroup: string = getResourceGroupFromId(
 						docDbItem.fullId,
 					);
+
 					const start: number = Date.now();
 					await addRbacContributorPermission(
 						accountName,
@@ -84,6 +87,7 @@ export async function showRbacPermissionError(
 		accountName,
 		principalId,
 	);
+
 	const readMoreItem = localize("learnMore", "Learn More");
 	await vscode.window
 		.showErrorMessage(message, { modal: false }, ...[readMoreItem])
@@ -117,12 +121,14 @@ async function askForRbacPermissions(
 			subscription,
 		),
 	].join("");
+
 	const options: IAzureMessageOptions = {
 		modal: true,
 		detail: message,
 		learnMoreLink: "https://aka.ms/cosmos-native-rbac",
 		stepName: "askSetRbac",
 	};
+
 	const setPermissionItem: vscode.MessageItem = {
 		title: localize("rbacExtendPermissionBtn", "Extend RBAC permissions"),
 	};
@@ -132,6 +138,7 @@ async function askForRbacPermissions(
 		options,
 		...[setPermissionItem],
 	);
+
 	return result === setPermissionItem;
 }
 
@@ -162,7 +169,9 @@ async function addRbacContributorPermission(
     }*/
 
 	const roleAssignmentId = randomUUID();
+
 	const client = await createCosmosDBClient([context, subscription]);
+
 	const create =
 		await client.sqlResources.beginCreateUpdateSqlRoleAssignmentAndWait(
 			roleAssignmentId,

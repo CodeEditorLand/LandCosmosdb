@@ -17,6 +17,7 @@ function equals(v1: Vec3, v2: Vec3) {
 
 function QuadraticBezierP0(t: number, p: number): number {
     const k = 1 - t;
+
     return k * k * p;
 }
 
@@ -34,6 +35,7 @@ function QuadraticBezier(t: number, p0: number, p1: number, p2: number): number 
 
 function getPointOnCurve(curve: Curve, t: number) {
     const [v0, v1, v2] = curve.points;
+
     return [
         QuadraticBezier(t, v0[0], v1[0], v2[0]),
         QuadraticBezier(t, v0[1], v1[1], v2[1]),
@@ -43,6 +45,7 @@ function getPointOnCurve(curve: Curve, t: number) {
 
 function getPointsOnCurve(curve: Curve, divisions: number): Vec3[] {
     const points: Vec3[] = [];
+
     for (let d = 0; d <= divisions; d++) {
         points.push(getPointOnCurve(curve, d / divisions));
     }
@@ -51,10 +54,12 @@ function getPointsOnCurve(curve: Curve, divisions: number): Vec3[] {
 
 export function getPointsOnCurvePath(curvePath: CurvePath, divisions = curveResolution): Vec3[] {
     const points: Vec3[] = [];
+
     let last: Vec3 | undefined;
 
     for (let i = 0, curves = curvePath.curves; i < curves.length; i++) {
         const curve = curves[i];
+
         const pts = getPointsOnCurve(curve, divisions);
 
         for (const point of pts) {

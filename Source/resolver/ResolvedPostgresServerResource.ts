@@ -34,6 +34,7 @@ export class ResolvedPostgresServerResource
 	setCredentials: (username: string, password: string) => void;
 	supportsStoredProcedures: (clientConfig: ClientConfig) => Promise<boolean>;
 	deletePostgresCredentials: () => Promise<void>;
+
 	getFullConnectionString: () => Promise<ParsedPostgresConnectionString>;
 	validateDatabaseName: (
 		name: string,

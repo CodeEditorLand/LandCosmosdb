@@ -109,6 +109,7 @@ export async function activateInternal(
         const workspaceRootTreeItem = (
             ext.rgApi.workspaceResourceTree as unknown as { _rootTreeItem: AzExtParentTreeItem }
         )._rootTreeItem;
+
         const databaseWorkspaceProvider = new DatabaseWorkspaceProvider(workspaceRootTreeItem);
         ext.rgApi.registerWorkspaceResourceProvider('AttachedDatabaseAccount', databaseWorkspaceProvider);
 
@@ -144,6 +145,7 @@ export async function activateInternal(
         registerCommandWithTreeNodeUnwrapping('cosmosDB.attachEmulator', async (actionContext: IActionContext) => {
             if (platform() !== 'win32') {
                 actionContext.errorHandling.suppressReportIssue = true;
+
                 throw new Error(
                     localize('emulatorNotSupported', 'The Cosmos DB emulator is only supported on Windows.'),
                 );
@@ -167,6 +169,7 @@ export async function activateInternal(
             'azureDatabases.detachDatabaseAccount',
             async (actionContext: IActionContext & ITreeItemPickerContext, node?: AzExtTreeItem) => {
                 const children = await ext.attachedAccountsNode.loadAllChildren(actionContext);
+
                 if (children.length < 2) {
                     const message = localize('noAttachedAccounts', 'There are no Attached Accounts.');
                     void vscode.window.showInformationMessage(message);
@@ -240,6 +243,7 @@ export async function activateInternal(
             async (actionContext: IActionContext, event: vscode.ConfigurationChangeEvent) => {
                 actionContext.telemetry.properties.isActivationEvent = 'true';
                 actionContext.errorHandling.suppressDisplay = true;
+
                 if (event.affectsConfiguration(ext.settingsKeys.documentLabelFields)) {
                     await vscode.commands.executeCommand('azureDatabases.refresh');
                 }
@@ -280,6 +284,7 @@ export async function createServer(context: IActionContext, node?: SubscriptionT
 export async function deleteAccount(context: IActionContext, node?: AzExtTreeItem): Promise<void> {
     const suppressCreateContext: ITreeItemPickerContext = context;
     suppressCreateContext.suppressCreatePick = true;
+
     if (!node) {
         node = await ext.rgApi.pickAppResource<AzExtTreeItem>(context, {
             filter: [cosmosMongoFilter, cosmosTableFilter, cosmosGremlinFilter, sqlFilter],
@@ -294,6 +299,7 @@ export async function cosmosDBCopyConnectionString(
     node?: MongoAccountTreeItem | DocDBAccountTreeItemBase,
 ): Promise<void> {
     const message = 'The connection string has been copied to the clipboard';
+
     if (!node) {
         node = await ext.rgApi.pickAppResource<MongoAccountTreeItem | DocDBAccountTreeItemBase>(context, {
             filter: [cosmosMongoFilter, cosmosTableFilter, cosmosGremlinFilter, sqlFilter],

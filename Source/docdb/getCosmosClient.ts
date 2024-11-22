@@ -41,12 +41,15 @@ export function getCosmosClientByConnection(
     const vscodeStrictSSL: boolean | undefined = vscode.workspace
         .getConfiguration()
         .get<boolean>(ext.settingsKeys.vsCode.proxyStrictSSL);
+
     const enableEndpointDiscovery: boolean | undefined = vscode.workspace
         .getConfiguration()
         .get<boolean>(ext.settingsKeys.enableEndpointDiscovery);
+
     const connectionPolicy = {
         enableEndpointDiscovery: enableEndpointDiscovery === undefined ? true : enableEndpointDiscovery,
     };
+
     const commonProperties: CosmosClientOptions = {
         endpoint,
         userAgentSuffix: appendExtensionUserAgent(),
@@ -60,6 +63,7 @@ export function getCosmosClientByConnection(
         commonProperties.aadCredentials = {
             getToken: async (scopes, _options) => {
                 const session = await getSessionFromVSCode(scopes, undefined, { createIfNone: true });
+
                 return {
                     token: session?.accessToken ?? '',
                     expiresOnTimestamp: 0,
@@ -79,14 +83,17 @@ export function getCosmosClient(
     const vscodeStrictSSL: boolean | undefined = vscode.workspace
         .getConfiguration()
         .get<boolean>(ext.settingsKeys.vsCode.proxyStrictSSL);
+
     const enableEndpointDiscovery: boolean | undefined = vscode.workspace
         .getConfiguration()
         .get<boolean>(ext.settingsKeys.enableEndpointDiscovery);
+
     const connectionPolicy = {
         enableEndpointDiscovery: enableEndpointDiscovery === undefined ? true : enableEndpointDiscovery,
     };
 
     const keyCred = getCosmosKeyCredential(credentials);
+
     const authCred = getCosmosAuthCredential(credentials);
 
     const commonProperties = {
@@ -107,6 +114,7 @@ export function getCosmosClient(
             aadCredentials: {
                 getToken: async (scopes, _options) => {
                     const session = await getSessionFromVSCode(scopes, undefined, { createIfNone: true });
+
                     return {
                         token: session?.accessToken ?? '',
                         expiresOnTimestamp: 0,

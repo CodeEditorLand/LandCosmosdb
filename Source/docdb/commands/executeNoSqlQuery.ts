@@ -21,7 +21,9 @@ export async function executeNoSqlQuery(
 	args: { queryText: string; populateQueryMetrics?: boolean },
 ): Promise<void> {
 	let queryText: string;
+
 	let populateQueryMetrics: boolean;
+
 	if (!args) {
 		const activeEditor: vscode.TextEditor | undefined =
 			vscode.window.activeTextEditor;
@@ -43,6 +45,7 @@ export async function executeNoSqlQuery(
 	const connectedCollection = KeyValueStore.instance.get(
 		noSqlQueryConnectionKey,
 	);
+
 	if (!connectedCollection) {
 		throw new Error(
 			"Unable to execute query due to missing node data. Please connect to a Cosmos DB collection node.",
@@ -51,19 +54,26 @@ export async function executeNoSqlQuery(
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const { databaseId, containerId, endpoint, masterKey, isEmulator } =
 			connectedCollection as NoSqlQueryConnection;
+
 		const credentials: CosmosDBCredential[] = [];
+
 		if (masterKey !== undefined) {
 			credentials.push({ type: "key", key: masterKey });
 		}
 		credentials.push({ type: "auth" });
+
 		const client = getCosmosClient(endpoint, credentials, isEmulator);
+
 		const options = { populateQueryMetrics };
+
 		const response = await client
 			.database(databaseId)
 			.container(containerId)
 			.items.query(queryText, options)
 			.fetchAll();
+
 		const resultDocumentTitle = `query results for ${containerId}`;
+
 		if (populateQueryMetrics === true) {
 			await vscodeUtil.showNewFile(
 				JSON.stringify(

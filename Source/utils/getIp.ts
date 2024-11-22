@@ -10,9 +10,12 @@ import { localize } from './localize';
 
 export function isIpInRanges(ip: string, ranges: { startIpAddress: string; endIpAddress: string }[]): boolean {
     const ipNum = ipToNum(ip);
+
     return ranges.some((range) => {
         const startIpNum = ipToNum(range.startIpAddress);
+
         const endIpNum = ipToNum(range.endIpAddress);
+
         return startIpNum <= ipNum && ipNum <= endIpNum;
     });
 }
@@ -24,6 +27,7 @@ export async function getPublicIpv4(context: IActionContext): Promise<string> | 
     ];
 
     let lastError: unknown;
+
     for (const getIp of methods) {
         try {
             return await getIp();

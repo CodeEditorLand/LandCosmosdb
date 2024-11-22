@@ -37,6 +37,7 @@ export class PostgresTablesTreeItem extends PostgresResourcesTreeItemBase {
 	): Promise<PostgresTableTreeItem[]> {
 		const tables: IPostgresTable[] = await getTables(this.clientConfig);
 		this.resourcesAndSchemas = {};
+
 		for (const table of tables) {
 			this.addResourcesAndSchemasEntry(
 				table.name.trim(),

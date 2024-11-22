@@ -52,7 +52,9 @@ export interface JSONSchema {
     oneOf?: JSONSchemaRef[];
     not?: JSONSchemaRef;
     enum?: undefined[];
+
     format?: string;
+
     const?: undefined;
     contains?: JSONSchemaRef;
     propertyNames?: JSONSchemaRef;
@@ -64,6 +66,7 @@ export interface JSONSchema {
     };
     markdownEnumDescriptions?: string[];
     markdownDescription?: string;
+
     doNotSuggest?: boolean;
     suggestSortText?: string;
 }

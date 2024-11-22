@@ -67,6 +67,7 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<Databas
 
     public get connectionString(): string {
         const firstKey = getCosmosKeyCredential(this.root.credentials);
+
         if (firstKey) {
             return `AccountEndpoint=${this.root.endpoint};AccountKey=${firstKey.key}`;
         } else {
@@ -96,7 +97,9 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<Databas
         });
 
         const client = this.root.getCosmosClient();
+
         const database: DatabaseResponse = await client.databases.create({ id: databaseName });
+
         return this.initChild(nonNullProp(database, 'resource'));
     }
 
@@ -120,6 +123,7 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<Databas
                 if (this.root.isEmulator) {
                     const unableToReachEmulatorMessage: string =
                         "Unable to reach emulator. Please ensure it is started and connected to the port specified by the 'cosmosDB.emulator.port' setting, then try again.";
+
                     return await rejectOnTimeout(
                         2000,
                         () => super.loadMoreChildrenImpl(clearCache),
@@ -131,6 +135,7 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<Databas
                     } catch (e) {
                         if (e instanceof Error && isRbacException(e) && !this.hasShownRbacNotification) {
                             this.hasShownRbacNotification = true;
+
                             const principalId =
                                 (await getSignedInPrincipalIdForAccountEndpoint(this.root.endpoint)) ?? '';
                             // chedck if the principal ID matches the one that is signed in, otherwise this might be a security problem, hence show the error message

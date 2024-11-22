@@ -18,6 +18,7 @@ export async function viewDocDBCollectionOffer(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await pickDocDBAccount<DocDBCollectionTreeItem>(
 			context,
@@ -25,6 +26,7 @@ export async function viewDocDBCollectionOffer(
 		);
 	}
 	const client = node.root.getCosmosClient();
+
 	const offer = await node.getContainerClient(client).readOffer();
 	await vscodeUtil.showNewFile(
 		JSON.stringify(offer.resource, undefined, 2),

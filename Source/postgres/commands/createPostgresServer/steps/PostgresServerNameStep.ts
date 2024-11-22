@@ -70,6 +70,7 @@ async function validatePostgresServerName(
 	name = name ? name.trim() : "";
 
 	const min = 3;
+
 	const max = 63;
 
 	if (name.length < min || name.length > max) {
@@ -94,6 +95,7 @@ async function validatePostgresServerName(
 		serverType === PostgresServerType.Single
 			? "Microsoft.DBforPostgreSQL"
 			: "Microsoft.DBforPostgreSQL/flexibleServers";
+
 	const availability: AbstractNameAvailability =
 		await client.checkNameAvailability.execute({
 			name: name,

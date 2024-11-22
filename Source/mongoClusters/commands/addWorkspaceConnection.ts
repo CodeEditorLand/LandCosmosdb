@@ -34,6 +34,7 @@ export async function addWorkspaceConnection(context: IActionContext): Promise<v
         if (error instanceof UserCancelledError) {
             // The user cancelled the wizard
             wizardContext.aborted = true;
+
             return;
         } else {
             throw error;
@@ -61,6 +62,7 @@ export async function addWorkspaceConnection(context: IActionContext): Promise<v
             isRU = true;
         }
     });
+
     if (isRU) {
         try {
             await vscode.window.showInformationMessage(
@@ -107,6 +109,7 @@ export async function addWorkspaceConnection(context: IActionContext): Promise<v
 
 function isMongoDBRU(host: string): boolean {
     const knownSuffixes = ['mongo.cosmos.azure.com'];
+
     const hostWithoutPort = host.split(':')[0];
 
     for (const suffix of knownSuffixes) {

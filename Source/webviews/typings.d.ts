@@ -6,6 +6,7 @@
 declare global {
     declare module '*.ejs' {
         const template = <T>(data: T): string => '';
+
         export default template;
     }
 

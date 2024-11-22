@@ -50,6 +50,7 @@ export function valueToDisplayString(value: unknown, type: MongoBSONTypes): stri
         }
         case MongoBSONTypes.RegExp: {
             const v = value as BSONRegExp;
+
             return `${v.pattern} ${v.options}`;
         }
         case MongoBSONTypes.Binary: {

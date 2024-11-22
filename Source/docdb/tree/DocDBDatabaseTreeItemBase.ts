@@ -26,8 +26,11 @@ import { type DocDBAccountTreeItemBase } from './DocDBAccountTreeItemBase';
 import { DocDBTreeItemBase } from './DocDBTreeItemBase';
 
 const minThroughputFixed: number = 400;
+
 const minThroughputPartitioned: number = 400;
+
 const maxThroughput: number = 100000;
+
 const throughputStepSize = 100;
 
 /**
@@ -80,6 +83,7 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<Contai
             { modal: true, stepName: 'deleteDatabase' },
             DialogResponses.deleteResponse,
         );
+
         const client = this.root.getCosmosClient();
         await client.database(this.id).delete();
     }
@@ -97,6 +101,7 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<Contai
         };
 
         const partitionKey = await this.getNewPartitionKey(context);
+
         if (partitionKey) {
             containerDefinition.partitionKey = {
                 paths: [partitionKey],
@@ -106,7 +111,9 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<Contai
 
         if (!this.parent.isServerless) {
             const isFixed: boolean = !containerDefinition.partitionKey;
+
             const minThroughput = isFixed ? minThroughputFixed : minThroughputPartitioned;
+
             const throughput: number = Number(
                 await context.ui.showInputBox({
                     value: minThroughput.toString(),
@@ -122,7 +129,9 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<Contai
         }
 
         context.showCreatingTreeItem(containerName);
+
         const client = this.root.getCosmosClient();
+
         const container: ContainerResponse = await client
             .database(this.id)
             .containers.create(containerDefinition, options);
@@ -173,7 +182,9 @@ function validateThroughput(isFixed: boolean, input: string): string | undefined
 
     try {
         const minThroughput = isFixed ? minThroughputFixed : minThroughputPartitioned;
+
         const value = Number(input);
+
         if (value < minThroughput || value > maxThroughput || (value - minThroughput) % throughputStepSize !== 0) {
             return `Value must be between ${minThroughput} and ${maxThroughput} in increments of ${throughputStepSize}`;
         }

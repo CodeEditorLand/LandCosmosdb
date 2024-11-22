@@ -20,6 +20,7 @@ export interface IDisposable {
 
 export function dispose<T extends IDisposable>(disposables: T[]): T[] {
     disposables.forEach((d) => d.dispose());
+
     return [];
 }
 
@@ -34,9 +35,13 @@ export async function showNewFile(
     column?: vscode.ViewColumn,
 ): Promise<void> {
     const folderPath: string = getRootPath() || ext.context.extensionPath;
+
     const fullFileName: string | undefined = await getUniqueFileName(folderPath, fileName, fileExtension);
+
     const uri: vscode.Uri = vscode.Uri.file(path.join(folderPath, fullFileName)).with({ scheme: 'untitled' });
+
     const textDocument = await vscode.workspace.openTextDocument(uri);
+
     const editor = await vscode.window.showTextDocument(
         textDocument,
         column ? (column > vscode.ViewColumn.Three ? vscode.ViewColumn.One : column) : undefined,
@@ -63,16 +68,21 @@ export async function writeToEditor(editor: vscode.TextEditor, data: string): Pr
 
 async function getUniqueFileName(folderPath: string, fileName: string, fileExtension: string): Promise<string> {
     let count: number = 1;
+
     const maxCount: number = 1024;
 
     while (count < maxCount) {
         const fileSuffix = count === 0 ? '' : '-' + count.toString();
+
         const fullFileName: string = fileName + fileSuffix + fileExtension;
 
         const fullPath: string = path.join(folderPath, fullFileName);
+
         const pathExists: boolean = await fse.pathExists(fullPath);
+
         const editorExists: boolean =
             vscode.workspace.textDocuments.find((doc) => doc.uri.fsPath === fullPath) !== undefined;
+
         if (!pathExists && !editorExists) {
             return fullFileName;
         }
@@ -84,9 +94,11 @@ async function getUniqueFileName(folderPath: string, fileName: string, fileExten
 
 export function getNodeEditorLabel(node: AzExtTreeItem): string {
     const labels = [node.label];
+
     while (node.parent) {
         node = node.parent;
         labels.unshift(node.label);
+
         if (isAccountTreeItem(node)) {
             break;
         }
@@ -104,6 +116,7 @@ export function getDocumentTreeItemLabel(document: IMongoDocument | ItemDefiniti
         if (document.hasOwnProperty(field)) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const value = document[field];
+
             if (value !== undefined && typeof value !== 'object') {
                 return String(value);
             }
@@ -114,5 +127,6 @@ export function getDocumentTreeItemLabel(document: IMongoDocument | ItemDefiniti
 
 function getDocumentLabelFields(): string[] {
     const settingKey: string = ext.settingsKeys.documentLabelFields;
+
     return vscode.workspace.getConfiguration().get(settingKey) || [];
 }

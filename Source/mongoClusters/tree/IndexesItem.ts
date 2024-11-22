@@ -22,7 +22,9 @@ export class IndexesItem {
 
     async getChildren(): Promise<TreeElementBase[]> {
         const client: MongoClustersClient = await MongoClustersClient.getClient(this.mongoCluster.id);
+
         const indexes = await client.listIndexes(this.databaseInfo.name, this.collectionInfo.name);
+
         return indexes.map((index) => {
             return new IndexItem(this.mongoCluster, this.databaseInfo, this.collectionInfo, index);
         });

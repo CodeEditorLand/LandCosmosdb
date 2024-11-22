@@ -21,6 +21,7 @@ import { MongoClusterResourceItem } from './MongoClusterResourceItem';
 
 export interface TreeElementBase extends ResourceModelBase {
     getChildren?(): vscode.ProviderResult<TreeElementBase[]>;
+
     getTreeItem(): vscode.TreeItem | Thenable<vscode.TreeItem>;
 
     //viewProperties?: ViewPropertiesModel;
@@ -139,6 +140,7 @@ export class MongoClustersBranchDataProvider
                     }, cacheDuration); // clear cache after 5 minutes == keep cache for 5 minutes 1000 * 60 * 5
 
                     const client = await createMongoClustersManagementClient(_context, subscription);
+
                     const accounts = await uiUtils.listAllIterator(client.mongoClusters.list());
 
                     accounts.map((MongoClustersAccount) => {
@@ -175,6 +177,7 @@ export class MongoClustersBranchDataProvider
                     });
                 } catch (e) {
                     console.error({ ...context, ...subscription });
+
                     throw e;
                 }
             },
@@ -185,6 +188,7 @@ export class MongoClustersBranchDataProvider
 
     async getTreeItem(element: TreeElementBase): Promise<vscode.TreeItem> {
         const ti = await element.getTreeItem();
+
         return ti;
     }
 

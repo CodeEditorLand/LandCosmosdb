@@ -29,6 +29,7 @@ export async function loadPersistedMongoDB(): Promise<void> {
 			try {
 				const persistedNodeId: string | undefined =
 					ext.context.globalState.get(connectedMongoKey);
+
 				if (
 					persistedNodeId &&
 					(!ext.connectedMongoDB ||
@@ -39,6 +40,7 @@ export async function loadPersistedMongoDB(): Promise<void> {
 							persistedNodeId,
 							context,
 						);
+
 					if (persistedNode) {
 						await ext.mongoLanguageClient.client.onReady();
 						await connectMongoDatabase(
@@ -82,6 +84,7 @@ export async function connectMongoDatabase(
 		node.databaseName,
 	);
 	void ext.context.globalState.update(connectedMongoKey, node.fullId);
+
 	setConnectedNode(node);
 	await node.refresh(context);
 
@@ -89,6 +92,7 @@ export async function connectMongoDatabase(
 		// We have to use findTreeItem to get the instance of the old node that's being displayed in the ext.rgApi.appResourceTree. Our specific instance might have been out-of-date
 		const oldNode: AzExtTreeItem | undefined =
 			await ext.rgApi.appResourceTree.findTreeItem(oldNodeId, context);
+
 		if (oldNode) {
 			await oldNode.refresh(context);
 		}

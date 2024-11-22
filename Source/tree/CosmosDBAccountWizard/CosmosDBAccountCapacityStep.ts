@@ -12,7 +12,9 @@ import { type ICosmosDBWizardContext } from './ICosmosDBWizardContext';
 export class CosmosDBAccountCapacityStep extends AzureWizardPromptStep<ICosmosDBWizardContext> {
     public async prompt(context: ICosmosDBWizardContext): Promise<void> {
         const learnMoreLink: string = 'https://aka.ms/cosmos-models';
+
         const placeHolder: string = localize('selectDBServerMsg', 'Select a capacity model');
+
         const picks: IAzureQuickPickItem<boolean | undefined>[] = [
             {
                 label: localize('provisionedOption', 'Provisioned Throughput'),
@@ -31,12 +33,14 @@ export class CosmosDBAccountCapacityStep extends AzureWizardPromptStep<ICosmosDB
                 data: true,
             },
         ];
+
         const vcore: IAzureQuickPickItem<boolean | undefined> = {
             label: localize('vCoreOption', '$(link-external) vCore cluster'),
             detail: localize('vCoreOptionDescription', 'Fully managed MongoDB-compatible database service'),
             description: localize('vCoreOptionPortalHint', '(Create in Azure Portal...)'),
             data: false,
         };
+
         if (context.defaultExperience?.api === API.MongoDB) {
             picks.push(vcore);
         }
@@ -45,6 +49,7 @@ export class CosmosDBAccountCapacityStep extends AzureWizardPromptStep<ICosmosDB
             data: undefined,
         };
         picks.push(learnMore);
+
         let pick: IAzureQuickPickItem<boolean | undefined>;
 
         do {
@@ -53,6 +58,7 @@ export class CosmosDBAccountCapacityStep extends AzureWizardPromptStep<ICosmosDB
                 suppressPersistence: true,
                 learnMoreLink: learnMoreLink,
             });
+
             if (pick === learnMore) {
                 await openUrl(learnMoreLink);
             }
@@ -65,6 +71,7 @@ export class CosmosDBAccountCapacityStep extends AzureWizardPromptStep<ICosmosDB
         if (pick === vcore) {
             await openUrl('https://learn.microsoft.com/azure/cosmos-db/mongodb/vcore/quickstart-portal');
             context.telemetry.properties.isvCore = 'true';
+
             throw new UserCancelledError();
         }
     }

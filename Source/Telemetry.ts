@@ -19,6 +19,7 @@ export class TelemetryContext {
         measurements?: Record<string, number>,
     ): Promise<void> => {
         const eventNameWithCapital = eventName.charAt(0).toUpperCase() + eventName.slice(1);
+
         return callWithTelemetryAndErrorHandling<void>(
             `cosmosDB.nosql.${this.eventPrefix}.webview${eventNameWithCapital}`,
             (context) => {
@@ -45,6 +46,7 @@ export class TelemetryContext {
             const newError = new Error(message);
             // If it's a rendering error in the webview, swap the stack with the componentStack which is more helpful
             newError.stack = componentStack ?? stack;
+
             throw newError;
         });
 

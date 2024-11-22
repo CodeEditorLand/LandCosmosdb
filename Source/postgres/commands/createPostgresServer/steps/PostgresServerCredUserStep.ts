@@ -20,6 +20,7 @@ export class PostgresServerCredUserStep extends AzureWizardPromptStep<IPostgresS
 				validateInput: validateUser,
 			})
 		).trim();
+
 		const usernameSuffix: string = `@${nonNullProp(context, "newServerName")}`;
 		context.longUserName = context.shortUserName + usernameSuffix;
 	}
@@ -33,6 +34,7 @@ async function validateUser(username: string): Promise<string | undefined> {
 	username = username ? username.trim() : "";
 
 	const min = 1;
+
 	const max = 63;
 
 	const restricted = [
@@ -69,6 +71,7 @@ async function validateUser(username: string): Promise<string | undefined> {
 		);
 	} else if (restricted.includes(username.toLowerCase())) {
 		const restrictedString = restricted.map((d) => `"${d}"`).join(", ");
+
 		return localize(
 			"usernameRestrictedCheck",
 			"Admin username cannot be any of the following: {0}.",

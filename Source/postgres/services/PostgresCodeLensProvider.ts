@@ -42,11 +42,15 @@ export class PostgresCodeLensProvider implements CodeLensProvider {
 				context.telemetry.suppressIfSuccessful = true;
 
 				const isInitialized = this._connectedDatabaseInitialized;
+
 				const isConnected = !!this._connectedDatabase;
+
 				const database = isConnected && this._connectedDatabase;
+
 				const lenses: CodeLens[] = [];
 
 				let title: string;
+
 				if (!isInitialized) {
 					title = localize("initializing", "Initializing...");
 				} else if (isConnected) {

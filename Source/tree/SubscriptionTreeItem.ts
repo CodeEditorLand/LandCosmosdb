@@ -55,7 +55,9 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
     public async loadMoreChildrenImpl(_clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {
         //Postgres
         const postgresSingleClient = await createPostgreSQLClient([context, this.subscription]);
+
         const postgresFlexibleClient = await createPostgreSQLFlexibleClient([context, this.subscription]);
+
         const postgresServers: PostgresAbstractServer[] = [
             ...(await uiUtils.listAllIterator(postgresSingleClient.servers.list())).map((s) =>
                 Object.assign(s, { serverType: PostgresServerType.Single }),
@@ -74,7 +76,9 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 
         //CosmosDB
         const client = await createCosmosDBClient([context, this]);
+
         const accounts = await uiUtils.listAllIterator(client.databaseAccounts.list());
+
         const treeItem: AzExtTreeItem[] = await this.createTreeItemsWithErrorHandling(
             accounts,
             'invalidCosmosDBAccount',
@@ -83,6 +87,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         );
 
         treeItem.push(...treeItemPostgres);
+
         return treeItem;
     }
 
@@ -91,6 +96,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         node: SubscriptionTreeItem,
     ): Promise<AzExtTreeItem> {
         const client = await createCosmosDBClient([context, node.subscription]);
+
         const wizardContext: IPostgresServerWizardContext & ICosmosDBWizardContext = Object.assign(
             context,
             node.subscription,
@@ -122,6 +128,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 
         await wizard.execute();
         await ext.rgApi.appResourceTree.refresh(context);
+
         if (
             wizardContext.defaultExperience?.api === API.PostgresSingle ||
             wizardContext.defaultExperience?.api === API.PostgresFlexible
@@ -133,15 +140,22 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
             );
             void vscode.window.showInformationMessage(createMessage);
             ext.outputChannel.appendLog(createMessage);
+
             const server = nonNullProp(wizardContext, 'server');
+
             const host = nonNullProp(server, 'fullyQualifiedDomainName');
+
             const username: string =
                 wizardContext.serverType === PostgresServerType.Flexible
                     ? nonNullProp(wizardContext, 'shortUserName')
                     : nonNullProp(wizardContext, 'longUserName');
+
             const password: string = nonNullProp(wizardContext, 'adminPassword');
+
             const connectionString: string = createPostgresConnectionString(host, undefined, username, password);
+
             const parsedCS: ParsedPostgresConnectionString = parsePostgresConnectionString(connectionString);
+
             return new PostgresServerTreeItem(node, parsedCS, server);
         } else {
             return await SubscriptionTreeItem.initCosmosDBChild(
@@ -162,8 +176,11 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         parent: AzExtParentTreeItem,
     ): Promise<AzExtTreeItem> {
         const experience = tryGetExperience(databaseAccount);
+
         const id: string = nonNullProp(databaseAccount, 'id');
+
         const name: string = nonNullProp(databaseAccount, 'name', `of the database account ${databaseAccount.id}`);
+
         const documentEndpoint: string = nonNullProp(
             databaseAccount,
             'documentEndpoint',
@@ -171,8 +188,11 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         );
 
         const resourceGroup: string = getResourceGroupFromId(id);
+
         const accountKindLabel = getExperienceLabel(databaseAccount);
+
         const label: string = name + (accountKindLabel ? ` (${accountKindLabel})` : ``);
+
         const isEmulator: boolean = false;
 
         const newNode = await callWithTelemetryAndErrorHandling(
@@ -186,12 +206,14 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 
                 if (experience && experience.api === API.MongoDB) {
                     const result = await client.databaseAccounts.listConnectionStrings(resourceGroup, name);
+
                     const connectionString: URL = new URL(
                         nonNullProp(nonNullProp(result, 'connectionStrings')[0], 'connectionString'),
                     );
                     // for any Mongo connectionString, append this query param because the Cosmos Mongo API v3.6 doesn't support retrywrites
                     // but the newer node.js drivers started breaking this
                     const searchParam: string = 'retrywrites';
+
                     if (!connectionString.searchParams.has(searchParam)) {
                         connectionString.searchParams.set(searchParam, 'false');
                     }
@@ -217,8 +239,10 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
                     if (!forceOAuth) {
                         try {
                             const acc = await client.databaseAccounts.get(resourceGroup, name);
+
                             const localAuthDisabled = acc.disableLocalAuth === true;
                             context.telemetry.properties.localAuthDisabled = localAuthDisabled.toString();
+
                             let keyResult: DatabaseAccountListKeysResult | undefined;
                             // If the account has local auth disabled, don't even try to use key auth
                             if (!localAuthDisabled) {
@@ -235,11 +259,13 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
                             }
                         } catch {
                             context.telemetry.properties.receivedKeyCreds = 'false';
+
                             const message = localize(
                                 'keyPermissionErrorMsg',
                                 'You do not have the required permissions to list auth keys for [{0}].\nFalling back to using Entra ID.\nYou can change the default authentication in the settings.',
                                 name,
                             );
+
                             const openSettingsItem = localize('openSettings', 'Open Settings');
                             void vscode.window.showWarningMessage(message, ...[openSettingsItem]).then((item) => {
                                 if (item === openSettingsItem) {
@@ -254,9 +280,11 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 
                     // OAuth is always enabled for Cosmos DB and will be used as a fall back if key auth is unavailable
                     const authCred = { type: 'auth' };
+
                     const credentials = [keyCred, authCred].filter(
                         (cred): cred is CosmosDBCredential => cred !== undefined,
                     );
+
                     switch (experience && experience.api) {
                         case API.Table:
                             return new TableAccountTreeItem(
@@ -268,8 +296,10 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
                                 isEmulator,
                                 databaseAccount,
                             );
+
                         case API.Graph: {
                             const gremlinEndpoint = await tryGetGremlinEndpointFromAzure(client, resourceGroup, name);
+
                             return new GraphAccountTreeItem(
                                 parent,
                                 id,
@@ -297,6 +327,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
                 }
             },
         );
+
         if (!(newNode instanceof AzExtTreeItem)) {
             // note: this should never happen, callWithTelemetryAndErrorHandling will rethrow all errors
             throw new Error(localize('invalidCosmosDBAccount', 'Invalid Cosmos DB account.'));
@@ -311,7 +342,9 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
         const connectionString: string = createPostgresConnectionString(
             nonNullProp(server, 'fullyQualifiedDomainName'),
         );
+
         const parsedCS: ParsedPostgresConnectionString = parsePostgresConnectionString(connectionString);
+
         return new PostgresServerTreeItem(parent, parsedCS, server);
     }
 }

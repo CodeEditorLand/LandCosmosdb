@@ -43,6 +43,7 @@ export function removeTreeItemFromCache(
 		// If parsedCS represents an account, remove the account and any databases that match that account
 		for (const [key, value] of sessionCache.entries()) {
 			let actual: ParsedConnectionString | undefined;
+
 			if (expected instanceof ParsedPostgresConnectionString) {
 				actual = parsePostgresConnectionString(value.connectionString);
 			} else if (expected instanceof ParsedMongoConnectionString) {

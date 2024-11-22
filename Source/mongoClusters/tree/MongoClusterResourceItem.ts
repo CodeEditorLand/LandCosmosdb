@@ -50,6 +50,7 @@ export class MongoClusterResourceItem extends MongoClusterItemBase {
 
                 // Create a client to interact with the MongoDB vCore management API and read the cluster details
                 const managementClient = await createMongoClustersManagementClient(context, this.subscription);
+
                 const clusterInformation = await managementClient.mongoClusters.get(
                     this.mongoCluster.resourceGroup as string,
                     this.mongoCluster.name,
@@ -96,6 +97,7 @@ export class MongoClusterResourceItem extends MongoClusterItemBase {
 
                 // Attempt to create the client with the provided credentials
                 let mongoClustersClient: MongoClustersClient;
+
                 try {
                     mongoClustersClient = await MongoClustersClient.getClient(this.id).catch((error: Error) => {
                         ext.outputChannel.appendLine(`Error: ${error.message}`);

@@ -40,6 +40,7 @@ export class GraphAccountTreeItem extends DocDBAccountTreeItemBase {
 			databaseAccount,
 		);
 		this.valuesToMask.push(documentEndpoint);
+
 		if (_gremlinEndpoint) {
 			this.valuesToMask.push(_gremlinEndpoint.host);
 		}
@@ -59,6 +60,7 @@ export class GraphAccountTreeItem extends DocDBAccountTreeItemBase {
 			case DocDBStoredProcedureTreeItem.contextValue:
 			case GraphTreeItem.contextValue:
 				return true;
+
 			default:
 				return false;
 		}

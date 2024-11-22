@@ -16,6 +16,7 @@ export function getTokenFunction(
 		const getTokenResult = (await credentials.getToken(scope)) as
 			| { token: string }
 			| undefined;
+
 		return getTokenResult?.token ?? "";
 	};
 }

@@ -21,6 +21,7 @@ export async function deletePostgresDatabase(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await ext.rgApi.pickAppResource<PostgresDatabaseTreeItem>(
 			context,
@@ -36,11 +37,13 @@ export async function deletePostgresDatabase(
 		'Are you sure you want to delete database "{0}"?',
 		node.databaseName,
 	);
+
 	const result = await context.ui.showWarningMessage(
 		message,
 		{ modal: true, stepName: "deletePostgresDatabase" },
 		DialogResponses.deleteResponse,
 	);
+
 	if (result === DialogResponses.deleteResponse) {
 		await node.deleteTreeItem(context);
 	}

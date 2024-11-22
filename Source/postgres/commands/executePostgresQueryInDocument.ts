@@ -36,6 +36,7 @@ export async function loadPersistedPostgresDatabase(): Promise<void> {
 			try {
 				const persistedTreeItemId: string | undefined =
 					ext.context.globalState.get(connectedPostgresKey);
+
 				if (persistedTreeItemId) {
 					const persistedTreeItem:
 						| PostgresDatabaseTreeItem
@@ -45,6 +46,7 @@ export async function loadPersistedPostgresDatabase(): Promise<void> {
 							context,
 						)
 					);
+
 					if (persistedTreeItem) {
 						await connectPostgresDatabase(
 							context,
@@ -70,6 +72,7 @@ export async function executePostgresQueryInDocument(
 	await loadPersistedPostgresDatabase();
 
 	let treeItem: PostgresDatabaseTreeItem;
+
 	if (ext.connectedPostgresDB) {
 		treeItem = ext.connectedPostgresDB;
 	} else {
@@ -101,6 +104,7 @@ export async function executePostgresQueryInDocument(
 	}
 
 	const query: string | undefined = activeEditor.document.getText();
+
 	const queryResult: QueryResult = await runPostgresQuery(
 		clientConfig,
 		query,
@@ -117,17 +121,21 @@ export async function executePostgresQueryInDocument(
 		const fileExtension: string = path.extname(
 			activeEditor.document.fileName,
 		);
+
 		const queryFileName: string = path.basename(
 			activeEditor.document.fileName,
 			fileExtension,
 		);
+
 		const outputFileName: string = `${queryFileName}-output`;
 
 		const fields: string[] = queryResult.fields.map((f) => f.name);
+
 		let csvData: string = `${fields.join(",")}${EOL}`;
 
 		for (const row of queryResult.rows) {
 			const fieldValues: string[] = [];
+
 			for (const field of fields) {
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
 				fieldValues.push(row[field]);

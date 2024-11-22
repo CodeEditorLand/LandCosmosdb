@@ -32,8 +32,11 @@ export async function copyConnectionString(
 	}
 
 	await checkAuthentication(context, node);
+
 	const parsedConnectionString = await node.parent.getFullConnectionString();
+
 	let connectionString: string;
+
 	if (node.parent.azureName) {
 		const parsedCS = await node.parent.getFullConnectionString();
 		connectionString = copyPostgresConnectionString(
@@ -51,6 +54,7 @@ export async function copyConnectionString(
 	}
 
 	await vscode.env.clipboard.writeText(connectionString);
+
 	const message = localize(
 		"copiedPostgresConnectStringMsg",
 		"The connection string has been copied to the clipboard",

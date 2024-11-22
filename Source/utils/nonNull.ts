@@ -13,6 +13,7 @@ export function nonNullProp<TSource, TKey extends keyof TSource>(
     message?: string,
 ): NonNullable<TSource[TKey]> {
     const value: NonNullable<TSource[TKey]> = <NonNullable<TSource[TKey]>>source[name];
+
     if (message) {
         return nonNullValue(value, `${<string>name}, ${message}`);
     }

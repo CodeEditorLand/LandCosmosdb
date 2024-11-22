@@ -62,6 +62,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 
     public async loadMoreChildrenImpl(_clearCache: boolean, context: IActionContext): Promise<AzExtTreeItem[]> {
         const isFirewallRuleSet = await this.parent.isFirewallRuleSet(context);
+
         if (!isFirewallRuleSet) {
             const firewallTreeItem: AzExtTreeItem = new GenericTreeItem(this, {
                 contextValue: 'postgresFirewall',
@@ -69,6 +70,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
                 commandId: 'postgreSQL.configureFirewall',
             });
             firewallTreeItem.commandArgs = [this.parent];
+
             return [firewallTreeItem];
         }
 
@@ -77,6 +79,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
                 this.parent,
                 this.databaseName,
             );
+
             if (type === 'password') {
                 void this.showPasswordWarning(context);
             }
@@ -103,6 +106,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
                     ),
                     { stepName: 'loadPostgresDatabases' },
                 );
+
                 const credentialsTreeItem: AzExtTreeItem = new GenericTreeItem(this, {
                     contextValue: 'postgresCredentials',
                     label: localize(
@@ -113,6 +117,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
                     commandId: 'postgreSQL.enterCredentials',
                 });
                 credentialsTreeItem.commandArgs = [this.parent];
+
                 return [credentialsTreeItem];
             } else if (this.parent.azureName && parsedError.errorType === firewallNotConfiguredErrorType) {
                 void context.ui.showWarningMessage(
@@ -124,6 +129,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
                     ),
                     { stepName: 'loadPostgresDatabases' },
                 );
+
                 return [];
             } else {
                 throw error;

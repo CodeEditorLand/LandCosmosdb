@@ -39,7 +39,9 @@ export async function connectPostgresDatabase(
 		ext.connectedPostgresDB && ext.connectedPostgresDB.fullId;
 	void ext.context.globalState.update(connectedPostgresKey, treeItem.fullId);
 	ext.connectedPostgresDB = treeItem;
+
 	const database = treeItem && treeItem.label;
+
 	if (ext.postgresCodeLensProvider) {
 		ext.postgresCodeLensProvider.setConnectedDatabase(database);
 	}
@@ -52,6 +54,7 @@ export async function connectPostgresDatabase(
 				oldTreeItemId,
 				context,
 			);
+
 		if (oldTreeItem) {
 			await oldTreeItem.refresh(context);
 		}

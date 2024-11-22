@@ -110,8 +110,10 @@ function getRandomArrayAndIndex(length: number): { numbers: number[]; index: num
     // and it did seem unlikely that we would get a duplicate number in a small array
     // but I actually got a duplicate number in a 3 element array on the second try
     const randomNumbers: number[] = [];
+
     while (randomNumbers.length < length) {
         const randomNumber = Math.floor(Math.random() * 101);
+
         if (!randomNumbers.includes(randomNumber)) {
             randomNumbers.push(randomNumber);
         }

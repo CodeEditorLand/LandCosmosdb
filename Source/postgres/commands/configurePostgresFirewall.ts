@@ -62,11 +62,14 @@ export async function setFirewallRule(
 	ip: string,
 ): Promise<void> {
 	const serverType: PostgresServerType = nonNullProp(treeItem, "serverType");
+
 	const client: AbstractPostgresClient = await createAbstractPostgresClient(
 		serverType,
 		[context, treeItem.subscription],
 	);
+
 	const resourceGroup: string = nonNullProp(treeItem, "resourceGroup");
+
 	const serverName: string = nonNullProp(treeItem, "azureName");
 
 	const firewallRuleName: string =
@@ -83,6 +86,7 @@ export async function setFirewallRule(
 		ip,
 		serverName,
 	);
+
 	const options: vscode.ProgressOptions = {
 		location: vscode.ProgressLocation.Notification,
 		title: progressMessage,
@@ -96,6 +100,7 @@ export async function setFirewallRule(
 			newFirewallRule,
 		);
 	});
+
 	const completedMessage: string = localize(
 		"addedFirewallRule",
 		'Successfully added firewall rule for IP "{0}" to server "{1}".',

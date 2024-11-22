@@ -16,9 +16,11 @@ const timeoutMessage =
 	"Timed out trying to execute the Mongo script. To use a longer timeout, modify the VS Code 'mongo.shell.timeout' setting.";
 
 const mongoShellMoreMessage = 'Type "it" for more';
+
 const extensionMoreMessage = "(More)";
 
 const sentinelBase = "EXECUTION COMPLETED";
+
 const sentinelRegex = /"?EXECUTION COMPLETED [0-9a-fA-F]{10}"?/;
 function createSentinel(): string {
 	return `${sentinelBase} ${randomUtils.getRandomHexString(10)}`;
@@ -62,6 +64,7 @@ export class MongoShell extends vscode.Disposable {
 					outputFilterSearch: sentinelRegex,
 					outputFilterReplace: "",
 				});
+
 			const shell: MongoShell = new MongoShell(process, timeoutSeconds);
 
 			// Try writing an empty script to verify the process is running correctly and allow us
@@ -91,9 +94,11 @@ export class MongoShell extends vscode.Disposable {
 		script = convertToSingleLine(script);
 
 		let stdOut = "";
+
 		const sentinel = createSentinel();
 
 		const disposables: vscode.Disposable[] = [];
+
 		try {
 			// eslint-disable-next-line @typescript-eslint/no-misused-promises, no-async-promise-executor
 			const result = await new Promise<string>(
@@ -108,6 +113,7 @@ export class MongoShell extends vscode.Disposable {
 								// eslint-disable-next-line prefer-const
 								let { text: stdOutNoSentinel, removed } =
 									removeSentinel(stdOut, sentinel);
+
 								if (removed) {
 									// The sentinel was found, which means we are done.
 
@@ -200,6 +206,7 @@ function removeSentinel(
 	sentinel: string,
 ): { text: string; removed: boolean } {
 	const index = text.indexOf(sentinel);
+
 	if (index >= 0) {
 		return { text: text.slice(0, index), removed: true };
 	} else {
@@ -216,6 +223,7 @@ async function delay(milliseconds: number): Promise<void> {
 function wrapCheckOutputWindow(error: unknown): unknown {
 	const checkOutputMsg =
 		"The output window may contain additional information.";
+
 	return parseError(error).message.includes(checkOutputMsg)
 		? error
 		: wrapError(error, checkOutputMsg);

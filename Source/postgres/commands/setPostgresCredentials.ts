@@ -18,6 +18,7 @@ export async function setPostgresCredentials(
 	serverId: string,
 ): Promise<void> {
 	const serviceName: string = PostgresServerTreeItem.serviceName;
+
 	const storedValue: string | undefined =
 		ext.context.globalState.get(serviceName);
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

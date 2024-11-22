@@ -50,6 +50,7 @@ export class MongoClustersWorkspaceBranchDataProvider
 
     getResourceItem(): TreeElementBase | Thenable<TreeElementBase> {
         const resourceItem = new MongoDBAccountsWorkspaceItem();
+
         return ext.state.wrapItemInStateHandling(resourceItem!, () => this.refresh(resourceItem));
     }
 

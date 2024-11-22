@@ -18,6 +18,7 @@ const defaultLinearity = 0.75;
 
 const snappingPointsForKeyColor = (keyColor: string): number[] => {
     const hue = hexToHue(keyColor);
+
     return [
         hueToSnappingPointsMap[hue][0] * 100,
         hueToSnappingPointsMap[hue][1] * 100,
@@ -27,6 +28,7 @@ const snappingPointsForKeyColor = (keyColor: string): number[] => {
 
 const pointsForKeyColor = (keyColor: string, range: number[]): number[] => {
     const hue = hexToHue(keyColor);
+
     const center = hueToSnappingPointsMap[hue][1] * 100;
 
     return linearInterpolationThroughPoint(range[0], range[1], center, 16);
@@ -54,6 +56,7 @@ function linearInterpolationThroughPoint(start: number, end: number, inBetween: 
 
     // Calculate the step size for each segment
     const stepBefore = (inBetween - start) / inBetweenIndex;
+
     const stepAfter = (end - inBetween) / (numSamples - 1 - inBetweenIndex);
 
     // Fill the array with interpolated values before the inBetween point
@@ -71,14 +74,18 @@ function linearInterpolationThroughPoint(start: number, end: number, inBetween: 
 
 const getLogSpace = (min: number, max: number, n: number) => {
     const a = min <= 0 ? 0 : Math.log(min);
+
     const b = Math.log(max);
+
     const delta = (b - a) / n;
 
     const result = [Math.pow(Math.E, a)];
+
     for (let i = 1; i < n; i += 1) {
         result.push(Math.pow(Math.E, a + delta * i));
     }
     result.push(Math.pow(Math.E, b));
+
     return result;
 };
 
@@ -93,10 +100,15 @@ function paletteShadesFromCurvePoints(
     }
 
     const snappingPoints = snappingPointsForKeyColor(keyColor);
+
     const paletteShades: Vec3[] = [];
+
     const range = [snappingPoints[0], snappingPoints[2]];
+
     const logLightness = getLogSpace(Math.log10(0), Math.log10(100), nShades);
+
     const linearLightness = pointsForKeyColor(keyColor, range);
+
     let c = 0;
 
     // obtain 2d path through color space to grab points from
@@ -111,6 +123,7 @@ function paletteShadesFromCurvePoints(
         }
 
         const [l1, a1, b1] = curvePoints[c];
+
         const [l2, a2, b2] = curvePoints[c + 1];
 
         const u = (l - l1) / (l2 - l1);
@@ -131,6 +144,7 @@ export function paletteShadesFromCurve(
     const points = getPointsOnCurvePath(curve, Math.ceil((curveDepth * (1 + Math.abs(curve.torsion || 1))) / 2)).map(
         (curvePoint: Vec3) => getPointOnHelix(curvePoint, curve.torsion, curve.torsionT0),
     );
+
     return paletteShadesFromCurvePoints(points, nShades, linearity, keyColor);
 }
 
@@ -138,6 +152,7 @@ export function sRGB_to_hex(rgb: Vec3): string {
     return `#${rgb
         .map((x) => {
             const channel = x < 0 ? 0 : Math.floor(x >= 1.0 ? 255 : x * 256);
+
             return channel.toString(16).padStart(2, '0');
         })
         .join('')}`;
@@ -149,6 +164,7 @@ export function Lab_to_hex(lab: Vec3): string {
 
 export function hex_to_sRGB(hex: string): Vec3 {
     const aRgbHex = hex.match(/#?(..)(..)(..)/);
+
     return aRgbHex
         ? [parseInt(aRgbHex[1], 16) / 255, parseInt(aRgbHex[2], 16) / 255, parseInt(aRgbHex[3], 16) / 255]
         : [0, 0, 0];
@@ -164,18 +180,25 @@ function paletteShadesToHex(paletteShades: Vec3[]): string[] {
 
 function getPointOnHelix(pointOnCurve: Vec3, torsion = 0, torsionT0 = 50): Vec3 {
     const t = pointOnCurve[0];
+
     const [l, c, h] = Lab_to_LCH(pointOnCurve);
+
     const hueOffset = torsion * (t - torsionT0);
+
     return LCH_to_Lab([l, c, h + hueOffset]);
 }
 
 export function curvePathFromPalette({ keyColor, darkCp, lightCp, hueTorsion }: Palette): CurvedHelixPath {
     const blackPosition = [0, 0, 0];
+
     const whitePosition = [100, 0, 0];
+
     const keyColorPosition = LCH_to_Lab(keyColor);
+
     const [l, a, b] = keyColorPosition;
 
     const darkControlPosition = [l * (1 - darkCp), a, b];
+
     const lightControlPosition = [l + (100 - l) * lightCp, a, b];
 
     return {
@@ -196,7 +219,9 @@ export function hexColorsFromPalette(
     curveDepth = 24,
 ): string[] {
     const curve = curvePathFromPalette(palette);
+
     const shades = paletteShadesFromCurve(keyColor, curve, nShades, linearity, curveDepth);
+
     return paletteShadesToHex(shades);
 }
 

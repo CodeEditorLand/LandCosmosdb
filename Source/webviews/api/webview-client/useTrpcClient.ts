@@ -97,6 +97,7 @@ export function useTrpcClient() {
         };
 
         window.addEventListener('message', handler);
+
         return () => {
             window.removeEventListener('message', handler);
         };
@@ -138,6 +139,7 @@ export function useTrpcClient() {
         };
 
         window.addEventListener('message', handler);
+
         return () => {
             window.removeEventListener('message', handler);
         };

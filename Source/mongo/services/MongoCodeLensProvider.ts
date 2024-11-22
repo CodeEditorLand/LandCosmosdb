@@ -38,8 +38,11 @@ export class MongoCodeLensProvider implements vscode.CodeLensProvider {
 				context.telemetry.suppressIfSuccessful = true;
 
 				const isInitialized = this._connectedDatabaseInitialized;
+
 				const isConnected = !!this._connectedDatabase;
+
 				const database = isConnected && this._connectedDatabase;
+
 				const lenses: vscode.CodeLens[] = [];
 
 				// Allow displaying and changing connected database
@@ -72,6 +75,7 @@ export class MongoCodeLensProvider implements vscode.CodeLensProvider {
 					});
 
 					const commands = getAllCommandsFromTextDocument(document);
+
 					for (const cmd of commands) {
 						// run individual
 						lenses.push(<vscode.CodeLens>{

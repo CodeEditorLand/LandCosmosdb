@@ -11,5 +11,6 @@ export interface IDocDBTreeRoot {
 	endpoint: string;
 	credentials: CosmosDBCredential[];
 	isEmulator: boolean | undefined;
+
 	getCosmosClient(): CosmosClient;
 }

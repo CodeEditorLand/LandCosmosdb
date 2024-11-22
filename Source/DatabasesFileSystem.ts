@@ -29,6 +29,7 @@ export interface IEditableTreeItem extends AzExtTreeItem {
 	filePath: string;
 	cTime: number;
 	mTime: number;
+
 	getFileContent(context: IActionContext): Promise<string>;
 	writeFileContent(context: IActionContext, data: string): Promise<void>;
 }
@@ -45,6 +46,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 		const size: number = Buffer.byteLength(
 			await node.getFileContent(context),
 		);
+
 		return {
 			type: FileType.File,
 			ctime: node.cTime,
@@ -69,7 +71,9 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 		const showSavePromptKey: string = "showSavePrompt";
 		// NOTE: Using "cosmosDB" instead of "azureDatabases" here for the sake of backwards compatibility. If/when this file system adds support for non-cosmosdb items, we should consider changing this to "azureDatabases"
 		const prefix: string = "cosmosDB";
+
 		const nodeEditorLabel: string = getNodeEditorLabel(node);
+
 		if (
 			this._showSaveConfirmation &&
 			getWorkspaceSetting<boolean>(showSavePromptKey, undefined, prefix)
@@ -80,6 +84,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 				node.filePath,
 				nodeEditorLabel,
 			);
+
 			const result: MessageItem | undefined =
 				await context.ui.showWarningMessage(
 					message,
@@ -88,6 +93,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 					DialogResponses.alwaysUpload,
 					DialogResponses.dontUpload,
 				);
+
 			if (result === DialogResponses.alwaysUpload) {
 				await updateGlobalSetting(showSavePromptKey, false, prefix);
 			} else if (result === DialogResponses.dontUpload) {
@@ -113,6 +119,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 	public async updateWithoutPrompt(uri: Uri): Promise<void> {
 		const textDoc = await workspace.openTextDocument(uri);
 		this._showSaveConfirmation = false;
+
 		try {
 			await textDoc.save();
 		} finally {

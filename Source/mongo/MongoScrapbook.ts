@@ -46,7 +46,9 @@ export function getAllErrorsFromTextDocument(
 	document: vscode.TextDocument,
 ): vscode.Diagnostic[] {
 	const commands = getAllCommandsFromTextDocument(document);
+
 	const errors: vscode.Diagnostic[] = [];
+
 	for (const command of commands) {
 		for (const error of command.errors || []) {
 			const diagnostic = new vscode.Diagnostic(
@@ -64,6 +66,7 @@ export async function executeAllCommandsFromActiveEditor(
 	context: IActionContext,
 ): Promise<void> {
 	ext.outputChannel.appendLog("Executing all commands in scrapbook...");
+
 	const commands = getAllCommandsFromActiveEditor();
 	await executeCommands(context, commands);
 }
@@ -73,15 +76,18 @@ export async function executeCommandFromActiveEditor(
 	position?: vscode.Position,
 ): Promise<void> {
 	const commands = getAllCommandsFromActiveEditor();
+
 	const command = findCommandAtPosition(
 		commands,
 		position || vscode.window.activeTextEditor?.selection.start,
 	);
+
 	return await executeCommand(context, command);
 }
 
 function getAllCommandsFromActiveEditor(): MongoCommand[] {
 	const activeEditor = vscode.window.activeTextEditor;
+
 	if (activeEditor) {
 		return getAllCommandsFromTextDocument(activeEditor.document);
 	} else {
@@ -101,7 +107,9 @@ async function executeCommands(
 	commands: MongoCommand[],
 ): Promise<void> {
 	const label: string = "Scrapbook-execute-all-results";
+
 	const fullId: string = `${ext.connectedMongoDB?.fullId}/${label}`;
+
 	const readOnlyContent: ReadOnlyContent = await openReadOnlyContent(
 		{ label, fullId },
 		"",
@@ -116,10 +124,12 @@ async function executeCommands(
 			await executeCommand(context, command, readOnlyContent);
 		} catch (e) {
 			const err = parseError(e);
+
 			if (err.isUserCancelledError) {
 				throw e;
 			} else {
 				const message = `${command.text.split("(")[0]} at ${command.range.start.line + 1}:${command.range.start.character + 1}: ${err.message}`;
+
 				throw new Error(message);
 			}
 		}
@@ -142,6 +152,7 @@ async function executeCommand(
 		}
 
 		const database = ext.connectedMongoDB;
+
 		if (!database) {
 			throw new Error(
 				'Please select a MongoDB database to run against by selecting it in the explorer and selecting the "Connect" context menu item',
@@ -150,6 +161,7 @@ async function executeCommand(
 		if (command.errors && command.errors.length > 0) {
 			//Currently, we take the first error pushed. Tests correlate that the parser visits errors in left-to-right, top-to-bottom.
 			const err = command.errors[0];
+
 			throw new Error(
 				localize(
 					"unableToParseSyntax",
@@ -161,7 +173,9 @@ async function executeCommand(
 		// we don't handle chained commands so we can only handle "find" if isn't chained
 		if (command.name === "find" && !command.chained) {
 			const db = await database.connectToDb();
+
 			const collectionName: string = nonNullProp(command, "collection");
+
 			const collection: Collection = db.collection(collectionName);
 			// NOTE: Intentionally creating a _new_ tree item rather than searching for a cached node in the tree because
 			// the executed 'find' command could have a filter or projection that is not handled by a cached tree node
@@ -175,6 +189,7 @@ async function executeCommand(
 			});
 		} else {
 			const result = await database.executeCommand(command, context);
+
 			if (command.name === "findOne") {
 				if (result === "null") {
 					throw new Error(`Could not find any documents`);
@@ -182,17 +197,20 @@ async function executeCommand(
 
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
 				const document: IMongoDocument = EJSON.parse(result);
+
 				const collectionName: string = nonNullProp(
 					command,
 					"collection",
 				);
 
 				const collectionId: string = `${database.fullId}/${collectionName}`;
+
 				const colNode: MongoCollectionTreeItem | undefined =
 					await ext.rgApi.appResourceTree.findTreeItem(
 						collectionId,
 						context,
 					);
+
 				if (!colNode) {
 					throw new Error(
 						localize(
@@ -211,6 +229,7 @@ async function executeCommand(
 					await readOnlyContent.append(`${result}${EOL}${EOL}`);
 				} else {
 					const label: string = "Scrapbook-results";
+
 					const fullId: string = `${database.fullId}/${label}`;
 					await openReadOnlyContent(
 						{ label, fullId },
@@ -250,6 +269,7 @@ async function refreshTreeAfterCommand(
 			database.fullId + "/" + command.collection,
 			context,
 		);
+
 		if (collectionNode) {
 			await collectionNode.refresh(context);
 		}
@@ -258,32 +278,40 @@ async function refreshTreeAfterCommand(
 
 export function getAllCommandsFromText(content: string): MongoCommand[] {
 	const lexer = new mongoLexer(new InputStream(content));
+
 	const lexerListener = new LexerErrorListener();
 	lexer.removeErrorListeners(); // Default listener outputs to the console
 	lexer.addErrorListener(lexerListener);
+
 	const tokens: CommonTokenStream = new CommonTokenStream(lexer);
 
 	const parser = new mongoParser.mongoParser(tokens);
+
 	const parserListener = new ParserErrorListener();
 	parser.removeErrorListeners(); // Default listener outputs to the console
 	parser.addErrorListener(parserListener);
 
 	const commandsContext: mongoParser.MongoCommandsContext =
 		parser.mongoCommands();
+
 	const commands = new FindMongoCommandsVisitor().visit(commandsContext);
 
 	// Match errors with commands based on location
 	const errors = lexerListener.errors.concat(parserListener.errors);
 	errors.sort((a, b) => {
 		const linediff = a.range.start.line - b.range.start.line;
+
 		const chardiff = a.range.start.character - b.range.start.character;
+
 		return linediff || chardiff;
 	});
+
 	for (const err of errors) {
 		const associatedCommand = findCommandAtPosition(
 			commands,
 			err.range.start,
 		);
+
 		if (associatedCommand) {
 			associatedCommand.errors = associatedCommand.errors || [];
 			associatedCommand.errors.push(err);
@@ -308,7 +336,9 @@ export function findCommandAtPosition(
 	position?: vscode.Position,
 ): MongoCommand {
 	let lastCommandOnSameLine: MongoCommand | undefined;
+
 	let lastCommandBeforePosition: MongoCommand | undefined;
+
 	if (position) {
 		for (const command of commands) {
 			if (command.range.contains(position)) {
@@ -337,6 +367,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			ctx.children,
 			mongoParser.FunctionCallContext,
 		).length;
+
 		const stop = nonNullProp(ctx, "stop");
 		this.commands.push({
 			range: new vscode.Range(
@@ -351,11 +382,13 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			argumentObjects: [],
 			chained: funcCallCount > 1 ? true : false,
 		});
+
 		return super.visitCommand(ctx);
 	}
 
 	public visitCollection(ctx: mongoParser.CollectionContext): MongoCommand[] {
 		this.commands[this.commands.length - 1].collection = ctx.text;
+
 		return super.visitCollection(ctx);
 	}
 
@@ -372,21 +405,27 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 	public visitArgument(ctx: mongoParser.ArgumentContext): MongoCommand[] {
 		try {
 			const argumentsContext = ctx.parent;
+
 			if (argumentsContext) {
 				const functionCallContext = argumentsContext.parent;
+
 				if (
 					functionCallContext &&
 					functionCallContext.parent instanceof
 						mongoParser.CommandContext
 				) {
 					const lastCommand = this.commands[this.commands.length - 1];
+
 					const argAsObject = this.contextToObject(ctx);
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 					const argText = EJSON.stringify(argAsObject);
 					nonNullProp(lastCommand, "arguments").push(argText);
+
 					const escapeHandled =
 						this.deduplicateEscapesForRegex(argText);
+
 					let ejsonParsed = {};
+
 					try {
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 						ejsonParsed = EJSON.parse(escapeHandled);
@@ -421,6 +460,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		}
 		// In a well formed expression, Argument and propertyValue tokens should have exactly one child, from their definitions in mongo.g4
 		const child: ParseTree = nonNullProp(ctx, "children")[0];
+
 		if (child instanceof mongoParser.LiteralContext) {
 			return this.literalContextToObject(child, ctx);
 		} else if (child instanceof mongoParser.ObjectLiteralContext) {
@@ -436,6 +476,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 				`Unrecognized node type encountered. We could not parse ${child.text}`,
 				ctx,
 			);
+
 			return {};
 		}
 	}
@@ -446,12 +487,15 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		//eslint-disable-next-line  @typescript-eslint/no-wrapper-object-types
 	): Object {
 		const text = child.text;
+
 		const tokenType = child.start.type;
+
 		const nonStringLiterals = [
 			mongoParser.mongoParser.NullLiteral,
 			mongoParser.mongoParser.BooleanLiteral,
 			mongoParser.mongoParser.NumericLiteral,
 		];
+
 		if (tokenType === mongoParser.mongoParser.StringLiteral) {
 			return stripQuotes(text);
 		} else if (tokenType === mongoParser.mongoParser.RegexLiteral) {
@@ -464,6 +508,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 				`Unrecognized token. Token text: ${text}`,
 				ctx,
 			);
+
 			return {};
 		}
 	}
@@ -475,23 +520,28 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			child.children,
 			mongoParser.PropertyNameAndValueListContext,
 		);
+
 		if (!propertyNameAndValue) {
 			// Argument is {}
 			return {};
 		} else {
 			const parsedObject: object = {};
+
 			const propertyAssignments = filterType(
 				propertyNameAndValue.children,
 				mongoParser.PropertyAssignmentContext,
 			);
+
 			for (const propertyAssignment of propertyAssignments) {
 				const propertyAssignmentChildren = nonNullProp(
 					propertyAssignment,
 					"children",
 				);
+
 				const propertyName = <mongoParser.PropertyNameContext>(
 					propertyAssignmentChildren[0]
 				);
+
 				const propertyValue = <mongoParser.PropertyValueContext>(
 					propertyAssignmentChildren[2]
 				);
@@ -509,6 +559,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			child.children,
 			mongoParser.ElementListContext,
 		);
+
 		if (elementList) {
 			const elementItems = filterType(
 				elementList.children,
@@ -527,14 +578,17 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 	): Object {
 		const functionTokens = child.children;
+
 		const constructorCall: TerminalNode = nonNullValue(
 			findType(functionTokens, TerminalNode),
 			"constructorCall",
 		);
+
 		const argumentsToken: mongoParser.ArgumentsContext = nonNullValue(
 			findType(functionTokens, mongoParser.ArgumentsContext),
 			"argumentsToken",
 		);
+
 		if (
 			!(
 				argumentsToken._CLOSED_PARENTHESIS &&
@@ -546,6 +600,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 				`Expecting parentheses or quotes at '${constructorCall.text}'`,
 				ctx,
 			);
+
 			return {};
 		}
 
@@ -553,29 +608,36 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			argumentsToken.children,
 			mongoParser.ArgumentContext,
 		);
+
 		if (argumentContextArray.length > 1) {
 			this.addErrorToCommand(
 				`Too many arguments. Expecting 0 or 1 argument(s) to ${constructorCall}`,
 				ctx,
 			);
+
 			return {};
 		}
 
 		const tokenText: string | undefined = argumentContextArray.length
 			? argumentContextArray[0].text
 			: undefined;
+
 		switch (constructorCall.text) {
 			case "ObjectId":
 				return this.objectIdToObject(ctx, tokenText);
+
 			case "ISODate":
 				return this.isodateToObject(ctx, tokenText);
+
 			case "Date":
 				return this.dateToObject(ctx, tokenText);
+
 			default:
 				this.addErrorToCommand(
 					`Unrecognized node type encountered. Could not parse ${constructorCall.text} as part of ${child.text}`,
 					ctx,
 				);
+
 				return {};
 		}
 	}
@@ -587,6 +649,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 	): { $date: string } | Object {
 		// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 		const date: Date | Object = this.tryToConstructDate(ctx, tokenText);
+
 		if (date instanceof Date) {
 			return { $date: date.toString() };
 		} else {
@@ -637,6 +700,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			} catch (error) {
 				const parsedError: IParsedError = parseError(error);
 				this.addErrorToCommand(parsedError.message, ctx);
+
 				return {};
 			}
 		}
@@ -648,17 +712,21 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 	): Object {
 		let hexID: string;
+
 		let constructedObject: ObjectId;
+
 		if (!tokenText) {
 			// usage : ObjectID()
 			constructedObject = new ObjectId();
 		} else {
 			hexID = stripQuotes(<string>tokenText);
+
 			try {
 				constructedObject = new ObjectId(hexID);
 			} catch (error) {
 				const parsedError: IParsedError = parseError(error);
 				this.addErrorToCommand(parsedError.message, ctx);
+
 				return {};
 			}
 		}
@@ -671,9 +739,12 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 	): Object {
 		const separator = text.lastIndexOf("/");
+
 		const flags =
 			separator !== text.length - 1 ? text.substring(separator + 1) : "";
+
 		const pattern = text.substring(1, separator);
+
 		try {
 			// validate the pattern and flags.
 			// It is intended for the errors thrown here to be handled by the catch block.
@@ -687,6 +758,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			//User may not have finished typing
 			const parsedError: IParsedError = parseError(error);
 			this.addErrorToCommand(parsedError.message, ctx);
+
 			return {};
 		}
 	}
@@ -697,7 +769,9 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 	): void {
 		const command = this.commands[this.commands.length - 1];
 		command.errors = command.errors || [];
+
 		const stop = nonNullProp(ctx, "stop");
+
 		const currentErrorDesc: ErrorDescription = {
 			message: errorMessage,
 			range: new vscode.Range(

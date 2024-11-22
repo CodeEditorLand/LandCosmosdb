@@ -22,6 +22,7 @@ declare global {
 export function useConfiguration<T>(): T {
     const [configuration] = useState<T>(() => {
         const configString = decodeURIComponent(window.config?.__initialData ?? '{}');
+
         return JSON.parse(configString) as T;
     });
 

@@ -26,6 +26,7 @@ export async function launchShell(
     const client: MongoClustersClient = await MongoClustersClient.getClient(node.mongoCluster.id);
 
     const connectionString = client.getConnectionString();
+
     const username = client.getUserName();
 
     const connectionStringWithUserName = addAuthenticationDataToConnectionString(

@@ -20,6 +20,7 @@ export async function deleteDocDBDatabase(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await pickDocDBAccount<DocDBDatabaseTreeItem>(
 			context,
@@ -27,6 +28,7 @@ export async function deleteDocDBDatabase(
 		);
 	}
 	await node.deleteTreeItem(context);
+
 	const successMessage = localize(
 		"deleteMongoDatabaseMsg",
 		'Successfully deleted database "{0}"',

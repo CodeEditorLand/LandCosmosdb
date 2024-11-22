@@ -21,6 +21,7 @@ export async function writeNoSqlQuery(
 		);
 	}
 	setConnectedNoSqlContainer(node);
+
 	const sampleQuery = `SELECT * FROM ${node.id}`;
 	await vscodeUtil.showNewFile(
 		sampleQuery,

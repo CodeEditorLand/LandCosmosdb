@@ -38,6 +38,7 @@ export class TableAccountTreeItem extends DocDBAccountTreeItemBase {
                     label: 'Table Accounts are not supported yet.',
                 });
                 tableNotFoundTreeItem.suppressMaskLabel = true;
+
                 return [tableNotFoundTreeItem];
             },
         );

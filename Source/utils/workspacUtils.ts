@@ -16,5 +16,6 @@ export function getRootPath(): string | undefined {
 
 export function getBatchSizeSetting(): number {
     const config: vscode.WorkspaceConfiguration = vscode.workspace.getConfiguration();
+
     return nonNullValue(config.get<number>(ext.settingsKeys.batchSize), 'batchSize');
 }

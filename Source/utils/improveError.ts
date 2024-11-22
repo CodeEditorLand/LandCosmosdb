@@ -9,6 +9,7 @@ export function improveError(error: unknown): unknown {
 	const message = parseError(error).message;
 	// Example: "spawn c:\Program Files\MongoDB\Server\4.0\bin\mongo.exe ENOENT"
 	const match = message.match(/spawn (.*) ENOENT/);
+
 	if (match) {
 		return new Error(`Could not find ${match[1]}`);
 	}

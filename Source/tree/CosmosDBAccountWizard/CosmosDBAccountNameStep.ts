@@ -51,6 +51,7 @@ async function validateCosmosDBAccountName(
 	name = name ? name.trim() : "";
 
 	const min = 3;
+
 	const max = 31;
 
 	if (name.length < min || name.length > max) {

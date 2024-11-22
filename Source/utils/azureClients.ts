@@ -22,6 +22,7 @@ export async function createMongoClustersManagementClient(
     subscription: AzureSubscription,
 ): Promise<CosmosDBManagementClient> {
     const subContext = createSubscriptionContext(subscription);
+
     return createAzureClient([context, subContext], (await import('@azure/arm-cosmosdb')).CosmosDBManagementClient);
 }
 

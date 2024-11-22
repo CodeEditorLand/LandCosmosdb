@@ -56,6 +56,7 @@ export class BaseTab {
 
         while (this.disposables.length) {
             const disposable = this.disposables.pop();
+
             if (disposable) {
                 disposable.dispose();
             }
@@ -72,13 +73,19 @@ export class BaseTab {
 
     private getWebviewContent(): string {
         const ctx = ext.context;
+
         const cspSource = this.panel.webview.cspSource;
+
         const devServer = !!process.env.DEVSERVER;
+
         const isProduction = ext.context.extensionMode === vscode.ExtensionMode.Production;
+
         const nonce = crypto.randomBytes(16).toString('base64');
 
         const dir = ext.isBundle ? '' : 'out/src/webviews';
+
         const filename = ext.isBundle ? 'views.js' : 'index.js';
+
         const uri = (...parts: string[]) =>
             this.panel.webview
                 .asWebviewUri(vscode.Uri.file(path.join(ctx.extensionPath, dir, ...parts)))
@@ -148,23 +155,28 @@ export class BaseTab {
 
     protected getCommand(payload: CommandPayload): Promise<void> {
         const commandName = payload.commandName;
+
         switch (commandName) {
             case 'showInformationMessage':
                 return this.showInformationMessage(payload.params[0] as string);
+
             case 'showErrorMessage':
                 return this.showErrorMessage(payload.params[0] as string);
+
             case 'reportWebviewEvent':
                 return this.telemetryContext.reportWebviewEvent(
                     payload.params[0] as string,
                     payload.params[1] as Record<string, string>,
                     payload.params[2] as Record<string, number>,
                 );
+
             case 'reportWebviewError':
                 return this.telemetryContext.reportWebviewError(
                     payload.params[0] as string, // message
                     payload.params[1] as string, // stack
                     payload.params[2] as string, // componentStack
                 );
+
             case 'executeReportIssueCommand':
                 // Use an async anonymous function to convert Thenable to Promise
                 return (async () => await vscode.commands.executeCommand('azureDatabases.reportIssue'))();

@@ -14,6 +14,7 @@ export type DocumentsViewWebviewConfigurationType = {
     sessionId: string;
     databaseName: string;
     collectionName: string;
+
     documentId: string;
 
     mode: string; // 'add', 'view', 'edit'
@@ -25,10 +26,12 @@ export class DocumentsViewController extends WebviewController<DocumentsViewWebv
         // we're not modifying it here in order to be ready for future updates of the webview API.
 
         let title: string = `${initialData.databaseName}/${initialData.collectionName}/*new*`;
+
         switch (initialData.mode) {
             case 'view':
             case 'edit': {
                 title = `${initialData.databaseName}/${initialData.collectionName}/${initialData.documentId}`;
+
                 break;
             }
         }

@@ -21,6 +21,7 @@ export async function deletePostgresStoredProcedure(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!treeItem) {
 		treeItem =
 			await ext.rgApi.pickAppResource<PostgresStoredProcedureTreeItem>(
@@ -44,6 +45,7 @@ export async function deletePostgresStoredProcedure(
 		DialogResponses.deleteResponse,
 	);
 	await treeItem.deleteTreeItem(context);
+
 	const deleteMessage: string = localize(
 		"successfullyDeletedStoredProcedure",
 		'Successfully deleted stored procedure "{0}".',

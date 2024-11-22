@@ -28,6 +28,7 @@ export class ResolvedDocDBAccountResource
 
 	initChild: (resource: Resource) => AzExtTreeItem;
 	isServerless?: boolean;
+
 	getIterator?: (
 		client: CosmosClient,
 		feedOptions: FeedOptions,

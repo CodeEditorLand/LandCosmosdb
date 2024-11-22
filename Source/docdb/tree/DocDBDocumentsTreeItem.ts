@@ -68,9 +68,11 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
         });
 
         docID = docID.trim();
+
         let body: ItemDefinition = { id: docID };
         body = await this.promptForPartitionKey(context, body);
         context.showCreatingTreeItem(docID);
+
         const item: ItemDefinition = await this.createDocument(body);
 
         return this.initChild(item);
@@ -80,12 +82,15 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
         const item: ItemResponse<ItemDefinition> = await this.getContainerClient(
             this.root.getCosmosClient(),
         ).items.create(body);
+
         return nonNullProp(item, 'resource');
     }
 
     public documentHasPartitionKey(doc: object): boolean {
         let interim = doc;
+
         let partitionKey: string | undefined = this.parent.partitionKey && this.parent.partitionKey.paths[0];
+
         if (!partitionKey) {
             return true;
         }
@@ -108,6 +113,7 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 
     public async promptForPartitionKey(context: IActionContext, body: ItemDefinition): Promise<ItemDefinition> {
         const partitionKey: string | undefined = this.parent.partitionKey && this.parent.partitionKey.paths[0];
+
         if (partitionKey) {
             const partitionKeyValue: string = await context.ui.showInputBox({
                 prompt: `Enter a value for the partition key ("${partitionKey}")`,
@@ -131,15 +137,20 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
             partitionKey = partitionKey.slice(1);
         }
         const keyPath = partitionKey.split('/');
+
         const PartitionPath: object = {};
+
         let interim: object = PartitionPath;
+
         let i: number;
+
         for (i = 0; i < keyPath.length - 1; i++) {
             interim[keyPath[i]] = {};
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             interim = interim[keyPath[i]];
         }
         interim[keyPath[i]] = partitionKeyValue;
+
         return PartitionPath;
     }
 }

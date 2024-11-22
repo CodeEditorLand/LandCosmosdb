@@ -113,6 +113,7 @@ export function updateSchemaWithDocument(schema: JSONSchema, document: WithId<Do
                 'x-bsonType': mongoDatatype,
                 'x-typeOccurrence': 0,
             };
+
             if (!propertySchema.anyOf) {
                 propertySchema.anyOf = [];
             }
@@ -138,6 +139,7 @@ export function updateSchemaWithDocument(schema: JSONSchema, document: WithId<Do
      */
     while (fifoQueue.length > 0) {
         const item = fifoQueue.shift();
+
         if (item === undefined) {
             continue;
         }
@@ -145,6 +147,7 @@ export function updateSchemaWithDocument(schema: JSONSchema, document: WithId<Do
         switch (item.fieldMongoType) {
             case MongoBSONTypes.Object: {
                 const objValue = item.fieldValue as Record<string, unknown>;
+
                 const objKeysCount = Object.keys(objValue).length;
 
                 // Update min and max property counts
@@ -184,6 +187,7 @@ export function updateSchemaWithDocument(schema: JSONSchema, document: WithId<Do
                             'x-bsonType': mongoDatatype,
                             'x-typeOccurrence': 0,
                         };
+
                         if (!propertySchema.anyOf) {
                             propertySchema.anyOf = [];
                         }
@@ -207,6 +211,7 @@ export function updateSchemaWithDocument(schema: JSONSchema, document: WithId<Do
 
             case MongoBSONTypes.Array: {
                 const arrayValue = item.fieldValue as unknown[];
+
                 const arrayLength = arrayValue.length;
 
                 // Update min and max array lengths
@@ -239,6 +244,7 @@ export function updateSchemaWithDocument(schema: JSONSchema, document: WithId<Do
                             'x-bsonType': elementMongoType,
                             'x-typeOccurrence': 0,
                         };
+
                         if (!itemsSchema.anyOf) {
                             itemsSchema.anyOf = [];
                         }
@@ -322,6 +328,7 @@ export function getSchemaFromDocument(document: WithId<Document>): JSONSchema {
     // having some import/require issues with Denque atm
     // prototype with an array
     //const fifoQueue = new Denque();
+
     const fifoQueue: WorkItem[] = [];
 
     /**
@@ -451,6 +458,7 @@ export function getSchemaFromDocument(document: WithId<Document>): JSONSchema {
             default: {
                 // For all other types, update stats for the value
                 initializeStatsForValue(item.fieldValue, item.fieldMongoType, item.propertyTypeEntry);
+
                 break;
             }
         }
@@ -469,6 +477,7 @@ function initializeStatsForValue(value: unknown, mongoType: MongoBSONTypes, prop
             const currentLength = (value as string).length;
             propertyTypeEntry['x-maxLength'] = currentLength;
             propertyTypeEntry['x-minLength'] = currentLength;
+
             break;
         }
 
@@ -480,6 +489,7 @@ function initializeStatsForValue(value: unknown, mongoType: MongoBSONTypes, prop
             const numericValue = Number(value);
             propertyTypeEntry['x-maxValue'] = numericValue;
             propertyTypeEntry['x-minValue'] = numericValue;
+
             break;
         }
 
@@ -487,6 +497,7 @@ function initializeStatsForValue(value: unknown, mongoType: MongoBSONTypes, prop
             const boolValue = value as boolean;
             propertyTypeEntry['x-trueCount'] = boolValue ? 1 : 0;
             propertyTypeEntry['x-falseCount'] = boolValue ? 0 : 1;
+
             break;
         }
 
@@ -494,6 +505,7 @@ function initializeStatsForValue(value: unknown, mongoType: MongoBSONTypes, prop
             const dateValue = (value as Date).getTime();
             propertyTypeEntry['x-maxDate'] = dateValue;
             propertyTypeEntry['x-minDate'] = dateValue;
+
             break;
         }
 
@@ -501,6 +513,7 @@ function initializeStatsForValue(value: unknown, mongoType: MongoBSONTypes, prop
             const binaryLength = (value as Buffer).length;
             propertyTypeEntry['x-maxLength'] = binaryLength;
             propertyTypeEntry['x-minLength'] = binaryLength;
+
             break;
         }
 

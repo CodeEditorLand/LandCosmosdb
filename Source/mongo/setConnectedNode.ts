@@ -10,6 +10,7 @@ export function setConnectedNode(
 	node: MongoDatabaseTreeItem | undefined,
 ): void {
 	ext.connectedMongoDB = node;
+
 	const dbName = node && node.label;
 	ext.mongoCodeLensProvider.setConnectedDatabase(dbName);
 }

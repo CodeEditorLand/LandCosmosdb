@@ -76,6 +76,7 @@ export class WebviewController<Configuration> extends WebviewBaseController<Conf
                     //     break;
                     // case 'subscription.stop':
                     //     break;
+
                     default:
                         try {
                             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

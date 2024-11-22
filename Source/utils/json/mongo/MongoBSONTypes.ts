@@ -139,15 +139,18 @@ export namespace MongoBSONTypes {
      */
     export function inferType(value: unknown): MongoBSONTypes {
         if (value === null) return MongoBSONTypes.Null;
+
         if (value === undefined) return MongoBSONTypes.Undefined;
 
         switch (typeof value) {
             case 'string':
                 return MongoBSONTypes.String;
+
             case 'number':
                 return MongoBSONTypes.Double; // JavaScript numbers are doubles
             case 'boolean':
                 return MongoBSONTypes.Boolean;
+
             case 'object':
                 if (Array.isArray(value)) {
                     return MongoBSONTypes.Array;
@@ -155,21 +158,34 @@ export namespace MongoBSONTypes {
 
                 // Check for common BSON types first
                 if (value instanceof ObjectId) return MongoBSONTypes.ObjectId;
+
                 if (value instanceof Int32) return MongoBSONTypes.Int32;
+
                 if (value instanceof Double) return MongoBSONTypes.Double;
+
                 if (value instanceof Date) return MongoBSONTypes.Date;
+
                 if (value instanceof Timestamp) return MongoBSONTypes.Timestamp;
 
                 // Less common types
                 if (value instanceof Decimal128) return MongoBSONTypes.Decimal128;
+
                 if (value instanceof Long) return MongoBSONTypes.Long;
+
                 if (value instanceof MinKey) return MongoBSONTypes.MinKey;
+
                 if (value instanceof MaxKey) return MongoBSONTypes.MaxKey;
+
                 if (value instanceof BSONSymbol) return MongoBSONTypes.Symbol;
+
                 if (value instanceof DBRef) return MongoBSONTypes.DBRef;
+
                 if (value instanceof Map) return MongoBSONTypes.Map;
+
                 if (value instanceof Buffer || value instanceof Binary) return MongoBSONTypes.Binary;
+
                 if (value instanceof RegExp) return MongoBSONTypes.RegExp;
+
                 if (value instanceof Code) {
                     if (value.scope) {
                         return MongoBSONTypes.CodeWithScope;
@@ -180,6 +196,7 @@ export namespace MongoBSONTypes {
 
                 // Default to Object if none of the above match
                 return MongoBSONTypes.Object;
+
             default:
                 // This should never happen, but if it does, we'll catch it here
                 // TODO: add telemetry somewhere to know when it happens (not here, this could get hit too often)

@@ -41,7 +41,9 @@ export class DocumentSession {
 
     constructor(connection: NoSqlQueryConnection, channel: Channel) {
         const { databaseId, containerId, endpoint, masterKey, isEmulator } = connection;
+
         const credentials: CosmosDBCredential[] = [];
+
         if (masterKey !== undefined) {
             credentials.push({ type: 'key', key: masterKey });
         }
@@ -118,6 +120,7 @@ export class DocumentSession {
 
             try {
                 let result: CosmosDbRecord | null = null;
+
                 const response = await this.client
                     .database(this.databaseId)
                     .container(this.containerId)
@@ -193,6 +196,7 @@ export class DocumentSession {
 
                 if (response?.resource) {
                     const record = response.resource as CosmosDbRecord;
+
                     const partitionKey = await this.getPartitionKey();
 
                     await this.channel.postMessage({
@@ -278,7 +282,9 @@ export class DocumentSession {
                 };
                 partitionKey?.paths.forEach((partitionKeyProperty) => {
                     let target = newDocument;
+
                     const keySegments = partitionKeyProperty.split('/').filter((segment) => segment.length > 0);
+
                     const finalSegment = keySegments.pop();
 
                     if (!finalSegment) {
@@ -310,8 +316,10 @@ export class DocumentSession {
 
     private async errorHandling(error: unknown, context: IActionContext): Promise<void> {
         const isObject = error && typeof error === 'object';
+
         if (error instanceof ErrorResponse) {
             const code: string = `${error.code ?? 'Unknown'}`;
+
             const message: string = error.body?.message ?? `Query failed with status code ${code}`;
             await this.channel.postMessage({
                 type: 'event',
@@ -372,6 +380,7 @@ export class DocumentSession {
             }
 
             this.partitionKey = container.resource.partitionKey;
+
             return this.partitionKey;
         });
     }
@@ -392,12 +401,14 @@ export class DocumentSession {
             }
 
             const showLogButton = localize('goToOutput', 'Go to output');
+
             if (await vscode.window.showErrorMessage(message, showLogButton)) {
                 ext.outputChannel.show();
             }
             throw new Error(`${message}, ${parsedError.message}`);
         } else {
             await vscode.window.showErrorMessage(message);
+
             throw new Error(message);
         }
     }

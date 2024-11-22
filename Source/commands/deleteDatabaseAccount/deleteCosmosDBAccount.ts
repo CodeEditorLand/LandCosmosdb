@@ -22,12 +22,16 @@ export async function deleteCosmosDBAccount(
 		context,
 		node.subscription,
 	]);
+
 	const resourceGroup: string = getResourceGroupFromId(node.fullId);
+
 	const accountName: string = getDatabaseAccountNameFromId(node.fullId);
+
 	const deletePromise = client.databaseAccounts.beginDeleteAndWait(
 		resourceGroup,
 		accountName,
 	);
+
 	if (!context.suppressNotification) {
 		const deletingMessage: string = `Deleting account "${accountName}"...`;
 		await vscode.window.withProgress(
@@ -37,6 +41,7 @@ export async function deleteCosmosDBAccount(
 			},
 			async () => {
 				await deletePromise;
+
 				const deleteMessage: string = localize(
 					"deleteAccountMsg",
 					`Successfully deleted account "{0}".`,

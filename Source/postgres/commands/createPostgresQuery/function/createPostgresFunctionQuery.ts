@@ -20,6 +20,7 @@ export async function createPostgresFunctionQuery(
 	treeItem?: PostgresFunctionsTreeItem,
 ): Promise<void> {
 	const wizardContext: IPostgresFunctionQueryWizardContext = context;
+
 	const wizard = new AzureWizard(wizardContext, {
 		promptSteps: [
 			new FunctionQueryNameStep(),

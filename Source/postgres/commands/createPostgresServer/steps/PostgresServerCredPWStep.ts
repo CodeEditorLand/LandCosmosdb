@@ -38,9 +38,11 @@ async function validatePassword(
 	password = password ? password : "";
 
 	const min = 8;
+
 	const max = 128;
 
 	const regex = [/[a-z]/, /[A-Z]/, /[0-9]/, /[^a-zA-Z\d\s]/];
+
 	let numOccurrence = 0;
 
 	regex.map((substring) => {

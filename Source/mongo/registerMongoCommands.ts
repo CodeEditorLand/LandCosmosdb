@@ -35,6 +35,7 @@ import { getAllErrorsFromTextDocument } from "./MongoScrapbook";
 import { MongoCodeLensProvider } from "./services/MongoCodeLensProvider";
 
 let diagnosticsCollection: vscode.DiagnosticCollection;
+
 const mongoLanguageId: string = "mongo";
 
 export function registerMongoCommands(): void {

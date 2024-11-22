@@ -15,6 +15,7 @@ import { type CosmosDbRecordIdentifier, type QueryResultRecord } from '../docdb/
 export const extractPartitionKey = (document: ItemDefinition, partitionKey: PartitionKeyDefinition): PartitionKey => {
     return partitionKey.paths.map((path): PrimitivePartitionKeyValue => {
         let interim: JSONValue = document;
+
         const partitionKeyPath = path.split('/').filter((key) => key !== '');
 
         for (const prop of partitionKeyPath) {

@@ -56,6 +56,7 @@ export class DatabaseTreeItemInternal
 					| DocDBAccountTreeItemBase
 					| PostgresServerTreeItem =
 					await this.getAccountNode(context);
+
 				if (!this._dbNode) {
 					const databaseId = `${accountNode.fullId}/${this.databaseName}`;
 					this._dbNode =

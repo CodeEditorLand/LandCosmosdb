@@ -12,6 +12,7 @@ import { type TreeData } from './slickgrid/mongo/toSlickGridTree';
 export type StatsItem = {
     metric: string;
     value: string | number;
+
     formattedValue: string;
     tooltip: string;
 };
@@ -32,8 +33,10 @@ export type TableData = {
  */
 export const isSelectStar = (query: string): boolean => {
     const matches = query.match(/select([\S\s]*)from[\s\S]*$/im);
+
     if (matches) {
         const selectClause = matches[1].split(',').map((s) => s.trim());
+
         return selectClause.find((s) => s.endsWith('*')) !== undefined;
     }
 
@@ -112,9 +115,11 @@ const documentToSlickGridTree = (
 
     while (stack.length > 0) {
         localEntryId++;
+
         const globalEntryId = `${idPrefix}-${localEntryId}`; // combines the global prefix with the local id
 
         const stackEntry = stack.pop();
+
         if (!stackEntry) {
             continue;
         }
@@ -197,6 +202,7 @@ export const getTableHeadersWithRecordIdentifyColumns = (
     partitionKey: PartitionKeyDefinition | undefined,
 ): string[] => {
     const keys = new Set<string>();
+
     const serviceKeys = new Set<string>();
 
     documents.forEach((doc) => {
@@ -210,12 +216,15 @@ export const getTableHeadersWithRecordIdentifyColumns = (
     });
 
     const columns = Array.from(keys);
+
     const serviceColumns = Array.from(serviceKeys);
+
     const partitionKeyPaths = (partitionKey?.paths ?? []).map((path) => (path.startsWith('/') ? path : `/${path}`));
 
     // Remove partition key paths from columns, since partition key paths are always shown first
     partitionKeyPaths.forEach((path) => {
         const index = columns.indexOf(path.slice(1));
+
         if (index !== -1) {
             columns.splice(index, 1);
         }
@@ -228,6 +237,7 @@ export const getTableHeadersWithRecordIdentifyColumns = (
 
     // Remove duplicates while keeping order
     const uniqueHeaders = new Set<string>([...partitionKeyPaths, ...columns, ...serviceColumns]);
+
     return Array.from(uniqueHeaders);
 };
 
@@ -252,6 +262,7 @@ export const getTableDatasetWithRecordIdentifyColumns = (
             const partitionKeyPaths = (partitionKey?.paths ?? []).map((path) =>
                 path.startsWith('/') ? path.slice(1) : path,
             );
+
             const partitionKeyValues = extractPartitionKey(doc, partitionKey) ?? [];
             partitionKeyPaths.forEach((path, index) => {
                 row[path] = `${partitionKeyValues[index] ?? ''}`;
@@ -358,6 +369,7 @@ export const queryMetricsToTable = (queryResult: SerializedQueryResult | null): 
     }
 
     const { queryMetrics, iteration, metadata } = queryResult;
+
     const countPerPage = metadata.countPerPage ?? 100;
 
     const stats: StatsItem[] = [
@@ -501,7 +513,9 @@ export const queryMetricsToCsv = (queryResult: SerializedQueryResult | null): st
     stats.push(indexMetricsToTableItem(queryResult));
 
     const titles = stats.map((item) => item.metric).join(',');
+
     const values = stats.map((item) => escapeCsvValue(item.value.toString())).join(',');
+
     return `${titles}\n${values}`;
 };
 
@@ -515,6 +529,7 @@ export const queryResultToCsv = (
     }
 
     const tableView = queryResultToTable(queryResult, partitionKey);
+
     const headers = tableView.headers.join(',');
 
     if (selection) {
@@ -537,5 +552,6 @@ export const queryResultToCsv = (
             return rowValues.join(',');
         })
         .join('\n');
+
     return `${headers}\n${rows}`;
 };

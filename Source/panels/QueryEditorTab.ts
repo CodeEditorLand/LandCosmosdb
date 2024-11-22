@@ -58,8 +58,10 @@ export class QueryEditorTab extends BaseTab {
                     openTab.connection?.databaseId === connection.databaseId &&
                     openTab.connection?.containerId === connection.containerId,
             );
+
             if (openTab) {
                 openTab.panel.reveal(viewColumn);
+
                 return openTab;
             }
         }
@@ -86,6 +88,7 @@ export class QueryEditorTab extends BaseTab {
 
         this.channel.on<void>('ready', async () => {
             await this.updateConnection(this.connection);
+
             if (this.query) {
                 await this.channel.postMessage({
                     type: 'event',
@@ -98,35 +101,48 @@ export class QueryEditorTab extends BaseTab {
 
     protected getCommand(payload: CommandPayload): Promise<void> {
         const commandName = payload.commandName;
+
         switch (commandName) {
             case 'openFile':
                 return this.openFile();
+
             case 'saveFile':
                 return this.saveFile(
                     payload.params[0] as string,
                     payload.params[1] as string,
                     payload.params[2] as string,
                 );
+
             case 'duplicateTab':
                 return this.duplicateTab(payload.params[0] as string);
+
             case 'copyToClipboard':
                 return this.copyToClipboard(payload.params[0] as string);
+
             case 'connectToDatabase':
                 return this.connectToDatabase();
+
             case 'disconnectFromDatabase':
                 return this.disconnectFromDatabase();
+
             case 'runQuery':
                 return this.runQuery(payload.params[0] as string, payload.params[1] as ResultViewMetadata);
+
             case 'stopQuery':
                 return this.stopQuery(payload.params[0] as string);
+
             case 'nextPage':
                 return this.nextPage(payload.params[0] as string);
+
             case 'prevPage':
                 return this.prevPage(payload.params[0] as string);
+
             case 'firstPage':
                 return this.firstPage(payload.params[0] as string);
+
             case 'openDocument':
                 return this.openDocument(payload.params[0] as string, payload.params[1] as CosmosDbRecordIdentifier);
+
             case 'deleteDocument':
                 return this.deleteDocument(payload.params[0] as CosmosDbRecordIdentifier);
         }
@@ -143,6 +159,7 @@ export class QueryEditorTab extends BaseTab {
             this.telemetryContext.addMaskedValue([databaseId, containerId, endpoint, masterKey ?? '']);
 
             const client = getCosmosClientByConnection(this.connection);
+
             const container = await client.database(databaseId).container(containerId).read();
 
             if (container.resource === undefined) {
@@ -152,6 +169,7 @@ export class QueryEditorTab extends BaseTab {
 
             // Probably need to pass the entire container object to the webview
             const containerDefinition = container.resource;
+
             const params: (PartitionKeyDefinition | string)[] = [databaseId, containerId];
 
             // If container is old and doesn't have partitionKey, we should pass an undefined
@@ -277,6 +295,7 @@ export class QueryEditorTab extends BaseTab {
             context.telemetry.properties.executionId = executionId;
 
             const session = this.sessions.get(executionId);
+
             if (!session) {
                 throw new Error(`No session found for executionId: ${executionId}`);
             }
@@ -295,6 +314,7 @@ export class QueryEditorTab extends BaseTab {
             }
 
             const session = this.sessions.get(executionId);
+
             if (!session) {
                 throw new Error(`No session found for executionId: ${executionId}`);
             }
@@ -312,6 +332,7 @@ export class QueryEditorTab extends BaseTab {
             }
 
             const session = this.sessions.get(executionId);
+
             if (!session) {
                 throw new Error(`No session found for executionId: ${executionId}`);
             }
@@ -329,6 +350,7 @@ export class QueryEditorTab extends BaseTab {
             }
 
             const session = this.sessions.get(executionId);
+
             if (!session) {
                 throw new Error(`No session found for executionId: ${executionId}`);
             }
@@ -372,6 +394,7 @@ export class QueryEditorTab extends BaseTab {
 
     private getNextViewColumn(): vscode.ViewColumn {
         let viewColumn = this.panel.viewColumn ?? vscode.ViewColumn.Active;
+
         if (viewColumn === vscode.ViewColumn.Nine) {
             viewColumn = vscode.ViewColumn.One;
         } else {

@@ -50,6 +50,7 @@ export class MongoClusterWorkspaceItem extends MongoClusterItemBase {
                 const connectionString = new ConnectionString(nonNullValue(this.mongoCluster.connectionString));
 
                 let username: string | undefined = connectionString.username;
+
                 let password: string | undefined = connectionString.password;
 
                 if (!username || username.length === 0 || !password || password.length === 0) {
@@ -110,6 +111,7 @@ export class MongoClusterWorkspaceItem extends MongoClusterItemBase {
                 return mongoClustersClient;
             },
         );
+
         return result ?? null;
     }
 
@@ -133,6 +135,7 @@ export class MongoClusterWorkspaceItem extends MongoClusterItemBase {
 
                 context.errorHandling.rethrow = true;
                 context.errorHandling.suppressDisplay = false;
+
                 try {
                     await wizard.prompt(); // This will prompt the user; results are stored in wizardContext
                 } catch (error) {

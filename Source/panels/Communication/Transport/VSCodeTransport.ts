@@ -33,6 +33,7 @@ export class VSCodeTransport implements Transport {
 
         while (this.disposables.length) {
             const disposable = this.disposables.pop();
+
             if (disposable) {
                 disposable.dispose();
             }
@@ -43,6 +44,7 @@ export class VSCodeTransport implements Transport {
         try {
             if (!isTransportMessage(msg)) {
                 console.warn(`[VSCodeTransport] Received message that is not a transport message`, msg);
+
                 return;
             }
 

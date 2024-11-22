@@ -22,6 +22,7 @@ export async function deleteMongoDB(
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
 	suppressCreateContext.suppressCreatePick = true;
+
 	if (!node) {
 		node = await pickMongo<MongoDatabaseTreeItem>(
 			context,
@@ -29,6 +30,7 @@ export async function deleteMongoDB(
 		);
 	}
 	await node.deleteTreeItem(context);
+
 	if (ext.connectedMongoDB && ext.connectedMongoDB.fullId === node.fullId) {
 		setConnectedNode(undefined);
 		void ext.context.globalState.update(connectedMongoKey, undefined);

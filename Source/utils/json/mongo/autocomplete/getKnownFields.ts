@@ -48,9 +48,11 @@ export function getKnownFields(schema: JSONSchema): FieldEntry[] {
 
     while (queue.length > 0) {
         const item = queue.shift();
+
         if (!item) continue;
 
         const { path, schemaNode } = item;
+
         const mostCommonTypeEntry = getMostCommonTypeEntry(schemaNode);
 
         if (mostCommonTypeEntry) {
@@ -77,10 +79,12 @@ export function getKnownFields(schema: JSONSchema): FieldEntry[] {
 function getMostCommonTypeEntry(schemaNode: JSONSchema): JSONSchema | null {
     if (schemaNode.anyOf && schemaNode.anyOf.length > 0) {
         let maxOccurrence = -1;
+
         let mostCommonTypeEntry: JSONSchema | null = null;
 
         for (const typeEntry of schemaNode.anyOf as JSONSchema[]) {
             const occurrence = typeEntry['x-typeOccurrence'] || 0;
+
             if (occurrence > maxOccurrence) {
                 maxOccurrence = occurrence;
                 mostCommonTypeEntry = typeEntry;

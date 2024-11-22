@@ -21,6 +21,7 @@ export async function getNoSqlQueryPlan(
 	args: { queryText: string } | undefined,
 ): Promise<void> {
 	let queryText: string;
+
 	if (!args) {
 		const activeEditor: vscode.TextEditor | undefined =
 			vscode.window.activeTextEditor;
@@ -40,6 +41,7 @@ export async function getNoSqlQueryPlan(
 	const connectedCollection = KeyValueStore.instance.get(
 		noSqlQueryConnectionKey,
 	);
+
 	if (!connectedCollection) {
 		throw new Error(
 			"Unable to get query plan due to missing node data. Please connect to a Cosmos DB collection.",
@@ -48,12 +50,16 @@ export async function getNoSqlQueryPlan(
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		const { databaseId, containerId, endpoint, masterKey, isEmulator } =
 			connectedCollection as NoSqlQueryConnection;
+
 		const credentials: CosmosDBCredential[] = [];
+
 		if (masterKey !== undefined) {
 			credentials.push({ type: "key", key: masterKey });
 		}
 		credentials.push({ type: "auth" });
+
 		const client = getCosmosClient(endpoint, credentials, isEmulator);
+
 		const response = await client
 			.database(databaseId)
 			.container(containerId)

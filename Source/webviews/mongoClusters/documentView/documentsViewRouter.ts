@@ -16,6 +16,7 @@ export type RouterContext = {
     sessionId: string;
     databaseName: string;
     collectionName: string;
+
     documentId: string;
 
     viewPanelTitleSetter: (title: string) => void;
@@ -36,6 +37,7 @@ export const documentsViewRouter = router({
 
             // run query
             const client: MongoClustersClient = MongoClustersSession.getSession(myCtx.sessionId).getClient();
+
             const documentContent = await client.pointRead(myCtx.databaseName, myCtx.collectionName, input);
 
             /**
@@ -61,6 +63,7 @@ export const documentsViewRouter = router({
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let documentId: any;
+
             if (documentBson['_id']) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
                 documentId = documentBson['_id'];
@@ -87,6 +90,7 @@ export const documentsViewRouter = router({
              * EJSON to serialize the document to an object that can be serialized to JSON.
              */
             const extendedJson = EJSON.serialize(upsertResult.document);
+
             const newDocumentStringified = JSON.stringify(extendedJson, null, 4);
 
             myCtx.viewPanelTitleSetter(`${myCtx.databaseName}/${myCtx.collectionName}/${newDocumentId}`);

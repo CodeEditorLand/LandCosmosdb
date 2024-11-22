@@ -27,6 +27,7 @@ export class MongoDBAccountsWorkspaceItem implements TreeElementBase {
                     name: item.name,
                     connectionString: item?.secrets?.[0] ?? undefined,
                 };
+
                 return new MongoClusterWorkspaceItem(model);
             }),
             createGenericElement({

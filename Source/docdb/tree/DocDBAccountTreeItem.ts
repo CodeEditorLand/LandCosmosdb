@@ -21,6 +21,7 @@ export class DocDBAccountTreeItem extends DocDBAccountTreeItemBase {
 		resource: DatabaseDefinition & Resource,
 	): DocDBDatabaseTreeItem {
 		this.valuesToMask.push(resource._rid, resource._self);
+
 		return new DocDBDatabaseTreeItem(this, resource);
 	}
 
@@ -33,6 +34,7 @@ export class DocDBAccountTreeItem extends DocDBAccountTreeItemBase {
 			case DocDBDocumentsTreeItem.contextValue:
 			case DocDBStoredProceduresTreeItem.contextValue:
 				return true;
+
 			default:
 				return false;
 		}

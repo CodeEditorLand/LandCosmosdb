@@ -43,12 +43,16 @@ function getDatabaseContextValue(apiType: AzureDatabasesApiType): string {
 	switch (apiType) {
 		case "Mongo":
 			return MongoDatabaseTreeItem.contextValue;
+
 		case "SQL":
 			return DocDBDatabaseTreeItem.contextValue;
+
 		case "Graph":
 			return GraphDatabaseTreeItem.contextValue;
+
 		case "Postgres":
 			return PostgresDatabaseTreeItem.contextValue;
+
 		default:
 			throw new RangeError(`Unsupported api type "${apiType}".`);
 	}
@@ -64,16 +68,21 @@ export async function pickTreeItem(
 			context.errorHandling.rethrow = true;
 
 			const options: PickAppResourceOptions = {};
+
 			switch (pickTreeOptions.resourceType) {
 				case "Database":
 					options.filter = { type: databaseAccountType };
 					options.expectedChildContextValue = pickTreeOptions.apiType
 						? pickTreeOptions.apiType.map(getDatabaseContextValue)
 						: databaseContextValues;
+
 					break;
+
 				case "DatabaseAccount":
 					options.filter = { type: databaseAccountType };
+
 					break;
+
 				default:
 					throw new RangeError(
 						`Unsupported resource type "${pickTreeOptions.resourceType}".`,
@@ -86,15 +95,18 @@ export async function pickTreeItem(
 			);
 
 			let parsedCS: ParsedConnectionString;
+
 			let accountNode:
 				| MongoAccountTreeItem
 				| DocDBAccountTreeItemBase
 				| PostgresServerTreeItem;
+
 			let databaseNode:
 				| MongoDatabaseTreeItem
 				| DocDBDatabaseTreeItemBase
 				| PostgresDatabaseTreeItem
 				| undefined;
+
 			if (pickedItem instanceof MongoAccountTreeItem) {
 				parsedCS = await parseMongoConnectionString(
 					pickedItem.connectionString,
@@ -143,6 +155,7 @@ export async function pickTreeItem(
 					)
 				: new DatabaseAccountTreeItemInternal(parsedCS, accountNode);
 			cacheTreeItem(parsedCS, result);
+
 			return result;
 		},
 	);

@@ -72,6 +72,7 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
         super(parent);
         this.collection = collection;
         this.findArgs = findArgs;
+
         if (findArgs && findArgs.length) {
             this._query = findArgs[0];
             this._projection = findArgs.length > 1 ? findArgs[1] : undefined;
@@ -82,6 +83,7 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
     public async writeFileContent(context: IActionContext, content: string): Promise<void> {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         const documents: IMongoDocument[] = EJSON.parse(content);
+
         const operations: AnyBulkWriteOperation<MongoDocument>[] = documents.map((document) => {
             return {
                 replaceOne: {
@@ -103,7 +105,9 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
             this.fullId,
             context,
         );
+
         const nodesToRefresh: MongoCollectionTreeItem[] = [this];
+
         if (nodeInTree && this !== nodeInTree) {
             nodesToRefresh.push(nodeInTree);
         }
@@ -149,8 +153,10 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
 
     public async refreshChildren(context: IActionContext, docs: IMongoDocument[]): Promise<void> {
         const documentNodes = <MongoDocumentTreeItem[]>await this.getCachedChildren(context);
+
         for (const doc of docs) {
             const documentNode = documentNodes.find((node) => node.document._id.toString() === doc._id.toString());
+
             if (documentNode) {
                 documentNode.document = doc;
                 await documentNode.refresh(context);
@@ -175,9 +181,12 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
         }
 
         const documents: IMongoDocument[] = [];
+
         let count: number = 0;
+
         while (count < this._batchSize) {
             this._hasMoreChildren = await this._cursor.hasNext();
+
             if (this._hasMoreChildren) {
                 documents.push(<IMongoDocument>await this._cursor.next());
                 count += 1;
@@ -199,10 +208,12 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
         context.showCreatingTreeItem('');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const result: InsertOneResult<MongoDocument> = await this.collection.insertOne({});
+
         const newDocument: IMongoDocument = nonNullValue(
             await this.collection.findOne({ _id: result.insertedId }),
             'newDocument',
         );
+
         return new MongoDocumentTreeItem(this, newDocument);
     }
 
@@ -248,6 +259,7 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
                 descriptor.mongoFunction.apply(this, parameters),
                 descriptor.text,
             );
+
             return { deferToShell: false, result };
         }
         return { deferToShell: true, result: undefined };
@@ -266,11 +278,14 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
     private async drop(): Promise<string> {
         try {
             await this.collection.drop();
+
             return `Dropped collection '${this.collection.collectionName}'.`;
         } catch (e) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const error: { code?: number; name?: string } = e;
+
             const NamespaceNotFoundCode = 26;
+
             if (error.name === 'MongoError' && error.code === NamespaceNotFoundCode) {
                 return `Collection '${this.collection.collectionName}' could not be dropped because it does not exist.`;
             } else {
@@ -295,6 +310,7 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
         }
 
         const insertResult = await this.collection.insertOne(document);
+
         return this.stringify(insertResult);
     }
 
@@ -303,12 +319,15 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
             writeConcern: options && options.writeConcern,
         });
+
         return this.stringify(insertOneResult);
     }
 
     private async insertMany(documents: MongoDocument[], options?: any): Promise<string> {
         assert.notEqual(documents.length, 0, 'Array of documents cannot be empty');
+
         const insertManyOptions: BulkWriteOptions = {};
+
         if (options) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (options.ordered) {
@@ -327,34 +346,41 @@ export class MongoCollectionTreeItem extends AzExtParentTreeItem implements IEdi
             documents,
             insertManyOptions,
         );
+
         return this.stringify(insertManyResult);
     }
 
     private async remove(filter: Filter<MongoDocument>): Promise<string> {
         const removeResult = await this.collection.deleteOne(filter);
+
         return this.stringify(removeResult);
     }
 
     private async deleteOne(filter: Filter<MongoDocument>): Promise<string> {
         const deleteOneResult: DeleteResult = await this.collection.deleteOne(filter);
+
         return this.stringify(deleteOneResult);
     }
 
     private async deleteMany(filter: Filter<MongoDocument>): Promise<string> {
         const deleteOpResult: DeleteResult = await this.collection.deleteMany(filter);
+
         return this.stringify(deleteOpResult);
     }
 
     private async count(query?: Filter<MongoDocument>, options?: CountOptions): Promise<string> {
         if (!query) {
             const count = await this.collection.countDocuments();
+
             return this.stringify(count);
         } else {
             if (!options) {
                 const count = await this.collection.count(query);
+
                 return this.stringify(count);
             } else {
                 const count = await this.collection.count(query, options);
+
                 return this.stringify(count);
             }
         }

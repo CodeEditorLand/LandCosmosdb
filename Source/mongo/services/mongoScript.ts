@@ -48,7 +48,9 @@ export class MongoScriptDocument {
         parser.removeErrorListeners();
 
         const offset = this.textDocument.offsetAt(position);
+
         const lastNode = new NodeFinder(offset).visit(parser.commands());
+
         if (lastNode) {
             return new CompletionItemsVisitor(
                 this.textDocument,
@@ -70,6 +72,7 @@ class NodeFinder extends MongoVisitor<ParseTree> {
     protected defaultResult(ctx: ParseTree): ParseTree {
         if (ctx instanceof ParserRuleContext) {
             const stop = ctx.stop ? ctx.stop.stopIndex : ctx.start.stopIndex;
+
             if (stop < this.offset) {
                 return ctx;
             }
@@ -93,14 +96,17 @@ class NodeFinder extends MongoVisitor<ParseTree> {
                 aggregate instanceof ParserRuleContext
                     ? aggregate.start.startIndex
                     : (<TerminalNode>aggregate).symbol.startIndex;
+
             const aggregateStop =
                 aggregate instanceof ParserRuleContext
                     ? aggregate.start.stopIndex
                     : (<TerminalNode>aggregate).symbol.stopIndex;
+
             const nextResultStart =
                 nextResult instanceof ParserRuleContext
                     ? nextResult.start.startIndex
                     : (<TerminalNode>nextResult).symbol.startIndex;
+
             const nextResultStop =
                 nextResult instanceof ParserRuleContext
                     ? nextResult.start.stopIndex

@@ -26,6 +26,7 @@ export type CapabilityName = 'EnableGremlin' | 'EnableTable';
 
 export function getExperienceFromApi(api: API): Experience {
     let info = experiencesMap.get(api);
+
     if (!info) {
         info = { api: api, shortName: api, longName: api, kind: DBAccountKind.GlobalDocumentDB, tag: api };
     }
@@ -34,6 +35,7 @@ export function getExperienceFromApi(api: API): Experience {
 
 export function getExperienceLabel(databaseAccount: DatabaseAccountGetResults): string {
     const experience: Experience | undefined = tryGetExperience(databaseAccount);
+
     if (experience) {
         return experience.shortName;
     }
@@ -41,8 +43,11 @@ export function getExperienceLabel(databaseAccount: DatabaseAccountGetResults): 
     const defaultExperience: string = <API>(
         (databaseAccount && databaseAccount.tags && databaseAccount.tags.defaultExperience)
     );
+
     const firstCapability = databaseAccount.capabilities && databaseAccount.capabilities[0];
+
     const firstCapabilityName = firstCapability?.name?.replace(/^Enable/, '');
+
     return defaultExperience || firstCapabilityName || nonNullProp(databaseAccount, 'kind');
 }
 
@@ -97,11 +102,13 @@ export function getCosmosExperienceQuickPicks(attached?: boolean): IAzureQuickPi
 
 export function getExperienceQuickPick(api: API): IAzureQuickPickItem<Experience> {
     const exp = getExperienceFromApi(api);
+
     return { label: exp.longName, description: exp.description, data: exp };
 }
 
 export function getExperienceQuickPickForAttached(api: API): IAzureQuickPickItem<Experience> {
     const exp = getExperienceFromApi(api);
+
     return { label: exp.longName, description: exp.description, data: exp };
 }
 
@@ -139,11 +146,13 @@ export const GremlinExperience: Experience = {
     capability: 'EnableGremlin',
     tag: 'Gremlin (graph)',
 } as const;
+
 const PostgresSingleExperience: Experience = {
     api: API.PostgresSingle,
     longName: 'PostgreSQL Single Server',
     shortName: 'PostgreSQLSingle',
 };
+
 const PostgresFlexibleExperience: Experience = {
     api: API.PostgresFlexible,
     longName: 'PostgreSQL Flexible Server',
@@ -151,11 +160,13 @@ const PostgresFlexibleExperience: Experience = {
 };
 
 const cosmosExperiencesArray: Experience[] = [CoreExperience, MongoExperience, TableExperience, GremlinExperience];
+
 const experiencesArray: Experience[] = [
     ...cosmosExperiencesArray,
     PostgresSingleExperience,
     PostgresFlexibleExperience,
 ];
+
 const experiencesMap = new Map<API, Experience>(
     experiencesArray.map((info: Experience): [API, Experience] => [info.api, info]),
 );

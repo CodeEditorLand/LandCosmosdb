@@ -56,6 +56,7 @@ export interface DatabaseAccountTreeItem extends AzureDatabasesTreeItem {
 
 	docDBData?: {
 		masterKey: string;
+
 		documentEndpoint: string;
 	};
 

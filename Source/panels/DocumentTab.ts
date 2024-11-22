@@ -55,6 +55,7 @@ export class DocumentTab extends BaseTab {
         viewColumn?: vscode.ViewColumn,
     ): DocumentTab {
         const column = viewColumn ?? vscode.ViewColumn.Active;
+
         if (documentId) {
             const openTab = [...DocumentTab.openTabs].find((openTab) => {
                 if (!openTab.documentId) {
@@ -69,6 +70,7 @@ export class DocumentTab extends BaseTab {
                     const openTabPK = Array.isArray(openTab.documentId.partitionKey)
                         ? openTab.documentId.partitionKey.join(',')
                         : openTab.documentId.partitionKey?.toString();
+
                     const pk = Array.isArray(documentId.partitionKey)
                         ? documentId.partitionKey.join(',')
                         : documentId.partitionKey?.toString();
@@ -82,11 +84,13 @@ export class DocumentTab extends BaseTab {
             if (openTab) {
                 openTab.mode = mode;
                 openTab.panel.reveal(column);
+
                 return openTab;
             }
         }
 
         const title = `${documentId?.id ? documentId.id : 'New Document'}.json`;
+
         const panel = vscode.window.createWebviewPanel(DocumentTab.viewType, title, column, {
             enableScripts: true,
             retainContextWhenHidden: true,
@@ -130,6 +134,7 @@ export class DocumentTab extends BaseTab {
                 name: 'initState',
                 params: [this.mode, this.connection.databaseId, this.connection.containerId, this.documentId],
             });
+
             if (this.documentId) {
                 await this.session.read(this.documentId);
             } else if (this.mode === 'add') {
@@ -142,16 +147,22 @@ export class DocumentTab extends BaseTab {
 
     protected getCommand(payload: CommandPayload): Promise<void> {
         const commandName = payload.commandName;
+
         switch (commandName) {
             case 'refreshDocument':
                 return this.refreshDocument();
+
             case 'saveDocument':
                 return this.saveDocument(payload.params[0] as string);
+
             case 'setMode':
                 this.mode = payload.params[0] as DocumentTabMode;
+
                 return Promise.resolve();
+
             case 'setDirty':
                 this.isDirty = payload.params[0] as boolean;
+
                 return Promise.resolve();
         }
 
@@ -183,6 +194,7 @@ export class DocumentTab extends BaseTab {
             if (!result) {
                 // TODO: should we show an error message notification?
                 context.errorHandling.suppressDisplay = true;
+
                 throw new Error('Failed to create document');
             }
 

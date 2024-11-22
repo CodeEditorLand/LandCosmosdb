@@ -15,8 +15,10 @@ export class SchemaService {
     public registerSchemas(db: Db): Thenable<SchemaConfiguration[]> {
         this._db = db;
         this._schemasCache.clear();
+
         return this._db.collections().then((collections) => {
             const schemas: SchemaConfiguration[] = [];
+
             for (const collection of collections) {
                 schemas.push(
                     ...[
@@ -53,6 +55,7 @@ export class SchemaService {
 
     public resolveSchema(uri: string): Thenable<string> {
         const schema = this._schemasCache.get(uri);
+
         if (schema) {
             return Promise.resolve(schema);
         }
@@ -62,6 +65,7 @@ export class SchemaService {
                 uri,
             ).then((sch) => {
                 this._schemasCache.set(uri, sch);
+
                 return sch;
             });
         }
@@ -70,6 +74,7 @@ export class SchemaService {
                 uri.substring('mongo://aggregate/'.length, uri.length - '.schema'.length),
             ).then((sch) => {
                 this._schemasCache.set(uri, sch);
+
                 return sch;
             });
         }
@@ -78,13 +83,16 @@ export class SchemaService {
 
     private _resolveQueryCollectionSchema(collectionName: string, schemaUri: string): Thenable<string> {
         const collection = this._db.collection(collectionName);
+
         const cursor = collection.find();
+
         return new Promise((resolve, _reject) => {
             this.readNext([], cursor, 10, (result) => {
                 const schema: JSONSchema = {
                     type: 'object',
                     properties: {},
                 };
+
                 for (const document of result) {
                     this.setSchemaForDocument(null!, document, schema);
                 }
@@ -97,7 +105,9 @@ export class SchemaService {
 
     private _resolveAggregateCollectionSchema(collectionName: string): Thenable<string> {
         const collection = this._db.collection(collectionName);
+
         const cursor = collection.find();
+
         return new Promise((resolve, _reject) => {
             this.readNext([], cursor, 10, (_result) => {
                 const schema: JSONSchema = {
@@ -129,6 +139,7 @@ export class SchemaService {
         const scopedProperty = parent ? `${parent}.${property}` : property;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const value = document[property];
+
         const type = this.getMongoDocumentType(value);
 
         const propertySchema: JSONSchema = {
@@ -634,6 +645,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
                 },
             },
         });
+
         return {
             type: 'object',
             oneOf: schemas,
@@ -648,12 +660,14 @@ Use the $where operator to pass either a string containing a JavaScript expressi
     ): void {
         if (result.length === batchSize) {
             callback(result);
+
             return;
         }
 
         void cursor.hasNext().then((hasNext) => {
             if (!hasNext) {
                 callback(result);
+
                 return;
             }
 
