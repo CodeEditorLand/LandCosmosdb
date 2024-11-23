@@ -3,8 +3,9 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { createConnection, type IConnection } from 'vscode-languageserver';
-import { LanguageService } from './services/languageService';
+import { createConnection, type IConnection } from "vscode-languageserver";
+
+import { LanguageService } from "./services/languageService";
 
 //
 //

@@ -3,34 +3,35 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IActionContext } from '@microsoft/vscode-azext-utils';
-import { ViewColumn } from 'vscode';
-import { DocumentsViewController } from '../../webviews/mongoClusters/documentView/documentsViewController';
+import { type IActionContext } from "@microsoft/vscode-azext-utils";
+import { ViewColumn } from "vscode";
+
+import { DocumentsViewController } from "../../webviews/mongoClusters/documentView/documentsViewController";
 
 export function openDocumentView(
-    _context: IActionContext,
-    props: {
-        id: string;
+	_context: IActionContext,
+	props: {
+		id: string;
 
-        sessionId: string;
-        databaseName: string;
-        collectionName: string;
+		sessionId: string;
+		databaseName: string;
+		collectionName: string;
 
-        documentId: string;
+		documentId: string;
 
-        mode: string;
-    },
+		mode: string;
+	},
 ): void {
-    const view = new DocumentsViewController({
-        id: props.id,
+	const view = new DocumentsViewController({
+		id: props.id,
 
-        sessionId: props.sessionId,
-        databaseName: props.databaseName,
-        collectionName: props.collectionName,
-        documentId: props.documentId,
+		sessionId: props.sessionId,
+		databaseName: props.databaseName,
+		collectionName: props.collectionName,
+		documentId: props.documentId,
 
-        mode: props.mode,
-    });
+		mode: props.mode,
+	});
 
-    view.revealToForeground(ViewColumn.Active);
+	view.revealToForeground(ViewColumn.Active);
 }

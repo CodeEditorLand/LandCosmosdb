@@ -3,7 +3,7 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
 /**
  * This is a temporary function usend to optionaly enable support for MongoClusters in the Azure Resources extension.
@@ -14,10 +14,14 @@ import * as vscode from 'vscode';
  * @returns
  */
 export function isMongoClustersSupportenabled() {
-    const vsCodeCosmosDBConfiguration = vscode.extensions.getExtension('ms-azuretools.vscode-cosmosdb')
-        ?.packageJSON as ExtensionPackageMongoClustersEnabled;
+	const vsCodeCosmosDBConfiguration = vscode.extensions.getExtension(
+		"ms-azuretools.vscode-cosmosdb",
+	)?.packageJSON as ExtensionPackageMongoClustersEnabled;
 
-    return vsCodeCosmosDBConfiguration && vsCodeCosmosDBConfiguration.enableMongoClusters;
+	return (
+		vsCodeCosmosDBConfiguration &&
+		vsCodeCosmosDBConfiguration.enableMongoClusters
+	);
 }
 
 /**
@@ -25,5 +29,5 @@ export function isMongoClustersSupportenabled() {
  * It will be removed once the MongoClusters feature is fully released.
  */
 interface ExtensionPackageMongoClustersEnabled {
-    readonly enableMongoClusters?: boolean;
+	readonly enableMongoClusters?: boolean;
 }

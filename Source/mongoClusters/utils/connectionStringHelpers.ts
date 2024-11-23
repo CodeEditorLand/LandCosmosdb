@@ -3,38 +3,47 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import ConnectionString from 'mongodb-connection-string-url';
+import ConnectionString from "mongodb-connection-string-url";
 
-export const removePasswordFromConnectionString = (connectionString: string): string => {
-    const connectionStringOb = new ConnectionString(connectionString);
-    connectionStringOb.password = '';
+export const removePasswordFromConnectionString = (
+	connectionString: string,
+): string => {
+	const connectionStringOb = new ConnectionString(connectionString);
+	connectionStringOb.password = "";
 
-    return connectionStringOb.toString();
+	return connectionStringOb.toString();
 };
 
 export const addAuthenticationDataToConnectionString = (
-    connectionString: string,
-    username: string,
-    password: string | undefined,
+	connectionString: string,
+	username: string,
+	password: string | undefined,
 ): string => {
-    const connectionStringOb = new ConnectionString(connectionString);
-    connectionStringOb.username = username;
-    connectionStringOb.password = password ?? '';
+	const connectionStringOb = new ConnectionString(connectionString);
+	connectionStringOb.username = username;
+	connectionStringOb.password = password ?? "";
 
-    return connectionStringOb.toString();
+	return connectionStringOb.toString();
 };
 
-export const getUserNameFromConnectionString = (connectionString: string): string => {
-    return new ConnectionString(connectionString).username;
+export const getUserNameFromConnectionString = (
+	connectionString: string,
+): string => {
+	return new ConnectionString(connectionString).username;
 };
 
-export const getPasswordFromConnectionString = (connectionString: string): string => {
-    return new ConnectionString(connectionString).password;
+export const getPasswordFromConnectionString = (
+	connectionString: string,
+): string => {
+	return new ConnectionString(connectionString).password;
 };
 
-export const addDatabasePathToConnectionString = (connectionString: string, databaseName: string): string => {
-    const connectionStringOb = new ConnectionString(connectionString);
-    connectionStringOb.pathname = databaseName;
+export const addDatabasePathToConnectionString = (
+	connectionString: string,
+	databaseName: string,
+): string => {
+	const connectionStringOb = new ConnectionString(connectionString);
+	connectionStringOb.pathname = databaseName;
 
-    return connectionStringOb.toString();
+	return connectionStringOb.toString();
 };

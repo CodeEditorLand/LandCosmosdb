@@ -4,6 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 
 export interface CellValue {
-    value: string;
-    type: string;
+	value: string;
+	type: string;
 }

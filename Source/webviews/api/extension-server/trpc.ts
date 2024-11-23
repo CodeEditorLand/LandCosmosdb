@@ -13,7 +13,7 @@
  * @see https://trpc.io/docs/v11/procedures
  */
 
-import { initTRPC } from '@trpc/server';
+import { initTRPC } from "@trpc/server";
 
 /**
  * Initialization of tRPC backend.

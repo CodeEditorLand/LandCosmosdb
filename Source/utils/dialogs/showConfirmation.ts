@@ -3,16 +3,20 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import vscode from 'vscode';
-import { ext } from '../../extensionVariables';
-import { localize } from '../localize';
+import vscode from "vscode";
+
+import { ext } from "../../extensionVariables";
+import { localize } from "../localize";
 
 export function showConfirmationAsInSettings(message: string) {
-    const showSummary: boolean | undefined = vscode.workspace
-        .getConfiguration()
-        .get<boolean>(ext.settingsKeys.showOperationSummaries);
+	const showSummary: boolean | undefined = vscode.workspace
+		.getConfiguration()
+		.get<boolean>(ext.settingsKeys.showOperationSummaries);
 
-    if (showSummary) {
-        vscode.window.showInformationMessage(message, localize('showConfirmation.ok', 'OK'));
-    }
+	if (showSummary) {
+		vscode.window.showInformationMessage(
+			message,
+			localize("showConfirmation.ok", "OK"),
+		);
+	}
 }

@@ -4,61 +4,73 @@
  *--------------------------------------------------------------------------------------------*/
 
 import {
-    callWithTelemetryAndErrorHandling,
-    type IActionContext,
-    type TreeElementBase,
-} from '@microsoft/vscode-azext-utils';
-import { type WorkspaceResourceBranchDataProvider } from '@microsoft/vscode-azureresources-api';
-import * as vscode from 'vscode';
-import { type TreeItem } from 'vscode';
-import { API } from '../../../AzureDBExperiences';
-import { ext } from '../../../extensionVariables';
-import { MongoDBAccountsWorkspaceItem } from './MongoDBAccountsWorkspaceItem';
+	callWithTelemetryAndErrorHandling,
+	type IActionContext,
+	type TreeElementBase,
+} from "@microsoft/vscode-azext-utils";
+import { type WorkspaceResourceBranchDataProvider } from "@microsoft/vscode-azureresources-api";
+import * as vscode from "vscode";
+import { type TreeItem } from "vscode";
+
+import { API } from "../../../AzureDBExperiences";
+import { ext } from "../../../extensionVariables";
+import { MongoDBAccountsWorkspaceItem } from "./MongoDBAccountsWorkspaceItem";
 
 export class MongoClustersWorkspaceBranchDataProvider
-    extends vscode.Disposable
-    implements WorkspaceResourceBranchDataProvider<TreeElementBase>
+	extends vscode.Disposable
+	implements WorkspaceResourceBranchDataProvider<TreeElementBase>
 {
-    private readonly onDidChangeTreeDataEmitter = new vscode.EventEmitter<TreeElementBase | undefined>();
+	private readonly onDidChangeTreeDataEmitter = new vscode.EventEmitter<
+		TreeElementBase | undefined
+	>();
 
-    get onDidChangeTreeData(): vscode.Event<TreeElementBase | undefined> {
-        return this.onDidChangeTreeDataEmitter.event;
-    }
+	get onDidChangeTreeData(): vscode.Event<TreeElementBase | undefined> {
+		return this.onDidChangeTreeDataEmitter.event;
+	}
 
-    constructor() {
-        super(() => {
-            this.onDidChangeTreeDataEmitter.dispose();
-        });
-    }
+	constructor() {
+		super(() => {
+			this.onDidChangeTreeDataEmitter.dispose();
+		});
+	}
 
-    async getChildren(element: TreeElementBase): Promise<TreeElementBase[] | null | undefined> {
-        return await callWithTelemetryAndErrorHandling('getChildren', async (context: IActionContext) => {
-            context.telemetry.properties.experience = API.MongoClusters;
-            context.telemetry.properties.view = 'workspace';
-            context.telemetry.properties.parentContext = (await element.getTreeItem()).contextValue ?? 'unknown';
+	async getChildren(
+		element: TreeElementBase,
+	): Promise<TreeElementBase[] | null | undefined> {
+		return await callWithTelemetryAndErrorHandling(
+			"getChildren",
+			async (context: IActionContext) => {
+				context.telemetry.properties.experience = API.MongoClusters;
+				context.telemetry.properties.view = "workspace";
+				context.telemetry.properties.parentContext =
+					(await element.getTreeItem()).contextValue ?? "unknown";
 
-            return (await element.getChildren?.())?.map((child) => {
-                if (child.id) {
-                    return ext.state.wrapItemInStateHandling(child as TreeElementBase & { id: string }, () =>
-                        this.refresh(child),
-                    );
-                }
-                return child;
-            });
-        });
-    }
+				return (await element.getChildren?.())?.map((child) => {
+					if (child.id) {
+						return ext.state.wrapItemInStateHandling(
+							child as TreeElementBase & { id: string },
+							() => this.refresh(child),
+						);
+					}
+					return child;
+				});
+			},
+		);
+	}
 
-    getResourceItem(): TreeElementBase | Thenable<TreeElementBase> {
-        const resourceItem = new MongoDBAccountsWorkspaceItem();
+	getResourceItem(): TreeElementBase | Thenable<TreeElementBase> {
+		const resourceItem = new MongoDBAccountsWorkspaceItem();
 
-        return ext.state.wrapItemInStateHandling(resourceItem!, () => this.refresh(resourceItem));
-    }
+		return ext.state.wrapItemInStateHandling(resourceItem!, () =>
+			this.refresh(resourceItem),
+		);
+	}
 
-    getTreeItem(element: TreeElementBase): TreeItem | Thenable<TreeItem> {
-        return element.getTreeItem();
-    }
+	getTreeItem(element: TreeElementBase): TreeItem | Thenable<TreeItem> {
+		return element.getTreeItem();
+	}
 
-    refresh(element?: TreeElementBase): void {
-        this.onDidChangeTreeDataEmitter.fire(element);
-    }
+	refresh(element?: TreeElementBase): void {
+		this.onDidChangeTreeDataEmitter.fire(element);
+	}
 }

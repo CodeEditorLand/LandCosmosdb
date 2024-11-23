@@ -4,8 +4,11 @@
  *--------------------------------------------------------------------------------------------*/
 
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { type WorkspaceResource, type WorkspaceResourceProvider } from '@microsoft/vscode-azureresources-api';
-import type * as vscode from 'vscode';
+import {
+	type WorkspaceResource,
+	type WorkspaceResourceProvider,
+} from "@microsoft/vscode-azureresources-api";
+import type * as vscode from "vscode";
 
 /**
  * Enum representing the types of resources that can be registered in the workspace.
@@ -31,7 +34,7 @@ import type * as vscode from 'vscode';
  * ```
  */
 export enum WorkspaceResourceType {
-    MongoClusters = 'vscode.cosmosdb.workspace.mongoclusters-resourceType',
+	MongoClusters = "vscode.cosmosdb.workspace.mongoclusters-resourceType",
 }
 
 /**
@@ -49,14 +52,16 @@ export enum WorkspaceResourceType {
  * more specialized handling and display of different types of resources
  * within the workspace.
  */
-export class SharedWorkspaceResourceProvider implements WorkspaceResourceProvider {
-    getResources(): vscode.ProviderResult<WorkspaceResource[]> {
-        return [
-            {
-                resourceType: WorkspaceResourceType.MongoClusters,
-                id: 'vscode.cosmosdb.workspace.mongoclusters',
-                name: 'MongoDB Cluster Accounts', // this name will be displayed in the workspace view, when no WorkspaceResourceBranchDataProvider is registered
-            },
-        ];
-    }
+export class SharedWorkspaceResourceProvider
+	implements WorkspaceResourceProvider
+{
+	getResources(): vscode.ProviderResult<WorkspaceResource[]> {
+		return [
+			{
+				resourceType: WorkspaceResourceType.MongoClusters,
+				id: "vscode.cosmosdb.workspace.mongoclusters",
+				name: "MongoDB Cluster Accounts", // this name will be displayed in the workspace view, when no WorkspaceResourceBranchDataProvider is registered
+			},
+		];
+	}
 }

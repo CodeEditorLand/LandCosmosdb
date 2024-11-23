@@ -3,55 +3,67 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { AzExtParentTreeItem, type TreeItemIconPath } from '@microsoft/vscode-azext-utils';
-import * as vscode from 'vscode';
-import { type IPostgresTable } from '../getTables';
-import { runPostgresQuery, wrapArgInQuotes } from '../runPostgresQuery';
-import { PostgresColumnTreeItem } from './PostgresColumnTreeItem';
-import { type PostgresTablesTreeItem } from './PostgresTablesTreeItem';
+import {
+	AzExtParentTreeItem,
+	type TreeItemIconPath,
+} from "@microsoft/vscode-azext-utils";
+import * as vscode from "vscode";
+
+import { type IPostgresTable } from "../getTables";
+import { runPostgresQuery, wrapArgInQuotes } from "../runPostgresQuery";
+import { PostgresColumnTreeItem } from "./PostgresColumnTreeItem";
+import { type PostgresTablesTreeItem } from "./PostgresTablesTreeItem";
 
 export class PostgresTableTreeItem extends AzExtParentTreeItem {
-    public static contextValue: string = 'postgresTable';
-    public readonly contextValue: string = PostgresTableTreeItem.contextValue;
-    public readonly table: IPostgresTable;
-    public declare readonly parent: PostgresTablesTreeItem;
+	public static contextValue: string = "postgresTable";
+	public readonly contextValue: string = PostgresTableTreeItem.contextValue;
+	public readonly table: IPostgresTable;
+	public declare readonly parent: PostgresTablesTreeItem;
 
-    private _isDuplicate: boolean;
+	private _isDuplicate: boolean;
 
-    constructor(parent: PostgresTablesTreeItem, table: IPostgresTable, isDuplicate: boolean) {
-        super(parent);
-        this.table = table;
-        this._isDuplicate = isDuplicate;
-    }
+	constructor(
+		parent: PostgresTablesTreeItem,
+		table: IPostgresTable,
+		isDuplicate: boolean,
+	) {
+		super(parent);
+		this.table = table;
+		this._isDuplicate = isDuplicate;
+	}
 
-    public get id(): string {
-        return String(this.table.oid);
-    }
+	public get id(): string {
+		return String(this.table.oid);
+	}
 
-    public get label(): string {
-        return this.table.name;
-    }
+	public get label(): string {
+		return this.table.name;
+	}
 
-    public get description(): string | undefined {
-        return this._isDuplicate ? this.table.schemaName : undefined;
-    }
+	public get description(): string | undefined {
+		return this._isDuplicate ? this.table.schemaName : undefined;
+	}
 
-    public get iconPath(): TreeItemIconPath {
-        return new vscode.ThemeIcon('window');
-    }
+	public get iconPath(): TreeItemIconPath {
+		return new vscode.ThemeIcon("window");
+	}
 
-    public hasMoreChildrenImpl(): boolean {
-        return false;
-    }
+	public hasMoreChildrenImpl(): boolean {
+		return false;
+	}
 
-    public async loadMoreChildrenImpl(_clearCache: boolean): Promise<PostgresColumnTreeItem[]> {
-        return this.table.columnNames.map((columnName) => new PostgresColumnTreeItem(this, columnName));
-    }
+	public async loadMoreChildrenImpl(
+		_clearCache: boolean,
+	): Promise<PostgresColumnTreeItem[]> {
+		return this.table.columnNames.map(
+			(columnName) => new PostgresColumnTreeItem(this, columnName),
+		);
+	}
 
-    public async deleteTreeItemImpl(): Promise<void> {
-        await runPostgresQuery(
-            this.parent.clientConfig,
-            `Drop Table ${this.table.schemaName}.${wrapArgInQuotes(this.table.name)};`,
-        );
-    }
+	public async deleteTreeItemImpl(): Promise<void> {
+		await runPostgresQuery(
+			this.parent.clientConfig,
+			`Drop Table ${this.table.schemaName}.${wrapArgInQuotes(this.table.name)};`,
+		);
+	}
 }

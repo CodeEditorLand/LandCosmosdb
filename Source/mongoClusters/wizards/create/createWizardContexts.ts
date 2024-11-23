@@ -3,24 +3,25 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type IActionContext } from '@microsoft/vscode-azext-utils';
-import { type DatabaseItem } from '../../tree/DatabaseItem';
-import { type MongoClusterResourceItem } from '../../tree/MongoClusterResourceItem';
+import { type IActionContext } from "@microsoft/vscode-azext-utils";
+
+import { type DatabaseItem } from "../../tree/DatabaseItem";
+import { type MongoClusterResourceItem } from "../../tree/MongoClusterResourceItem";
 
 export interface CreateCollectionWizardContext extends IActionContext {
-    /** These values have to be provided for the wizard to function correctly. */
-    credentialsId: string;
-    databaseItem: DatabaseItem;
+	/** These values have to be provided for the wizard to function correctly. */
+	credentialsId: string;
+	databaseItem: DatabaseItem;
 
-    /** These values will be populated by the wizard. */
-    newCollectionName?: string;
+	/** These values will be populated by the wizard. */
+	newCollectionName?: string;
 }
 
 export interface CreateDatabaseWizardContext extends IActionContext {
-    /** These values have to be provided for the wizard to function correctly. */
-    credentialsId: string;
-    mongoClusterItem: MongoClusterResourceItem;
+	/** These values have to be provided for the wizard to function correctly. */
+	credentialsId: string;
+	mongoClusterItem: MongoClusterResourceItem;
 
-    /** These values will be populated by the wizard. */
-    newDatabaseName?: string;
+	/** These values will be populated by the wizard. */
+	newDatabaseName?: string;
 }

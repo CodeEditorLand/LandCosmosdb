@@ -3,15 +3,33 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { type BrandVariants, createDarkTheme, createLightTheme, type Theme } from '@fluentui/react-components';
-import { type MonacoBuiltinTheme, type MonacoColors, type MonacoThemeData } from './state/ThemeState';
-import { hex_to_LCH, hexColorsFromPalette, type Palette, RGBAToHexA } from './utils';
-import { vscodeThemeTokens, vscodeThemeTokenToCSSVar } from './vscodeThemeTokens';
+import {
+	createDarkTheme,
+	createLightTheme,
+	type BrandVariants,
+	type Theme,
+} from "@fluentui/react-components";
+
+import {
+	type MonacoBuiltinTheme,
+	type MonacoColors,
+	type MonacoThemeData,
+} from "./state/ThemeState";
+import {
+	hex_to_LCH,
+	hexColorsFromPalette,
+	RGBAToHexA,
+	type Palette,
+} from "./utils";
+import {
+	vscodeThemeTokens,
+	vscodeThemeTokenToCSSVar,
+} from "./vscodeThemeTokens";
 
 type Options = {
-    darkCp?: number;
-    lightCp?: number;
-    hueTorsion?: number;
+	darkCp?: number;
+	lightCp?: number;
+	hueTorsion?: number;
 };
 
 /**
@@ -29,98 +47,112 @@ type Options = {
 
  * The function returns a set of brand tokens.
  */
-export function getBrandTokensFromPalette(keyColor: string, options: Options = {}) {
-    const { darkCp = 2 / 3, lightCp = 1 / 3, hueTorsion = 0 } = options;
+export function getBrandTokensFromPalette(
+	keyColor: string,
+	options: Options = {},
+) {
+	const { darkCp = 2 / 3, lightCp = 1 / 3, hueTorsion = 0 } = options;
 
-    if (!keyColor.startsWith('#')) {
-        if (keyColor.startsWith('rgb')) {
-            keyColor = RGBAToHexA(keyColor);
-        }
+	if (!keyColor.startsWith("#")) {
+		if (keyColor.startsWith("rgb")) {
+			keyColor = RGBAToHexA(keyColor);
+		}
 
-        // TODO: If the color is not a hex value
-    }
+		// TODO: If the color is not a hex value
+	}
 
-    const brandPalette: Palette = {
-        keyColor: hex_to_LCH(keyColor),
-        darkCp,
-        lightCp,
-        hueTorsion,
-    };
+	const brandPalette: Palette = {
+		keyColor: hex_to_LCH(keyColor),
+		darkCp,
+		lightCp,
+		hueTorsion,
+	};
 
-    const hexColors = hexColorsFromPalette(keyColor, brandPalette, 16, 1);
+	const hexColors = hexColorsFromPalette(keyColor, brandPalette, 16, 1);
 
-    return hexColors.reduce((acc: Record<string, string>, hexColor, h) => {
-        acc[`${(h + 1) * 10}`] = hexColor;
+	return hexColors.reduce((acc: Record<string, string>, hexColor, h) => {
+		acc[`${(h + 1) * 10}`] = hexColor;
 
-        return acc;
-    }, {}) as BrandVariants;
+		return acc;
+	}, {}) as BrandVariants;
 }
 
 // https://react.fluentui.dev/?path=/docs/concepts-developer-theming--page#overriding-existing-tokens
 export const generateAdaptiveLightTheme = (): Theme => {
-    const style = getComputedStyle(document.documentElement);
+	const style = getComputedStyle(document.documentElement);
 
-    const buttonBackground = style.getPropertyValue('--vscode-button-background');
+	const buttonBackground = style.getPropertyValue(
+		"--vscode-button-background",
+	);
 
-    const brandVSCode: BrandVariants = getBrandTokensFromPalette(buttonBackground);
+	const brandVSCode: BrandVariants =
+		getBrandTokensFromPalette(buttonBackground);
 
-    return {
-        ...createLightTheme(brandVSCode),
-        ...{
-            colorNeutralForeground1: 'var(--vscode-editor-foreground)',
-            colorNeutralForeground1Hover: 'var(--vscode-editor-foreground)',
-            colorNeutralForeground1Pressed: 'var(--vscode-editor-foreground)',
-            colorNeutralForeground1Selected: 'var(--vscode-editor-foreground)',
+	return {
+		...createLightTheme(brandVSCode),
+		...{
+			colorNeutralForeground1: "var(--vscode-editor-foreground)",
+			colorNeutralForeground1Hover: "var(--vscode-editor-foreground)",
+			colorNeutralForeground1Pressed: "var(--vscode-editor-foreground)",
+			colorNeutralForeground1Selected: "var(--vscode-editor-foreground)",
 
-            colorNeutralBackground1: 'var(--vscode-editor-background)',
-        },
-    };
+			colorNeutralBackground1: "var(--vscode-editor-background)",
+		},
+	};
 };
 
 export const generateAdaptiveDarkTheme = (): Theme => {
-    const style = getComputedStyle(document.documentElement);
+	const style = getComputedStyle(document.documentElement);
 
-    const buttonBackground = style.getPropertyValue('--vscode-button-background');
+	const buttonBackground = style.getPropertyValue(
+		"--vscode-button-background",
+	);
 
-    const brandVSCode: BrandVariants = getBrandTokensFromPalette(buttonBackground);
+	const brandVSCode: BrandVariants =
+		getBrandTokensFromPalette(buttonBackground);
 
-    return {
-        ...createDarkTheme(brandVSCode),
-        ...{
-            colorNeutralForeground1: 'var(--vscode-button-foreground)',
-            colorNeutralForeground1Hover: 'var(--vscode-button-foreground)',
-            colorNeutralForeground1Pressed: 'var(--vscode-button-foreground)',
-            colorNeutralForeground1Selected: 'var(--vscode-button-foreground)',
-            colorNeutralForeground2: 'var(--vscode-button-secondaryForeground)',
-            colorNeutralForeground2Hover: 'var(--vscode-button-secondaryForeground)',
-            colorNeutralForeground2Pressed: 'var(--vscode-button-secondaryForeground)',
-            colorNeutralForeground2Selected: 'var(--vscode-button-secondaryForeground)',
+	return {
+		...createDarkTheme(brandVSCode),
+		...{
+			colorNeutralForeground1: "var(--vscode-button-foreground)",
+			colorNeutralForeground1Hover: "var(--vscode-button-foreground)",
+			colorNeutralForeground1Pressed: "var(--vscode-button-foreground)",
+			colorNeutralForeground1Selected: "var(--vscode-button-foreground)",
+			colorNeutralForeground2: "var(--vscode-button-secondaryForeground)",
+			colorNeutralForeground2Hover:
+				"var(--vscode-button-secondaryForeground)",
+			colorNeutralForeground2Pressed:
+				"var(--vscode-button-secondaryForeground)",
+			colorNeutralForeground2Selected:
+				"var(--vscode-button-secondaryForeground)",
 
-            colorNeutralBackground1: 'var(--vscode-editor-background)',
-        },
-    };
+			colorNeutralBackground1: "var(--vscode-editor-background)",
+		},
+	};
 };
 
-export const generateMonacoTheme = (baseTheme: MonacoBuiltinTheme): MonacoThemeData => {
-    const style = getComputedStyle(document.documentElement);
+export const generateMonacoTheme = (
+	baseTheme: MonacoBuiltinTheme,
+): MonacoThemeData => {
+	const style = getComputedStyle(document.documentElement);
 
-    const colors = vscodeThemeTokens
-        .map((token) => {
-            let color = style.getPropertyValue(vscodeThemeTokenToCSSVar(token));
+	const colors = vscodeThemeTokens
+		.map((token) => {
+			let color = style.getPropertyValue(vscodeThemeTokenToCSSVar(token));
 
-            if (!color.startsWith('#')) {
-                if (color.startsWith('rgb')) {
-                    color = RGBAToHexA(color);
-                }
-            }
-            return [token, color];
-        })
-        .filter(([_, color]) => color !== '');
+			if (!color.startsWith("#")) {
+				if (color.startsWith("rgb")) {
+					color = RGBAToHexA(color);
+				}
+			}
+			return [token, color];
+		})
+		.filter(([_, color]) => color !== "");
 
-    return {
-        base: baseTheme,
-        inherit: true,
-        rules: [],
-        colors: Object.fromEntries(colors) as MonacoColors,
-    };
+	return {
+		base: baseTheme,
+		inherit: true,
+		rules: [],
+		colors: Object.fromEntries(colors) as MonacoColors,
+	};
 };

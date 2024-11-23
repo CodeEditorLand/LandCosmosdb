@@ -3,15 +3,15 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { useState } from 'react';
+import { useState } from "react";
 
 declare global {
-    interface Window {
-        config?: {
-            __initialData?: string;
-            [key: string]: unknown; // Optional: Allows any other properties in config
-        };
-    }
+	interface Window {
+		config?: {
+			__initialData?: string;
+			[key: string]: unknown; // Optional: Allows any other properties in config
+		};
+	}
 }
 
 /**
@@ -20,11 +20,13 @@ declare global {
  * @returns The configuration object that was passed to the webview at its creation
  */
 export function useConfiguration<T>(): T {
-    const [configuration] = useState<T>(() => {
-        const configString = decodeURIComponent(window.config?.__initialData ?? '{}');
+	const [configuration] = useState<T>(() => {
+		const configString = decodeURIComponent(
+			window.config?.__initialData ?? "{}",
+		);
 
-        return JSON.parse(configString) as T;
-    });
+		return JSON.parse(configString) as T;
+	});
 
-    return configuration;
+	return configuration;
 }

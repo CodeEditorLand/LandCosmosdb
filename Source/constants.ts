@@ -1,3 +1,16 @@
+import * as fs from "fs";
+import assert from "node:assert";
+import * as path from "path";
+import { Utils, type URI } from "vscode-uri";
+
+import {
+	CoreExperience,
+	GremlinExperience,
+	MongoExperience,
+	TableExperience,
+} from "./AzureDBExperiences";
+import { ext } from "./extensionVariables";
+
 /*---------------------------------------------------------------------------------------------
  *  Copyright (c) Microsoft Corporation. All rights reserved.
  *  Licensed under the MIT License. See License.txt in the project root for license information.
@@ -5,59 +18,75 @@
 
 export const isWindows: boolean = /^win/.test(process.platform);
 
-import * as fs from 'fs';
-import assert from 'node:assert';
-import * as path from 'path';
-import { Utils, type URI } from 'vscode-uri';
-import { CoreExperience, GremlinExperience, MongoExperience, TableExperience } from './AzureDBExperiences';
-import { ext } from './extensionVariables';
-
 export namespace Links {
-    export const LocalConnectionDebuggingTips: string = 'https://aka.ms/AA5zah5';
+	export const LocalConnectionDebuggingTips: string =
+		"https://aka.ms/AA5zah5";
 }
 
 export interface IThemedIconPath {
-    light: string;
-    dark: string;
+	light: string;
+	dark: string;
 }
 
 export interface IThemedIconURI {
-    light: URI;
-    dark: URI;
+	light: URI;
+	dark: URI;
 }
 
 export function getThemedIconPath(iconName: string): IThemedIconPath {
-    const a = {
-        light: path.join(getResourcesPath(), 'icons', 'light', iconName),
-        dark: path.join(getResourcesPath(), 'icons', 'dark', iconName),
-    };
-    assert.ok(fs.existsSync(a.light));
+	const a = {
+		light: path.join(getResourcesPath(), "icons", "light", iconName),
+		dark: path.join(getResourcesPath(), "icons", "dark", iconName),
+	};
+	assert.ok(fs.existsSync(a.light));
 
-    return a;
+	return a;
 }
 
 export function getThemeAgnosticIconPath(iconName: string): IThemedIconPath {
-    const a = {
-        light: path.join(getResourcesPath(), 'icons', 'theme-agnostic', iconName),
-        dark: path.join(getResourcesPath(), 'icons', 'theme-agnostic', iconName),
-    };
-    assert.ok(fs.existsSync(a.light));
+	const a = {
+		light: path.join(
+			getResourcesPath(),
+			"icons",
+			"theme-agnostic",
+			iconName,
+		),
+		dark: path.join(
+			getResourcesPath(),
+			"icons",
+			"theme-agnostic",
+			iconName,
+		),
+	};
+	assert.ok(fs.existsSync(a.light));
 
-    return a;
+	return a;
 }
 
 export function getThemeAgnosticIconURI(iconName: string): IThemedIconURI {
-    const a = {
-        light: Utils.joinPath(ext.context.extensionUri, 'resources', 'icons', 'theme-agnostic', iconName),
-        dark: Utils.joinPath(ext.context.extensionUri, 'resources', 'icons', 'theme-agnostic', iconName),
-    };
-    assert.ok(fs.existsSync(a.light.path));
+	const a = {
+		light: Utils.joinPath(
+			ext.context.extensionUri,
+			"resources",
+			"icons",
+			"theme-agnostic",
+			iconName,
+		),
+		dark: Utils.joinPath(
+			ext.context.extensionUri,
+			"resources",
+			"icons",
+			"theme-agnostic",
+			iconName,
+		),
+	};
+	assert.ok(fs.existsSync(a.light.path));
 
-    return a;
+	return a;
 }
 
 export function getResourcesPath(): string {
-    return ext.context.asAbsolutePath('resources');
+	return ext.context.asAbsolutePath("resources");
 }
 
 export const doubleClickDebounceDelay = 500; //milliseconds
@@ -95,65 +124,66 @@ export const defaultTrigger = `function trigger() {
 }`;
 
 export const emulatorPassword =
-    'C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==';
+	"C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b8mGGyPMbIZnqyMsEcaGQy67XIw/Jw==";
 
 // https://docs.mongodb.com/manual/mongo/#working-with-the-mongo-shell
-export const testDb: string = 'test';
+export const testDb: string = "test";
 
-export const connectedPostgresKey: string = 'ms-azuretools.vscode-azuredatabases.connectedPostgresDB';
-export const postgresLanguageId: string = 'postgres';
+export const connectedPostgresKey: string =
+	"ms-azuretools.vscode-azuredatabases.connectedPostgresDB";
+export const postgresLanguageId: string = "postgres";
 export const postgresFileExtension: string = `.psql`;
-export const postgresBaseFileName: string = 'query';
-export const postgresDefaultPort = '5432';
-export const postgresDefaultDatabase = 'postgres';
-export const SERVERLESS_CAPABILITY_NAME = 'EnableServerless';
+export const postgresBaseFileName: string = "query";
+export const postgresDefaultPort = "5432";
+export const postgresDefaultDatabase = "postgres";
+export const SERVERLESS_CAPABILITY_NAME = "EnableServerless";
 
-export const databaseAccountType = 'Microsoft.DocumentDB/databaseAccounts';
+export const databaseAccountType = "Microsoft.DocumentDB/databaseAccounts";
 
-export const mongoDefaultExperienceTag = 'Azure Cosmos DB for MongoDB API';
+export const mongoDefaultExperienceTag = "Azure Cosmos DB for MongoDB API";
 
 export const cosmosMongoFilter = {
-    type: databaseAccountType,
-    kind: MongoExperience.kind,
-    tags: {
-        defaultExperience: mongoDefaultExperienceTag,
-    },
+	type: databaseAccountType,
+	kind: MongoExperience.kind,
+	tags: {
+		defaultExperience: mongoDefaultExperienceTag,
+	},
 };
 
-export const gremlinDefaultExperienceTag = 'Gremlin (graph)';
+export const gremlinDefaultExperienceTag = "Gremlin (graph)";
 
 export const cosmosGremlinFilter = {
-    type: databaseAccountType,
-    kind: GremlinExperience.kind,
-    tags: {
-        defaultExperience: gremlinDefaultExperienceTag,
-    },
+	type: databaseAccountType,
+	kind: GremlinExperience.kind,
+	tags: {
+		defaultExperience: gremlinDefaultExperienceTag,
+	},
 };
 
-export const tableDefaultExperienceTag = 'Azure Table';
+export const tableDefaultExperienceTag = "Azure Table";
 
 export const cosmosTableFilter = {
-    type: databaseAccountType,
-    kind: TableExperience.kind,
-    tags: {
-        defaultExperience: tableDefaultExperienceTag,
-    },
+	type: databaseAccountType,
+	kind: TableExperience.kind,
+	tags: {
+		defaultExperience: tableDefaultExperienceTag,
+	},
 };
 
-export const sqlDefaultExperienceTag = 'NoSQL';
+export const sqlDefaultExperienceTag = "NoSQL";
 
 export const sqlFilter = {
-    type: databaseAccountType,
-    kind: CoreExperience.kind,
-    tags: {
-        defaultExperience: sqlDefaultExperienceTag,
-    },
+	type: databaseAccountType,
+	kind: CoreExperience.kind,
+	tags: {
+		defaultExperience: sqlDefaultExperienceTag,
+	},
 };
 
 export const postgresFlexibleFilter = {
-    type: 'Microsoft.DBforPostgreSQL/flexibleServers',
+	type: "Microsoft.DBforPostgreSQL/flexibleServers",
 };
 
 export const postgresSingleFilter = {
-    type: 'Microsoft.DBForPostgreSQL/servers',
+	type: "Microsoft.DBForPostgreSQL/servers",
 };
