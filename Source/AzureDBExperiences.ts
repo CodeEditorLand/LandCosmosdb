@@ -159,6 +159,7 @@ export const CoreExperience: Experience = {
 	kind: DBAccountKind.GlobalDocumentDB,
 	tag: "Core (SQL)",
 } as const;
+
 export const MongoExperience: Experience = {
 	api: API.MongoDB,
 	longName: "Cosmos DB for MongoDB",
@@ -166,6 +167,7 @@ export const MongoExperience: Experience = {
 	kind: DBAccountKind.MongoDB,
 	tag: "Azure Cosmos DB for MongoDB API",
 } as const;
+
 export const TableExperience: Experience = {
 	api: API.Table,
 	longName: "Cosmos DB for Table",
@@ -174,6 +176,7 @@ export const TableExperience: Experience = {
 	capability: "EnableTable",
 	tag: "Azure Table",
 } as const;
+
 export const GremlinExperience: Experience = {
 	api: API.Graph,
 	longName: "Cosmos DB for Gremlin",

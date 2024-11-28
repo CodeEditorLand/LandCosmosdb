@@ -19,6 +19,7 @@ export type PostgresClientConfigs = {
 	azureAd: ClientConfig | undefined;
 	connectionString: ClientConfig | undefined;
 };
+
 export type PostgresClientConfigType = keyof PostgresClientConfigs;
 
 /**

@@ -11,6 +11,7 @@ import {
 } from "@azure/cosmos";
 
 export const DEFAULT_PAGE_SIZE = 100 as const;
+
 export const DEFAULT_EXECUTION_TIMEOUT = 600_000 as const; // 10 minutes (600 seconds)
 
 // Record from the query result. Might have no fields if the query result is empty.

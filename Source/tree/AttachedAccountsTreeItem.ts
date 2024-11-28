@@ -48,6 +48,7 @@ interface IPersistedAccount {
 }
 
 export const AttachedAccountSuffix: string = "Attached";
+
 export const MONGO_CONNECTION_EXPECTED: string =
 	'Connection string must start with "mongodb://" or "mongodb+srv://"';
 

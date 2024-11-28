@@ -19,6 +19,7 @@
  */
 
 export type JSONSchemaRef = JSONSchema | boolean;
+
 export interface JSONSchema {
 	id?: string;
 	$id?: string;

@@ -25,6 +25,7 @@ export type StatsItem = {
 };
 
 export type TableRecord = Record<string, string> & { __id: string };
+
 export type TableData = {
 	headers: string[];
 	dataset: TableRecord[];
