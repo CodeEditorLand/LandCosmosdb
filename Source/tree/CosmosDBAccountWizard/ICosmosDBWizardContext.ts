@@ -16,6 +16,7 @@ export interface ICosmosDBWizardContext
 	 * This will be defined after `CosmosDBAccountStep.execute` occurs.
 	 */
 	databaseAccount?: DatabaseAccountGetResults;
+
 	isServerless?: boolean;
 
 	mongoVersion?: string;

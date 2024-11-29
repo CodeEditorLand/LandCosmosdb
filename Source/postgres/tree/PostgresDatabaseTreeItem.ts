@@ -31,16 +31,24 @@ import { PostgresTablesTreeItem } from "./PostgresTablesTreeItem";
 
 export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "postgresDatabase";
+
 	public contextValue: string = PostgresDatabaseTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Resource Type";
+
 	public readonly databaseName: string;
+
 	public declare readonly parent: PostgresServerTreeItem;
+
 	public autoSelectInTreeItemPicker: boolean = true;
+
 	public isShowingPasswordWarning: boolean;
 
 	constructor(parent: PostgresServerTreeItem, databaseName: string) {
 		super(parent);
+
 		this.databaseName = databaseName;
+
 		this.isShowingPasswordWarning = false;
 	}
 
@@ -82,6 +90,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 				),
 				commandId: "postgreSQL.configureFirewall",
 			});
+
 			firewallTreeItem.commandArgs = [this.parent];
 
 			return [firewallTreeItem];
@@ -97,6 +106,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 			if (type === "password") {
 				void this.showPasswordWarning(context);
 			}
+
 			const children: AzExtTreeItem[] = [
 				new PostgresFunctionsTreeItem(this, clientConfig),
 				new PostgresTablesTreeItem(this, clientConfig),
@@ -138,6 +148,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 						commandId: "postgreSQL.enterCredentials",
 					},
 				);
+
 				credentialsTreeItem.commandArgs = [this.parent];
 
 				return [credentialsTreeItem];
@@ -168,6 +179,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 				this.parent,
 				this.databaseName,
 			);
+
 		await runPostgresQuery(
 			clientConfig,
 			`Drop Database ${wrapArgInQuotes(this.databaseName)};`,
@@ -178,11 +190,14 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 		if (this.isShowingPasswordWarning) {
 			return;
 		}
+
 		this.isShowingPasswordWarning = true;
+
 		this.contextValue = createContextValue([
 			PostgresDatabaseTreeItem.contextValue,
 			"usesPassword",
 		]);
+
 		await this.refresh(context);
 	}
 }

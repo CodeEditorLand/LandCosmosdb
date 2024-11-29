@@ -17,6 +17,7 @@ export class WebviewChannel<StateType = unknown> extends CommonChannel {
 
 	dispose(): void {
 		super.dispose();
+
 		this.transport.dispose();
 	}
 }

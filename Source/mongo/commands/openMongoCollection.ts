@@ -19,5 +19,6 @@ export async function openMongoCollection(
 			MongoCollectionTreeItem.contextValue,
 		);
 	}
+
 	await ext.fileSystem.showTextDocument(node);
 }

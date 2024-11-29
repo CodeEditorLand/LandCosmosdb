@@ -33,11 +33,15 @@ import { type IDocDBTreeRoot } from "./IDocDBTreeRoot";
  */
 export class DocDBCollectionTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "cosmosDBDocumentCollection";
+
 	public readonly contextValue: string = DocDBCollectionTreeItem.contextValue;
+
 	public declare readonly parent: DocDBDatabaseTreeItem;
 
 	public readonly documentsTreeItem: DocDBDocumentsTreeItem;
+
 	private readonly _storedProceduresTreeItem: DocDBStoredProceduresTreeItem;
+
 	private readonly _triggersTreeItem: DocDBTriggersTreeItem;
 
 	constructor(
@@ -45,10 +49,13 @@ export class DocDBCollectionTreeItem extends AzExtParentTreeItem {
 		private _container: ContainerDefinition & Resource,
 	) {
 		super(parent);
+
 		this.documentsTreeItem = new DocDBDocumentsTreeItem(this);
+
 		this._storedProceduresTreeItem = new DocDBStoredProceduresTreeItem(
 			this,
 		);
+
 		this._triggersTreeItem = new DocDBTriggersTreeItem(this);
 	}
 
@@ -78,6 +85,7 @@ export class DocDBCollectionTreeItem extends AzExtParentTreeItem {
 
 	public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
 		const message: string = `Are you sure you want to delete collection '${this.label}' and its contents?`;
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteCollection" },
@@ -85,6 +93,7 @@ export class DocDBCollectionTreeItem extends AzExtParentTreeItem {
 		);
 
 		const client = this.root.getCosmosClient();
+
 		await this.getContainerClient(client).delete();
 	}
 

@@ -50,5 +50,6 @@ export async function deleteDatabaseAccount(
 	});
 
 	await wizard.prompt();
+
 	await wizard.execute();
 }

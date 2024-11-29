@@ -22,6 +22,7 @@ export class PostgresServerCredUserStep extends AzureWizardPromptStep<IPostgresS
 		).trim();
 
 		const usernameSuffix: string = `@${nonNullProp(context, "newServerName")}`;
+
 		context.longUserName = context.shortUserName + usernameSuffix;
 	}
 

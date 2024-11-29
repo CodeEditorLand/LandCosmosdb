@@ -17,14 +17,19 @@ import { PostgresResourcesTreeItemBase } from "./PostgresResourcesTreeItemBase";
 
 export class PostgresFunctionsTreeItem extends PostgresResourcesTreeItemBase {
 	public static contextValue: string = "postgresFunctions";
+
 	public readonly contextValue: string =
 		PostgresFunctionsTreeItem.contextValue;
+
 	public readonly label: string = "Functions";
+
 	public readonly childTypeLabel: string = "Function";
+
 	public suppressMaskLabel = true;
 
 	constructor(parent: PostgresDatabaseTreeItem, clientConfig: ClientConfig) {
 		super(parent);
+
 		this.clientConfig = clientConfig;
 	}
 

@@ -22,10 +22,12 @@ export abstract class WebviewBaseController<Configuration>
 	implements vscode.Disposable
 {
 	private _disposables: vscode.Disposable[] = [];
+
 	private _isDisposed: boolean = false;
 
 	// private _isFirstLoad: boolean = true;
 	// private _loadStartTime: number = Date.now();
+
 	private _onDisposed: vscode.EventEmitter<void> =
 		new vscode.EventEmitter<void>();
 
@@ -157,6 +159,7 @@ export abstract class WebviewBaseController<Configuration>
                             };
 
                                 import { render } from "${srcUri}";
+
                                 render('${this._webviewName}', acquireVsCodeApi());
                             </script>
 
@@ -275,6 +278,7 @@ export abstract class WebviewBaseController<Configuration>
 		this._onDisposed.fire();
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 		this._disposables.forEach((d) => d.dispose());
+
 		this._isDisposed = true;
 	}
 }

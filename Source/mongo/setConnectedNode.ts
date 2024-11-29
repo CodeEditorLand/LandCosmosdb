@@ -12,5 +12,6 @@ export function setConnectedNode(
 	ext.connectedMongoDB = node;
 
 	const dbName = node && node.label;
+
 	ext.mongoCodeLensProvider.setConnectedDatabase(dbName);
 }

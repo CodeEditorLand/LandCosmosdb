@@ -66,6 +66,7 @@ export async function getConfirmationWithWordQuestion(
 			) {
 				return undefined;
 			}
+
 			return `Please enter the word "${expectedConfirmationWord}" to confirm the operation.`;
 		},
 	});
@@ -130,6 +131,7 @@ export async function getConfirmationWithClick(
  */
 function getRandomArrayAndIndex(length: number): {
 	numbers: number[];
+
 	index: number;
 } {
 	if (length <= 1) {

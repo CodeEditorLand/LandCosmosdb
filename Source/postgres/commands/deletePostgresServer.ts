@@ -18,6 +18,7 @@ export async function deletePostgresServer(
 	node?: PostgresServerTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {

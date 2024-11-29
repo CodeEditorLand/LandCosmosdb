@@ -17,6 +17,7 @@ export async function executeDocDBStoredProcedure(
 	node?: DocDBStoredProcedureTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {

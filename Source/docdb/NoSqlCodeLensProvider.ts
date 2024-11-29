@@ -23,9 +23,13 @@ import { KeyValueStore } from "../KeyValueStore";
 
 export type NoSqlQueryConnection = {
 	databaseId: string;
+
 	containerId: string;
+
 	endpoint: string;
+
 	masterKey?: string;
+
 	isEmulator: boolean;
 };
 
@@ -82,6 +86,7 @@ export class NoSqlCodeLensProvider implements CodeLensProvider {
 						},
 					);
 				}
+
 				const lenses: CodeLens[] = [
 					connectCodeLens,
 					new CodeLens(

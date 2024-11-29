@@ -61,9 +61,11 @@ function parseEndpointUrl(url: string): IGremlinEndpoint {
 		url.match(/^([^:]+):\/\/([^:]+)(:([0-9]+))?\/?$/),
 		"urlMatch",
 	);
+
 	console.assert(!!protocol && !!host, "Unexpected endpoint format");
 
 	const port = parseInt(portString || "443", 10);
+
 	console.assert(port > 0, "Unexpected port");
 
 	return { host, port, ssl: protocol.toLowerCase() === "https" };

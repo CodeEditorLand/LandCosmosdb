@@ -41,6 +41,7 @@ export async function findTreeItem(
 		"api.findTreeItem",
 		async (context: IActionContext) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.errorHandling.rethrow = true;
 
 			let parsedCS: ParsedConnectionString;
@@ -55,6 +56,7 @@ export async function findTreeItem(
 					postgresData.password,
 					postgresData.databaseName,
 				);
+
 				parsedCS = parsePostgresConnectionString(connectionString);
 			} else {
 				const connectionString = nonNullProp(query, "connectionString");
@@ -79,6 +81,7 @@ export async function findTreeItem(
 			if (!result) {
 				const attachedDbAccounts =
 					await ext.attachedAccountsNode.getCachedChildren(context);
+
 				result = await searchDbAccounts(
 					attachedDbAccounts,
 					parsedCS,
@@ -99,6 +102,7 @@ export async function findTreeItem(
 					if (rootNode instanceof SubscriptionTreeItem) {
 						const dbAccounts =
 							await rootNode.getCachedChildren(context);
+
 						result = await searchDbAccounts(
 							dbAccounts,
 							parsedCS,
@@ -175,6 +179,7 @@ async function searchDbAccounts(
 								db,
 							);
 						}
+
 						if (
 							db instanceof PostgresDatabaseTreeItem &&
 							dbAccount instanceof PostgresServerTreeItem &&

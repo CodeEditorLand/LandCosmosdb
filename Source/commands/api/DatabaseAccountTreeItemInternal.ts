@@ -24,6 +24,7 @@ export class DatabaseAccountTreeItemInternal
 	implements DatabaseAccountTreeItem
 {
 	protected _parsedCS: ParsedConnectionString;
+
 	private _accountNode:
 		| MongoAccountTreeItem
 		| DocDBAccountTreeItemBase
@@ -38,6 +39,7 @@ export class DatabaseAccountTreeItemInternal
 			| PostgresServerTreeItem,
 	) {
 		this._parsedCS = parsedCS;
+
 		this._accountNode = accountNode;
 	}
 
@@ -77,6 +79,7 @@ export class DatabaseAccountTreeItemInternal
 				};
 			}
 		}
+
 		return undefined;
 	}
 
@@ -121,7 +124,9 @@ export class DatabaseAccountTreeItemInternal
 			"api.dbAccount.reveal",
 			async (context: IActionContext) => {
 				context.errorHandling.suppressDisplay = true;
+
 				context.errorHandling.rethrow = true;
+
 				await ext.rgApi.appResourceTreeView.reveal(
 					await this.getAccountNode(context),
 				);
@@ -147,6 +152,7 @@ export class DatabaseAccountTreeItemInternal
 			} else {
 				apiType = API.Core;
 			}
+
 			this._accountNode =
 				await ext.attachedAccountsNode.attachConnectionString(
 					context,

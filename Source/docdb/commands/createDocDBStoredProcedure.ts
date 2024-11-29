@@ -19,6 +19,8 @@ export async function createDocDBStoredProcedure(
 			DocDBStoredProceduresTreeItem.contextValue,
 		);
 	}
+
 	const childNode = await node.createChild(context);
+
 	await commands.executeCommand("cosmosDB.openStoredProcedure", childNode);
 }

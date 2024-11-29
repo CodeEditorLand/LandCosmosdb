@@ -192,7 +192,9 @@ export function Lab_to_XYZ(Lab: Vec3) {
 
 	// compute f, starting with the luminance-related term
 	f[1] = (Lab[0] + 16) / 116;
+
 	f[0] = Lab[1] / 500 + f[1];
+
 	f[2] = f[1] - Lab[2] / 200;
 
 	// compute xyz
@@ -301,6 +303,7 @@ export function snap_into_gamut(Lab: Vec3): Vec3 {
 	let hiC = c;
 
 	let loC = 0;
+
 	c /= 2;
 
 	while (hiC - loC > eps) {
@@ -309,6 +312,7 @@ export function snap_into_gamut(Lab: Vec3): Vec3 {
 		} else {
 			hiC = c;
 		}
+
 		c = (hiC + loC) / 2;
 	}
 

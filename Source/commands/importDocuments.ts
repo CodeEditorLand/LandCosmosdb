@@ -29,6 +29,7 @@ export async function importDocuments(
 	if (!uris) {
 		uris = await askForDocuments(context);
 	}
+
 	const ignoredUris: vscode.Uri[] = []; //account for https://github.com/Microsoft/vscode/issues/59782
 	uris = uris.filter((uri) => {
 		if (uri.fsPath.toLocaleLowerCase().endsWith(".json")) {
@@ -44,11 +45,14 @@ export async function importDocuments(
 		ext.outputChannel.appendLog(
 			`Ignoring the following files that do not match the "*.json" file name pattern:`,
 		);
+
 		ignoredUris.forEach((uri) =>
 			ext.outputChannel.appendLog(`${uri.fsPath}`),
 		);
+
 		ext.outputChannel.show();
 	}
+
 	if (!collectionNode) {
 		collectionNode = await ext.rgApi.pickAppResource<
 			MongoCollectionTreeItem | DocDBCollectionTreeItem
@@ -67,6 +71,7 @@ export async function importDocuments(
 	}
 
 	let result: string;
+
 	result = await vscode.window.withProgress(
 		{
 			location: vscode.ProgressLocation.Notification,
@@ -74,6 +79,7 @@ export async function importDocuments(
 		},
 		async (progress) => {
 			uris = nonNullValue(uris, "uris");
+
 			collectionNode = nonNullValue(collectionNode, "collectionNode");
 
 			progress.report({ increment: 20, message: "Loading documents..." });
@@ -108,6 +114,7 @@ export async function importDocuments(
 					uris,
 				);
 			}
+
 			progress.report({ increment: 50, message: "Finished importing" });
 
 			return result;
@@ -135,6 +142,7 @@ async function askForDocuments(context: IActionContext): Promise<vscode.Uri[]> {
 	if (rootPath) {
 		openDialogOptions.defaultUri = vscode.Uri.file(rootPath);
 	}
+
 	return await context.ui.showOpenDialog(openDialogOptions);
 }
 
@@ -172,14 +180,19 @@ async function parseDocuments(
 		} catch (e) {
 			if (!errorFoundFlag) {
 				errorFoundFlag = true;
+
 				ext.outputChannel.appendLog(
 					"Errors found in documents listed below. Please fix these.",
 				);
+
 				ext.outputChannel.show();
 			}
+
 			const err = parseError(e);
+
 			ext.outputChannel.appendLog(`${uri.path}:\n${err.message}`);
 		}
+
 		if (parsed) {
 			if (Array.isArray(parsed)) {
 				documents = documents.concat(parsed);
@@ -188,6 +201,7 @@ async function parseDocuments(
 			}
 		}
 	}
+
 	if (errorFoundFlag) {
 		throw new Error(
 			`Errors found in some documents. Please see the output, fix these and try again.`,
@@ -220,19 +234,23 @@ async function insertDocumentsIntoDocdb(
 			erroneousFiles.push(uris[i]);
 		}
 	}
+
 	if (erroneousFiles.length) {
 		ext.outputChannel.appendLog(
 			`The following documents do not contain the required partition key:`,
 		);
+
 		erroneousFiles.forEach((file) =>
 			ext.outputChannel.appendLog(file.path),
 		);
+
 		ext.outputChannel.show();
 
 		throw new Error(
 			`See output for list of documents that do not contain the partition key '${nonNullProp(collectionNode, "partitionKey").paths[0]}' required by collection '${collectionNode.label}'`,
 		);
 	}
+
 	for (const document of documents) {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 		const retrieved: ItemDefinition =
@@ -242,11 +260,13 @@ async function insertDocumentsIntoDocdb(
 			ids.push(retrieved.id);
 		}
 	}
+
 	const result: string = `Import into NoSQL successful. Inserted ${ids.length} document(s). See output for more details.`;
 
 	for (const id of ids) {
 		ext.outputChannel.appendLog(`Inserted document: ${id}`);
 	}
+
 	return result;
 }
 
@@ -266,6 +286,7 @@ async function insertDocumentsIntoMongo(
 			ext.outputChannel.appendLog(`Inserted document: ${inserted}`);
 		}
 	}
+
 	return output;
 }
 

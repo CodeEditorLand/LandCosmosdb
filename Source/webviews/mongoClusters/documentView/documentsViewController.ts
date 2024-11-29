@@ -13,7 +13,9 @@ export type DocumentsViewWebviewConfigurationType = {
 	id: string; // move to base type
 
 	sessionId: string;
+
 	databaseName: string;
+
 	collectionName: string;
 
 	documentId: string;

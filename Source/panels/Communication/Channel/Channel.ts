@@ -18,20 +18,26 @@ export type ChannelCallback<ReturnType = unknown> = (
 export type ChannelPayload =
 	| {
 			type: "event";
+
 			name: string;
+
 			params: unknown[];
 	  }
 	| {
 			type: "request";
+
 			name: string;
+
 			params: unknown[];
 	  }
 	| {
 			type: "response";
+
 			value: unknown;
 	  }
 	| {
 			type: "error";
+
 			message: string;
 	  };
 
@@ -44,23 +50,29 @@ export interface ChannelMessage {
 //  Also constructor should receive API implementation of schema or interface
 export interface Channel {
 	readonly name: string;
+
 	readonly transport: Transport;
 
 	postMessage<ReturnType = unknown>(
 		message: ChannelMessage | ChannelPayload,
 	): PromiseLike<ReturnType>;
+
 	on<ReturnType = unknown>(
 		event: string,
 		callback: ChannelCallback<ReturnType>,
 	): Channel;
+
 	once<ReturnType = unknown>(
 		event: string,
 		callback: ChannelCallback<ReturnType>,
 	): Channel;
+
 	off<ReturnType extends never>(
 		event: string,
 		callback: ChannelCallback<ReturnType>,
 	): Channel;
+
 	removeAllListeners(event?: string): Channel;
+
 	dispose(): void;
 }

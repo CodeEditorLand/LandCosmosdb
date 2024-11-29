@@ -22,11 +22,14 @@ export function registerGraphCommands(): void {
 		"cosmosDB.createGraphDatabase",
 		createGraphDatabase,
 	);
+
 	registerCommandWithTreeNodeUnwrapping("cosmosDB.createGraph", createGraph);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteGraphDatabase",
 		async (context: IActionContext, node?: GraphDatabaseTreeItem) => {
 			const suppressCreateContext: ITreeItemPickerContext = context;
+
 			suppressCreateContext.suppressCreatePick = true;
 
 			if (!node) {
@@ -35,13 +38,16 @@ export function registerGraphCommands(): void {
 					GraphDatabaseTreeItem.contextValue,
 				);
 			}
+
 			await node.deleteTreeItem(context);
 		},
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteGraph",
 		async (context: IActionContext, node?: GraphCollectionTreeItem) => {
 			const suppressCreateContext: ITreeItemPickerContext = context;
+
 			suppressCreateContext.suppressCreatePick = true;
 
 			if (!node) {
@@ -50,9 +56,11 @@ export function registerGraphCommands(): void {
 					GraphCollectionTreeItem.contextValue,
 				);
 			}
+
 			await node.deleteTreeItem(context);
 		},
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.openGraphExplorer",
 		async (context: IActionContext, node: GraphTreeItem) => {
@@ -62,6 +70,7 @@ export function registerGraphCommands(): void {
 					GraphTreeItem.contextValue,
 				);
 			}
+
 			await node.showExplorer(context);
 		},
 		doubleClickDebounceDelay,
@@ -75,6 +84,7 @@ export async function createGraphDatabase(
 	if (!node) {
 		node = await pickGraph<GraphAccountTreeItem>(context);
 	}
+
 	await node.createChild(context);
 }
 
@@ -88,6 +98,7 @@ export async function createGraph(
 			GraphDatabaseTreeItem.contextValue,
 		);
 	}
+
 	await node.createChild(context);
 }
 

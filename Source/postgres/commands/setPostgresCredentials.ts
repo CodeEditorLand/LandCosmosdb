@@ -9,6 +9,7 @@ import { PostgresServerTreeItem } from "../tree/PostgresServerTreeItem";
 
 interface IPersistedServer {
 	id: string;
+
 	username: string;
 }
 
@@ -37,7 +38,9 @@ export async function setPostgresCredentials(
 	};
 
 	servers.push(newServer);
+
 	await ext.context.globalState.update(serviceName, JSON.stringify(servers));
+
 	await ext.secretStorage.store(
 		getSecretStorageKey(serviceName, serverId),
 		password,

@@ -79,6 +79,7 @@ export async function parseMongoConnectionString(
 		if (parsedError.message.match(/unescaped/i)) {
 			// Prevents https://github.com/microsoft/vscode-cosmosdb/issues/1209
 			connectionString = encodeMongoConnectionString(connectionString);
+
 			mongoClient = await connectToMongoClient(
 				connectionString,
 				appendExtensionUserAgent(),
@@ -100,6 +101,7 @@ export async function parseMongoConnectionString(
 
 export class ParsedMongoConnectionString extends ParsedConnectionString {
 	public readonly hostName: string;
+
 	public readonly port: string;
 
 	constructor(
@@ -109,7 +111,9 @@ export class ParsedMongoConnectionString extends ParsedConnectionString {
 		databaseName: string | undefined,
 	) {
 		super(connectionString, databaseName);
+
 		this.hostName = hostName;
+
 		this.port = port;
 	}
 }
@@ -130,6 +134,7 @@ export function encodeMongoConnectionString(connectionString: string): string {
 		const password: string = matches[3];
 
 		const hostAndQuery: string = matches[4];
+
 		connectionString = `${prefix}://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${hostAndQuery}`;
 	}
 

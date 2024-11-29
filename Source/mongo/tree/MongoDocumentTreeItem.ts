@@ -38,19 +38,28 @@ export class MongoDocumentTreeItem
 	implements IEditableTreeItem
 {
 	public static contextValue: string = "MongoDocument";
+
 	public readonly contextValue: string = MongoDocumentTreeItem.contextValue;
+
 	public document: IMongoDocument;
+
 	public declare readonly parent: MongoCollectionTreeItem;
+
 	public readonly cTime: number = Date.now();
+
 	public mTime: number = Date.now();
 
 	private _label: string;
 
 	constructor(parent: MongoCollectionTreeItem, document: IMongoDocument) {
 		super(parent);
+
 		this.document = document;
+
 		this._label = getDocumentTreeItemLabel(this.document);
+
 		this.commandId = "cosmosDB.openDocument";
+
 		ext.fileSystem.fireChangedEvent(this);
 	}
 
@@ -80,6 +89,7 @@ export class MongoDocumentTreeItem
 				`The "_id" field is required to update a document.`,
 			);
 		}
+
 		const filter: object = { _id: newDocument._id };
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		const result: MongoDocument | UpdateResult =
@@ -90,6 +100,7 @@ export class MongoDocumentTreeItem
 				`Failed to update document with _id '${newDocument._id}'.`,
 			);
 		}
+
 		return newDocument;
 	}
 
@@ -100,11 +111,13 @@ export class MongoDocumentTreeItem
 
 	public async refreshImpl(): Promise<void> {
 		this._label = getDocumentTreeItemLabel(this.document);
+
 		ext.fileSystem.fireChangedEvent(this);
 	}
 
 	public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
 		const message: string = `Are you sure you want to delete document '${this._label}'?`;
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteMongoDocument" },
@@ -127,6 +140,7 @@ export class MongoDocumentTreeItem
 	): Promise<void> {
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 		const newDocument: IMongoDocument = EJSON.parse(content);
+
 		this.document = await MongoDocumentTreeItem.update(
 			this.parent.collection,
 			newDocument,

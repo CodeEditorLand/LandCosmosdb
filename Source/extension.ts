@@ -78,17 +78,22 @@ export async function activateInternal(
 	perfStats: { loadStartTime: number; loadEndTime: number },
 ): Promise<apiUtils.AzureExtensionApiProvider> {
 	ext.context = context;
+
 	ext.isBundle = !!process.env.IS_BUNDLE;
 
 	ext.outputChannel = createAzExtLogOutputChannel("Azure Databases");
+
 	context.subscriptions.push(ext.outputChannel);
+
 	registerUIExtensionVariables(ext);
+
 	registerAzureUtilsExtensionVariables(ext);
 
 	await callWithTelemetryAndErrorHandling(
 		"cosmosDB.activate",
 		async (activateContext: IActionContext) => {
 			activateContext.telemetry.properties.isActivationEvent = "true";
+
 			activateContext.telemetry.measurements.mainFileLoad =
 				(perfStats.loadEndTime - perfStats.loadStartTime) / 1000;
 
@@ -101,16 +106,19 @@ export async function activateInternal(
 			// AzureResourceGraph API V1 provided by the getResourceGroupsApi call above.
 			// TreeElementStateManager is needed here too
 			ext.state = new TreeElementStateManager();
+
 			ext.rgApiV2 = await getAzureResourcesExtensionApi(context, "2.0.0");
 
 			ext.rgApi.registerApplicationResourceResolver(
 				AzExtResourceType.AzureCosmosDb,
 				new DatabaseResolver(),
 			);
+
 			ext.rgApi.registerApplicationResourceResolver(
 				AzExtResourceType.PostgresqlServersStandard,
 				new DatabaseResolver(),
 			);
+
 			ext.rgApi.registerApplicationResourceResolver(
 				AzExtResourceType.PostgresqlServersFlexible,
 				new DatabaseResolver(),
@@ -125,6 +133,7 @@ export async function activateInternal(
 			const databaseWorkspaceProvider = new DatabaseWorkspaceProvider(
 				workspaceRootTreeItem,
 			);
+
 			ext.rgApi.registerWorkspaceResourceProvider(
 				"AttachedDatabaseAccount",
 				databaseWorkspaceProvider,
@@ -133,13 +142,17 @@ export async function activateInternal(
 			ext.fileSystem = new DatabasesFileSystem(ext.rgApi.appResourceTree);
 
 			registerDocDBCommands();
+
 			registerGraphCommands();
+
 			registerPostgresCommands();
+
 			registerMongoCommands();
 
 			// init and activate mongoClusters-support (branch data provider, commands, ...)
 			const mongoClustersSupport: MongoClustersExtension =
 				new MongoClustersExtension();
+
 			context.subscriptions.push(mongoClustersSupport); // to be disposed when extension is deactivated.
 			await mongoClustersSupport.activate();
 
@@ -162,22 +175,26 @@ export async function activateInternal(
 				"azureDatabases.createServer",
 				createServer,
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"cosmosDB.deleteAccount",
 				deleteAccount,
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"cosmosDB.attachDatabaseAccount",
 				async (actionContext: IActionContext) => {
 					await ext.attachedAccountsNode.attachNewAccount(
 						actionContext,
 					);
+
 					await ext.rgApi.workspaceResourceTree.refresh(
 						actionContext,
 						ext.attachedAccountsNode,
 					);
 				},
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"cosmosDB.attachEmulator",
 				async (actionContext: IActionContext) => {
@@ -195,12 +212,14 @@ export async function activateInternal(
 					await ext.attachedAccountsNode.attachEmulator(
 						actionContext,
 					);
+
 					await ext.rgApi.workspaceResourceTree.refresh(
 						actionContext,
 						ext.attachedAccountsNode,
 					);
 				},
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"azureDatabases.refresh",
 				async (actionContext: IActionContext, node?: AzExtTreeItem) => {
@@ -231,6 +250,7 @@ export async function activateInternal(
 							"noAttachedAccounts",
 							"There are no Attached Accounts.",
 						);
+
 						void vscode.window.showInformationMessage(message);
 					} else {
 						if (!node) {
@@ -243,6 +263,7 @@ export async function activateInternal(
 									actionContext,
 								);
 						}
+
 						if (node instanceof MongoAccountTreeItem) {
 							if (
 								ext.connectedMongoDB &&
@@ -250,10 +271,13 @@ export async function activateInternal(
 									ext.connectedMongoDB.parent.fullId
 							) {
 								setConnectedNode(undefined);
+
 								await node.refresh(actionContext);
 							}
 						}
+
 						await ext.attachedAccountsNode.detach(node);
+
 						await ext.rgApi.workspaceResourceTree.refresh(
 							actionContext,
 							ext.attachedAccountsNode,
@@ -261,6 +285,7 @@ export async function activateInternal(
 					}
 				},
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"cosmosDB.importDocument",
 				async (
@@ -286,10 +311,12 @@ export async function activateInternal(
 					}
 				},
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"cosmosDB.copyConnectionString",
 				cosmosDBCopyConnectionString,
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"cosmosDB.openDocument",
 				async (
@@ -310,15 +337,18 @@ export async function activateInternal(
 
 					// Clear un-uploaded local changes to the document before opening https://github.com/microsoft/vscode-cosmosdb/issues/1619
 					ext.fileSystem.fireChangedEvent(node);
+
 					await ext.fileSystem.showTextDocument(node);
 				},
 				doubleClickDebounceDelay,
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"azureDatabases.update",
 				async (_actionContext: IActionContext, uri: vscode.Uri) =>
 					await ext.fileSystem.updateWithoutPrompt(uri),
 			);
+
 			registerCommandWithTreeNodeUnwrapping(
 				"azureDatabases.loadMore",
 				async (actionContext: IActionContext, node: AzExtTreeItem) =>
@@ -327,6 +357,7 @@ export async function activateInternal(
 						actionContext,
 					),
 			);
+
 			registerEvent(
 				"cosmosDB.onDidChangeConfiguration",
 				vscode.workspace.onDidChangeConfiguration,
@@ -336,6 +367,7 @@ export async function activateInternal(
 				) => {
 					actionContext.telemetry.properties.isActivationEvent =
 						"true";
+
 					actionContext.errorHandling.suppressDisplay = true;
 
 					if (
@@ -354,6 +386,7 @@ export async function activateInternal(
 			registerErrorHandler(
 				(c) => (c.errorHandling.suppressReportIssue = true),
 			);
+
 			registerReportIssueCommand("azureDatabases.reportIssue");
 		},
 	);
@@ -393,6 +426,7 @@ export async function deleteAccount(
 	node?: AzExtTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {
@@ -429,5 +463,6 @@ export async function cosmosDBCopyConnectionString(
 	}
 
 	await vscode.env.clipboard.writeText(node.connectionString);
+
 	void vscode.window.showInformationMessage(message);
 }

@@ -16,8 +16,11 @@ import { type IPostgresServerWizardContext } from "../IPostgresServerWizardConte
 
 interface ISkuOption {
 	label: string;
+
 	description: string;
+
 	sku: AbstractSku;
+
 	group?: string;
 }
 
@@ -30,6 +33,7 @@ export class PostgresServerSkuStep extends AzureWizardPromptStep<IPostgresServer
 
 		const pricingTiers: IAzureQuickPickItem<AbstractSku | undefined>[] =
 			await this.getPicks(nonNullProp(context, "serverType"));
+
 		pricingTiers.push({
 			label: localize(
 				"ShowPricingCalculator",

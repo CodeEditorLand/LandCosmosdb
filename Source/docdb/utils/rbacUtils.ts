@@ -28,6 +28,7 @@ export async function ensureRbacPermission(
 			"cosmosDB.addMissingRbacRole",
 			async (context: IActionContext) => {
 				context.errorHandling.suppressDisplay = false;
+
 				context.errorHandling.rethrow = false;
 
 				const accountName: string = getDatabaseAccountNameFromId(
@@ -49,6 +50,7 @@ export async function ensureRbacPermission(
 					);
 
 					const start: number = Date.now();
+
 					await addRbacContributorPermission(
 						accountName,
 						principalId,
@@ -62,6 +64,7 @@ export async function ensureRbacPermission(
 
 					return true;
 				}
+
 				return false;
 			},
 		)) ?? false
@@ -89,6 +92,7 @@ export async function showRbacPermissionError(
 	);
 
 	const readMoreItem = localize("learnMore", "Learn More");
+
 	await vscode.window
 		.showErrorMessage(message, { modal: false }, ...[readMoreItem])
 		.then((item) => {

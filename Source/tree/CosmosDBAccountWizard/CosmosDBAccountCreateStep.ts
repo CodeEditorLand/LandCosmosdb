@@ -45,7 +45,9 @@ export class CosmosDBAccountCreateStep extends AzureWizardExecuteStep<ICosmosDBW
 			accountName,
 			defaultExperience.shortName,
 		);
+
 		ext.outputChannel.appendLog(creatingMessage);
+
 		progress.report({ message: creatingMessage });
 
 		const options: DatabaseAccountCreateUpdateParameters = {
@@ -78,6 +80,7 @@ export class CosmosDBAccountCreateStep extends AzureWizardExecuteStep<ICosmosDBW
 				accountName,
 				options,
 			);
+
 		context.activityResult = context.databaseAccount as AppResource;
 
 		ext.outputChannel.appendLog(

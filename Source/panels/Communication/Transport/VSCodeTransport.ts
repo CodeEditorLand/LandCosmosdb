@@ -15,6 +15,7 @@ export class VSCodeTransport implements Transport {
 	public readonly name = "VSCodeTransport";
 
 	private listeners: ((message: TransportMessage) => void)[] = [];
+
 	private disposables: vscode.Disposable[] = [];
 
 	constructor(public readonly webview: vscode.Webview) {
@@ -61,6 +62,7 @@ export class VSCodeTransport implements Transport {
 			}
 
 			const message = msg as TransportMessage;
+
 			this.listeners.forEach((cb) => {
 				// One callback throwing an error should not prevent other callbacks from being called
 				try {

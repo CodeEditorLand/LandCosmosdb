@@ -27,13 +27,17 @@ import { toFilterQueryObj } from "./utils/toFilterQuery";
 
 export interface DatabaseItemModel {
 	name: string;
+
 	sizeOnDisk?: number;
+
 	empty?: boolean;
 }
 
 export interface CollectionItemModel {
 	name: string;
+
 	type?: string;
+
 	info?: {
 		readOnly?: false;
 	};
@@ -41,9 +45,11 @@ export interface CollectionItemModel {
 
 export interface IndexItemModel {
 	name: string;
+
 	key: {
 		[key: string]: number | string;
 	};
+
 	version?: number;
 }
 
@@ -59,6 +65,7 @@ export class MongoClustersClient {
 	static _clients: Map<string, MongoClustersClient> = new Map();
 
 	private _mongoClient: MongoClient;
+
 	private _credentialId: string;
 
 	/**
@@ -97,7 +104,9 @@ export class MongoClustersClient {
 			await client._mongoClient.connect();
 		} else {
 			client = new MongoClustersClient();
+
 			await client.initClient(credentialId);
+
 			MongoClustersClient._clients.set(credentialId, client);
 		}
 
@@ -109,7 +118,9 @@ export class MongoClustersClient {
 			const client = MongoClustersClient._clients.get(
 				credentialId,
 			) as MongoClustersClient;
+
 			await client._mongoClient.close(true);
+
 			MongoClustersClient._clients.delete(credentialId);
 		}
 	}
@@ -118,6 +129,7 @@ export class MongoClustersClient {
 		return CredentialCache.getCredentials(this._credentialId)
 			?.connectionUser;
 	}
+
 	getConnectionString() {
 		return CredentialCache.getCredentials(this._credentialId)
 			?.connectionString;
@@ -413,6 +425,7 @@ export class MongoClustersClient {
 				.createCollection(
 					"_dummy_collection_creation_forces_db_creation",
 				);
+
 			await newCollection.drop();
 		} catch (_e) {
 			console.log(_e); //todo: add to telemetry

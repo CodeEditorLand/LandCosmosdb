@@ -16,6 +16,7 @@ import { type NoSqlQueryConnection } from "./NoSqlCodeLensProvider";
 
 export type CosmosDBKeyCredential = {
 	type: "key";
+
 	key: string;
 };
 

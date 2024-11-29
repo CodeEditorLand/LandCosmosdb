@@ -35,16 +35,23 @@ import {
 
 export class DocumentSession {
 	public readonly id: string;
+
 	private readonly channel: Channel;
+
 	private readonly client: CosmosClient;
+
 	private readonly databaseId: string;
+
 	private readonly containerId: string;
 	// For telemetry
 	private readonly endpoint: string;
+
 	private readonly masterKey: string;
 
 	private partitionKey: PartitionKeyDefinition | undefined;
+
 	private abortController: AbortController;
+
 	private isDisposed = false;
 
 	constructor(connection: NoSqlQueryConnection, channel: Channel) {
@@ -56,15 +63,23 @@ export class DocumentSession {
 		if (masterKey !== undefined) {
 			credentials.push({ type: "key", key: masterKey });
 		}
+
 		credentials.push({ type: "auth" });
 
 		this.id = uuid();
+
 		this.channel = channel;
+
 		this.client = getCosmosClient(endpoint, credentials, isEmulator);
+
 		this.databaseId = databaseId;
+
 		this.containerId = containerId;
+
 		this.endpoint = endpoint;
+
 		this.masterKey = masterKey ?? "";
+
 		this.abortController = new AbortController();
 	}
 
@@ -313,6 +328,7 @@ export class DocumentSession {
 				const newDocument: JSONObject = {
 					id: "replace_with_new_document_id",
 				};
+
 				partitionKey?.paths.forEach((partitionKeyProperty) => {
 					let target = newDocument;
 
@@ -329,6 +345,7 @@ export class DocumentSession {
 					// Initialize nested objects as needed
 					keySegments.forEach((segment) => {
 						target[segment] ??= {};
+
 						target = target[segment] as JSONObject;
 					});
 
@@ -347,6 +364,7 @@ export class DocumentSession {
 
 	public dispose(): void {
 		this.isDisposed = true;
+
 		this.abortController?.abort();
 	}
 
@@ -361,11 +379,13 @@ export class DocumentSession {
 
 			const message: string =
 				error.body?.message ?? `Query failed with status code ${code}`;
+
 			await this.channel.postMessage({
 				type: "event",
 				name: "queryError",
 				params: [this.id, message],
 			});
+
 			await this.logAndThrowError("Query failed", error);
 		} else if (error instanceof TimeoutError) {
 			await this.channel.postMessage({
@@ -373,6 +393,7 @@ export class DocumentSession {
 				name: "queryError",
 				params: [this.id, "Query timed out"],
 			});
+
 			await this.logAndThrowError("Query timed out", error);
 		} else if (
 			error instanceof AbortError ||
@@ -383,15 +404,18 @@ export class DocumentSession {
 				name: "queryError",
 				params: [this.id, "Query was aborted"],
 			});
+
 			await this.logAndThrowError("Query was aborted", error);
 		} else {
 			// always force unexpected query errors to be included in report issue command
 			context.errorHandling.forceIncludeInReportIssueCommand = true;
+
 			await this.channel.postMessage({
 				type: "event",
 				name: "queryError",
 				params: [this.id, getErrorMessage(error)],
 			});
+
 			await this.logAndThrowError("Query failed", error);
 		}
 
@@ -407,13 +431,16 @@ export class DocumentSession {
 		);
 
 		context.errorHandling.suppressDisplay = true;
+
 		context.errorHandling.suppressReportIssue = true;
 
 		context.telemetry.properties.sessionId = this.id;
+
 		context.telemetry.properties.databaseId = crypto
 			.createHash("sha256")
 			.update(this.databaseId)
 			.digest("hex");
+
 		context.telemetry.properties.containerId = crypto
 			.createHash("sha256")
 			.update(this.containerId)
@@ -455,6 +482,7 @@ export class DocumentSession {
 			//TODO: parseError does not handle "Message : {JSON}" format coming from Cosmos DB SDK
 			// we need to parse the error message and show it in a better way in the UI
 			const parsedError = parseError(error);
+
 			ext.outputChannel.error(`${message}: ${parsedError.message}`);
 
 			if (parsedError.message) {
@@ -473,6 +501,7 @@ export class DocumentSession {
 			if (await vscode.window.showErrorMessage(message, showLogButton)) {
 				ext.outputChannel.show();
 			}
+
 			throw new Error(`${message}, ${parsedError.message}`);
 		} else {
 			await vscode.window.showErrorMessage(message);

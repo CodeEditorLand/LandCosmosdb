@@ -14,15 +14,20 @@ import {
 
 export class QuerySessionResult {
 	private readonly queryResults = new Map<number, QueryResult>();
+
 	private readonly isFetchedAll: boolean;
+
 	private readonly metadata: ResultViewMetadata;
+
 	private readonly query: string;
 
 	private hasMoreResults = false;
 
 	constructor(query: string, metadata: ResultViewMetadata) {
 		this.metadata = metadata;
+
 		this.query = query;
+
 		this.isFetchedAll = metadata.countPerPage === -1;
 	}
 
@@ -67,6 +72,7 @@ export class QuerySessionResult {
 			roundTrips: 1, // TODO: Is it required field? Query Pages Until Content Present
 			hasMoreResults: response.hasMoreResults,
 		});
+
 		this.hasMoreResults = response.hasMoreResults;
 	}
 

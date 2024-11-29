@@ -31,10 +31,15 @@ export class DocDBTriggerTreeItem
 	implements IEditableTreeItem
 {
 	public static contextValue: string = "cosmosDBTrigger";
+
 	public readonly contextValue: string = DocDBTriggerTreeItem.contextValue;
+
 	public readonly cTime: number = Date.now();
+
 	public declare readonly parent: DocDBTriggersTreeItem;
+
 	public trigger: TriggerDefinition & Resource;
+
 	public mTime: number = Date.now();
 
 	constructor(
@@ -42,8 +47,11 @@ export class DocDBTriggerTreeItem
 		trigger: TriggerDefinition & Resource,
 	) {
 		super(parent);
+
 		this.trigger = trigger;
+
 		ext.fileSystem.fireChangedEvent(this);
+
 		this.commandId = "cosmosDB.openTrigger";
 	}
 
@@ -93,6 +101,7 @@ export class DocDBTriggerTreeItem
 		if (!triggerType) {
 			triggerType = await getTriggerType(context);
 		}
+
 		if (!triggerOperation) {
 			triggerOperation = await getTriggerOperation(context);
 		}
@@ -106,6 +115,7 @@ export class DocDBTriggerTreeItem
 				triggerOperation: triggerOperation,
 				body: content,
 			});
+
 		this.trigger = nonNullProp(replace, "resource");
 	}
 
@@ -119,6 +129,7 @@ export class DocDBTriggerTreeItem
 			`Are you sure you want to delete trigger '{0}'?`,
 			this.label,
 		);
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteTrigger" },
@@ -126,6 +137,7 @@ export class DocDBTriggerTreeItem
 		);
 
 		const client = this.root.getCosmosClient();
+
 		await this.parent
 			.getContainerClient(client)
 			.scripts.trigger(this.id)

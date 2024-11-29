@@ -19,6 +19,8 @@ export async function createDocDBTrigger(
 			DocDBTriggersTreeItem.contextValue,
 		);
 	}
+
 	const childNode = await node.createChild(context);
+
 	await commands.executeCommand("cosmosDB.openTrigger", childNode);
 }

@@ -15,7 +15,9 @@ import { publicProcedure, router } from "../../api/extension-server/trpc";
 
 export type RouterContext = {
 	sessionId: string;
+
 	databaseName: string;
+
 	collectionName: string;
 
 	documentId: string;

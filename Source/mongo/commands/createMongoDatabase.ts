@@ -17,7 +17,9 @@ export async function createMongoDatabase(
 	if (!node) {
 		node = await pickMongo<MongoAccountTreeItem>(context);
 	}
+
 	const databaseNode = <MongoDatabaseTreeItem>await node.createChild(context);
+
 	await databaseNode.createChild(context);
 
 	await vscode.commands.executeCommand(

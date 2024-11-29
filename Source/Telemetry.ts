@@ -7,6 +7,7 @@ import { callWithTelemetryAndErrorHandling } from "@microsoft/vscode-azext-utils
 
 export class TelemetryContext {
 	private readonly eventPrefix: string;
+
 	private valuesToMask = new Set<string>();
 
 	constructor(eventPrefix: string) {
@@ -25,8 +26,11 @@ export class TelemetryContext {
 			`cosmosDB.nosql.${this.eventPrefix}.webview${eventNameWithCapital}`,
 			(context) => {
 				context.errorHandling.suppressDisplay = true;
+
 				context.valuesToMask = Array.from(this.valuesToMask);
+
 				Object.assign(context.telemetry.properties, properties ?? {});
+
 				Object.assign(
 					context.telemetry.measurements,
 					measurements ?? {},
@@ -51,6 +55,7 @@ export class TelemetryContext {
 			`cosmosdb.common.${this.eventPrefix}.webviewError`,
 			(actionContext) => {
 				actionContext.errorHandling.suppressDisplay = true;
+
 				actionContext.valuesToMask = Array.from(this.valuesToMask);
 
 				const newError = new Error(message);

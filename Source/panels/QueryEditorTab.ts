@@ -23,13 +23,16 @@ import { DocumentTab } from "./DocumentTab";
 
 export class QueryEditorTab extends BaseTab {
 	public static readonly title = "Query Editor";
+
 	public static readonly viewType = "cosmosDbQuery";
+
 	public static readonly openTabs: Set<QueryEditorTab> =
 		new Set<QueryEditorTab>();
 
 	private readonly sessions = new Map<string, QuerySession>();
 
 	private connection: NoSqlQueryConnection | undefined;
+
 	private query: string | undefined;
 
 	protected constructor(
@@ -44,6 +47,7 @@ export class QueryEditorTab extends BaseTab {
 		QueryEditorTab.openTabs.add(this);
 
 		this.connection = connection;
+
 		this.query = query;
 
 		if (connection) {
@@ -52,6 +56,7 @@ export class QueryEditorTab extends BaseTab {
 			}
 
 			this.telemetryContext.addMaskedValue(connection.databaseId);
+
 			this.telemetryContext.addMaskedValue(connection.containerId);
 		}
 	}
@@ -94,6 +99,7 @@ export class QueryEditorTab extends BaseTab {
 		QueryEditorTab.openTabs.delete(this);
 
 		this.sessions.forEach((session) => session.dispose());
+
 		this.sessions.clear();
 
 		super.dispose();
@@ -280,6 +286,7 @@ export class QueryEditorTab extends BaseTab {
 				if (!ext.startsWith(".")) {
 					ext = `.${ext}`;
 				}
+
 				await vscodeUtil.showNewFile(text, filename, ext);
 			},
 		);
@@ -315,14 +322,17 @@ export class QueryEditorTab extends BaseTab {
 				await getNoSqlQueryConnection().then(async (connection) => {
 					if (connection) {
 						const { databaseId, containerId } = connection;
+
 						context.telemetry.properties.databaseId = crypto
 							.createHash("sha256")
 							.update(databaseId)
 							.digest("hex");
+
 						context.telemetry.properties.containerId = crypto
 							.createHash("sha256")
 							.update(containerId)
 							.digest("hex");
+
 						context.telemetry.properties.isEmulator =
 							connection.isEmulator.toString();
 
@@ -384,6 +394,7 @@ export class QueryEditorTab extends BaseTab {
 				}
 
 				await session.stop();
+
 				this.sessions.delete(executionId);
 			},
 		);
@@ -509,6 +520,7 @@ export class QueryEditorTab extends BaseTab {
 					this.connection,
 					this.channel,
 				);
+
 				await session.delete(documentId);
 			},
 		);

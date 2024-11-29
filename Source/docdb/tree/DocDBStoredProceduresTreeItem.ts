@@ -31,16 +31,21 @@ import { DocDBTreeItemBase } from "./DocDBTreeItemBase";
  */
 export class DocDBStoredProceduresTreeItem extends DocDBTreeItemBase<StoredProcedureDefinition> {
 	public static contextValue: string = "cosmosDBStoredProceduresGroup";
+
 	public readonly contextValue: string =
 		DocDBStoredProceduresTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Stored Procedure";
+
 	public declare readonly parent:
 		| DocDBCollectionTreeItem
 		| GraphCollectionTreeItem;
+
 	public suppressMaskLabel = true;
 
 	constructor(parent: DocDBCollectionTreeItem | GraphCollectionTreeItem) {
 		super(parent);
+
 		this.root = this.parent.root;
 	}
 
@@ -67,6 +72,7 @@ export class DocDBStoredProceduresTreeItem extends DocDBTreeItemBase<StoredProce
 		for (const sp of currStoredProcedureList) {
 			currStoredProcedureNames.push(nonNullProp(sp, "id"));
 		}
+
 		const spID = (
 			await context.ui.showInputBox({
 				prompt: "Enter a unique stored procedure ID",
@@ -83,6 +89,7 @@ export class DocDBStoredProceduresTreeItem extends DocDBTreeItemBase<StoredProce
 			id: spID,
 			body: defaultStoredProcedure,
 		};
+
 		context.showCreatingTreeItem(spID);
 
 		const sproc =
@@ -135,9 +142,11 @@ export class DocDBStoredProceduresTreeItem extends DocDBTreeItemBase<StoredProce
 				"Name contains illegal chars: /, \\, ?, #, &",
 			);
 		}
+
 		if (name[name.length - 1] === " ") {
 			return localize("endsWithSpace", "Name cannot end with a space.");
 		}
+
 		if (currStoredProcedureNames.includes(name)) {
 			return localize(
 				"nameExists",

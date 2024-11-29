@@ -16,6 +16,7 @@ export async function deleteMongoDocument(
 	node?: MongoDocumentTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {
@@ -24,5 +25,6 @@ export async function deleteMongoDocument(
 			MongoDocumentTreeItem.contextValue,
 		);
 	}
+
 	await node.deleteTreeItem(context);
 }

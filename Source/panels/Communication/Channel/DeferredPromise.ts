@@ -28,10 +28,12 @@ export class Deferred<ValueType = unknown>
 	implements DeferredPromise<ValueType>
 {
 	private _resolve!: (value?: ValueType | PromiseLike<ValueType>) => void;
+
 	private _reject!: (reason?: unknown) => void;
 
 	public readonly promise = new Promise<ValueType>((resolve, reject) => {
 		this._resolve = resolve;
+
 		this._reject = reject;
 	});
 

@@ -13,12 +13,16 @@ import { type PostgresTableTreeItem } from "./PostgresTableTreeItem";
 
 export class PostgresColumnTreeItem extends AzExtTreeItem {
 	public static contextValue: string = "postgresColumn";
+
 	public readonly contextValue: string = PostgresColumnTreeItem.contextValue;
+
 	public readonly columnName: string;
+
 	public declare readonly parent: PostgresTableTreeItem;
 
 	constructor(parent: PostgresTableTreeItem, columnName: string) {
 		super(parent);
+
 		this.columnName = columnName;
 	}
 

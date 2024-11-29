@@ -51,7 +51,9 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<
 	DatabaseDefinition & Resource
 > {
 	public readonly label: string;
+
 	public readonly childTypeLabel: string = "Database";
+
 	private hasShownRbacNotification: boolean = false;
 
 	constructor(
@@ -64,8 +66,11 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<
 		readonly databaseAccount?: DatabaseAccountGetResults,
 	) {
 		super(parent);
+
 		this.id = id;
+
 		this.label = label;
+
 		this.root = {
 			endpoint,
 			credentials,
@@ -77,6 +82,7 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<
 		const keys = credentials
 			.map((cred) => (cred.type === "key" ? cred.key : undefined))
 			.filter((value): value is string => value !== undefined);
+
 		this.valuesToMask.push(id, endpoint, ...keys);
 	}
 
@@ -188,6 +194,7 @@ export abstract class DocDBAccountTreeItemBase extends DocDBTreeItemBase<
 								);
 							}
 						}
+
 						throw e; // rethrowing tells the resources extension to show the exception message in the tree
 					}
 				}
@@ -208,11 +215,14 @@ function validateDatabaseName(name: string): string | undefined | null {
 	if (!name || name.length < 1 || name.length > 255) {
 		return "Name has to be between 1 and 255 chars long";
 	}
+
 	if (name.endsWith(" ")) {
 		return "Database name cannot end with space";
 	}
+
 	if (/[/\\?#=]/.test(name)) {
 		return `Database name cannot contain the characters '\\', '/', '#', '?', '='`;
 	}
+
 	return undefined;
 }

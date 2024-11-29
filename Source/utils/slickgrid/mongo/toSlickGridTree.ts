@@ -20,9 +20,13 @@ import { valueToDisplayString } from "../../json/mongo/MongoValueFormatters";
  */
 export type TreeData = {
 	id: string;
+
 	parentId: string | null;
+
 	field: string;
+
 	value: string;
+
 	type: string;
 };
 
@@ -32,8 +36,11 @@ export type TreeData = {
  */
 export type TreeDataColumnDefinition = {
 	id: string;
+
 	name: string;
+
 	field: string;
+
 	minWidth: number;
 };
 
@@ -60,6 +67,7 @@ export function toSlickGridTree(documents: WithId<Document>[]): TreeData[] {
 			doc,
 			`${index}/${randomId}-`,
 		);
+
 		tree.push(...documentTree);
 	});
 
@@ -151,6 +159,7 @@ export function documentToSlickGridTree(
 
 				break;
 			}
+
 			case MongoBSONTypes.Array: {
 				const value = stackEntry.value as unknown[];
 
@@ -172,6 +181,7 @@ export function documentToSlickGridTree(
 						});
 					});
 				}
+
 				break;
 			}
 

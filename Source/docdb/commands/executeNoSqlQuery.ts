@@ -36,12 +36,16 @@ export async function executeNoSqlQuery(
 				),
 			);
 		}
+
 		queryText = activeEditor.document.getText();
+
 		populateQueryMetrics = false;
 	} else {
 		queryText = args.queryText;
+
 		populateQueryMetrics = !!args.populateQueryMetrics;
 	}
+
 	const connectedCollection = KeyValueStore.instance.get(
 		noSqlQueryConnectionKey,
 	);
@@ -60,6 +64,7 @@ export async function executeNoSqlQuery(
 		if (masterKey !== undefined) {
 			credentials.push({ type: "key", key: masterKey });
 		}
+
 		credentials.push({ type: "auth" });
 
 		const client = getCosmosClient(endpoint, credentials, isEmulator);

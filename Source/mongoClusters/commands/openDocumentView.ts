@@ -14,7 +14,9 @@ export function openDocumentView(
 		id: string;
 
 		sessionId: string;
+
 		databaseName: string;
+
 		collectionName: string;
 
 		documentId: string;

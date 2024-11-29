@@ -22,6 +22,7 @@ export function addDatabaseToConnectionString(
 	databaseName: string,
 ): string {
 	const url = new URL(connectionString);
+
 	url.pathname = encodeURIComponent(databaseName);
 
 	return url.toString();
@@ -41,17 +42,21 @@ export function createPostgresConnectionString(
 
 		if (password) {
 			const encodedPassword = encodeURIComponent(password);
+
 			connectionString += `${encodedUsername}:${encodedPassword}@`;
 		} else {
 			connectionString += `${encodedUsername}@`;
 		}
 	}
+
 	connectionString += `${hostName}:${port}`;
 
 	if (databaseName) {
 		const encodeDatabaseName = encodeURIComponent(databaseName);
+
 		connectionString += `/${encodeDatabaseName}`;
 	}
+
 	return connectionString;
 }
 
@@ -71,31 +76,42 @@ export function copyPostgresConnectionString(
 			const encodedPassword = encodeURIComponent(password);
 
 			const encodedPasswordWithQuotes = "'" + encodedPassword + "'";
+
 			connectionString += `${encodedUsername}:${encodedPasswordWithQuotes}@`;
 		} else {
 			connectionString += `${encodedUsername}@`;
 		}
 	}
+
 	connectionString += `${hostName}:${port}`;
 
 	if (databaseName) {
 		const encodeDatabaseName = encodeURIComponent(databaseName);
+
 		connectionString += `/${encodeDatabaseName}`;
 	}
+
 	return connectionString;
 }
 
 export class ParsedPostgresConnectionString extends ParsedConnectionString {
 	public readonly hostName: string;
+
 	public username: string | undefined;
+
 	public password: string | undefined;
+
 	public readonly port: string;
 
 	constructor(connectionString: string, config: ConnectionOptions) {
 		super(connectionString, config.database ? config.database : undefined);
+
 		this.hostName = nonNullProp(config, "host");
+
 		this.port = config.port ? config.port : `${postgresDefaultPort}`;
+
 		this.username = config.user;
+
 		this.password = config.password;
 	}
 }

@@ -13,8 +13,11 @@ export async function listMongoClusterNonAdminUsers(
 	client: CosmosDBManagementClient,
 	props: {
 		subscriptionId: string;
+
 		resourceGroupName: string;
+
 		mongoClusterName: string;
+
 		clusterAdminUser: string;
 	},
 ): Promise<string[]> {

@@ -27,6 +27,7 @@ export class PostgresServerNameStep extends AzureNameStep<IPostgresServerWizardC
 			nonNullProp(context, "serverType"),
 			context,
 		);
+
 		context.newServerName = (
 			await context.ui.showInputBox({
 				placeHolder: localize("serverNamePlaceholder", "Server name"),
@@ -42,7 +43,9 @@ export class PostgresServerNameStep extends AzureNameStep<IPostgresServerWizardC
 					),
 			})
 		).trim();
+
 		context.valuesToMask.push(context.newServerName);
+
 		context.relatedNameTask = this.generateRelatedName(
 			context,
 			context.newServerName,
@@ -91,6 +94,7 @@ async function validatePostgresServerName(
 			"Server name must not start or end in a hyphen.",
 		);
 	}
+
 	const resourceType =
 		serverType === PostgresServerType.Single
 			? "Microsoft.DBforPostgreSQL"

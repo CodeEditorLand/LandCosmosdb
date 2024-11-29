@@ -5,16 +5,19 @@
 
 export abstract class ParsedConnectionString {
 	public abstract readonly hostName: string;
+
 	public abstract readonly port: string;
 
 	/**
 	 * databaseName may be undefined if this is an account-level connection string
 	 */
 	public readonly databaseName: string | undefined;
+
 	public readonly connectionString: string;
 
 	constructor(connectionString: string, databaseName: string | undefined) {
 		this.connectionString = connectionString;
+
 		this.databaseName = databaseName;
 	}
 

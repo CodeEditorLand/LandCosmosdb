@@ -28,7 +28,9 @@ import {
 
 type Options = {
 	darkCp?: number;
+
 	lightCp?: number;
+
 	hueTorsion?: number;
 };
 
@@ -145,6 +147,7 @@ export const generateMonacoTheme = (
 					color = RGBAToHexA(color);
 				}
 			}
+
 			return [token, color];
 		})
 		.filter(([_, color]) => color !== "");

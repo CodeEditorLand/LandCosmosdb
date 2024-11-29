@@ -17,6 +17,7 @@ export async function viewDocDBCollectionOffer(
 	node?: DocDBCollectionTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {
@@ -25,9 +26,11 @@ export async function viewDocDBCollectionOffer(
 			DocDBCollectionTreeItem.contextValue,
 		);
 	}
+
 	const client = node.root.getCosmosClient();
 
 	const offer = await node.getContainerClient(client).readOffer();
+
 	await vscodeUtil.showNewFile(
 		JSON.stringify(offer.resource, undefined, 2),
 		`offer of ${node.label}`,

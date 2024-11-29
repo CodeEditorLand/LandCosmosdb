@@ -65,6 +65,7 @@ export async function pickTreeItem(
 		"api.pickTreeItem",
 		async (context: IActionContext) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.errorHandling.rethrow = true;
 
 			const options: PickAppResourceOptions = {};
@@ -72,6 +73,7 @@ export async function pickTreeItem(
 			switch (pickTreeOptions.resourceType) {
 				case "Database":
 					options.filter = { type: databaseAccountType };
+
 					options.expectedChildContextValue = pickTreeOptions.apiType
 						? pickTreeOptions.apiType.map(getDatabaseContextValue)
 						: databaseContextValues;
@@ -111,30 +113,39 @@ export async function pickTreeItem(
 				parsedCS = await parseMongoConnectionString(
 					pickedItem.connectionString,
 				);
+
 				accountNode = pickedItem;
 			} else if (pickedItem instanceof DocDBAccountTreeItemBase) {
 				parsedCS = parseDocDBConnectionString(
 					pickedItem.connectionString,
 				);
+
 				accountNode = pickedItem;
 			} else if (pickedItem instanceof PostgresServerTreeItem) {
 				parsedCS = await pickedItem.getFullConnectionString();
+
 				accountNode = pickedItem;
 			} else if (pickedItem instanceof MongoDatabaseTreeItem) {
 				parsedCS = await parseMongoConnectionString(
 					pickedItem.connectionString,
 				);
+
 				accountNode = pickedItem.parent;
+
 				databaseNode = pickedItem;
 			} else if (pickedItem instanceof DocDBDatabaseTreeItemBase) {
 				parsedCS = parseDocDBConnectionString(
 					pickedItem.connectionString,
 				);
+
 				accountNode = pickedItem.parent;
+
 				databaseNode = pickedItem;
 			} else if (pickedItem instanceof PostgresDatabaseTreeItem) {
 				parsedCS = await pickedItem.parent.getFullConnectionString();
+
 				accountNode = pickedItem.parent;
+
 				databaseNode = pickedItem;
 			} else {
 				throw new RangeError(
@@ -154,6 +165,7 @@ export async function pickTreeItem(
 						databaseNode,
 					)
 				: new DatabaseAccountTreeItemInternal(parsedCS, accountNode);
+
 			cacheTreeItem(parsedCS, result);
 
 			return result;

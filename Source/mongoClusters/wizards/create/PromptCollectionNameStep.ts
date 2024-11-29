@@ -17,6 +17,7 @@ export class CollectionNameStep extends AzureWizardPromptStep<CreateCollectionWi
 			"mongoClusters.collectionNamePrompt",
 			"Enter a collection name.",
 		);
+
 		context.newCollectionName = (
 			await context.ui.showInputBox({
 				prompt,

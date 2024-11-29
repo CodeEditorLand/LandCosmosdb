@@ -17,15 +17,21 @@ const DEV_SERVER_HOST = "http://localhost:18080";
 
 export type CommandPayload = {
 	commandName: string;
+
 	params: unknown[];
 };
 
 export class BaseTab {
 	protected readonly channel: Channel;
+
 	protected readonly id: string;
+
 	protected readonly panel: vscode.WebviewPanel;
+
 	protected readonly start: number;
+
 	protected readonly telemetryContext: TelemetryContext;
+
 	protected readonly viewType: string;
 
 	protected disposables: vscode.Disposable[] = [];
@@ -36,11 +42,15 @@ export class BaseTab {
 		telemetryProperties?: Record<string, string>,
 	) {
 		this.id = uuid();
+
 		this.start = Date.now();
+
 		this.telemetryContext = new TelemetryContext(viewType);
+
 		this.channel = new VSCodeChannel(panel.webview);
 
 		this.panel = panel;
+
 		this.viewType = viewType;
 
 		this.panel.onDidDispose(() => this.dispose(), null, this.disposables);
@@ -57,6 +67,7 @@ export class BaseTab {
 
 	public dispose(): void {
 		this.channel.dispose();
+
 		this.panel.dispose();
 
 		while (this.disposables.length) {
@@ -140,9 +151,13 @@ export class BaseTab {
 
 	private template(params: {
 		csp: string;
+
 		viewType: string;
+
 		srcUri: string;
+
 		title: string;
+
 		nonce: string;
 	}) {
 		return `

@@ -41,18 +41,28 @@ export class DocDBDocumentTreeItem
 	implements IEditableTreeItem
 {
 	public static contextValue: string = "cosmosDBDocument";
+
 	public readonly contextValue: string = DocDBDocumentTreeItem.contextValue;
+
 	public declare readonly parent: DocDBDocumentsTreeItem;
+
 	public readonly cTime: number = Date.now();
+
 	public mTime: number = Date.now();
+
 	private _label: string;
+
 	private _document: ItemDefinition;
 
 	constructor(parent: DocDBDocumentsTreeItem, document: ItemDefinition) {
 		super(parent);
+
 		this._document = document;
+
 		this._label = getDocumentTreeItemLabel(this._document);
+
 		ext.fileSystem.fireChangedEvent(this);
+
 		this.commandId = "cosmosDB.openDocument";
 	}
 
@@ -70,6 +80,7 @@ export class DocDBDocumentTreeItem
 
 	public async refreshImpl(): Promise<void> {
 		this._label = getDocumentTreeItemLabel(this._document);
+
 		ext.fileSystem.fireChangedEvent(this);
 	}
 
@@ -92,6 +103,7 @@ export class DocDBDocumentTreeItem
 
 	public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
 		const message: string = `Are you sure you want to delete document '${this.label}'?`;
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteDocument" },
@@ -99,6 +111,7 @@ export class DocDBDocumentTreeItem
 		);
 
 		const client = this.root.getCosmosClient();
+
 		await this.getDocumentClient(client).delete();
 	}
 
@@ -109,6 +122,7 @@ export class DocDBDocumentTreeItem
 		for (const field of hiddenFields) {
 			delete clonedDoc[field];
 		}
+
 		return JSON.stringify(clonedDoc, null, 2);
 	}
 
@@ -152,11 +166,13 @@ export class DocDBDocumentTreeItem
 			//Fixed collections -> no partitionKeyValue
 			return undefined;
 		}
+
 		const fields = partitionKey.paths[0].split("/");
 
 		if (fields[0] === "") {
 			fields.shift();
 		}
+
 		let value;
 
 		for (const field of fields) {

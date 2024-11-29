@@ -55,6 +55,7 @@ export function getAllErrorsFromTextDocument(
 				error.range,
 				error.message,
 			);
+
 			errors.push(diagnostic);
 		}
 	}
@@ -68,6 +69,7 @@ export async function executeAllCommandsFromActiveEditor(
 	ext.outputChannel.appendLog("Executing all commands in scrapbook...");
 
 	const commands = getAllCommandsFromActiveEditor();
+
 	await executeCommands(context, commands);
 }
 
@@ -144,6 +146,7 @@ async function executeCommand(
 	if (command) {
 		try {
 			context.telemetry.properties.command = command.name;
+
 			context.telemetry.properties.argsCount = String(
 				command.arguments ? command.arguments.length : 0,
 			);
@@ -158,6 +161,7 @@ async function executeCommand(
 				'Please select a MongoDB database to run against by selecting it in the explorer and selecting the "Connect" context menu item',
 			);
 		}
+
 		if (command.errors && command.errors.length > 0) {
 			//Currently, we take the first error pushed. Tests correlate that the parser visits errors in left-to-right, top-to-bottom.
 			const err = command.errors[0];
@@ -184,6 +188,7 @@ async function executeCommand(
 				collection,
 				command.argumentObjects,
 			);
+
 			await ext.fileSystem.showTextDocument(node, {
 				viewColumn: vscode.ViewColumn.Beside,
 			});
@@ -220,7 +225,9 @@ async function executeCommand(
 						),
 					);
 				}
+
 				const docNode = new MongoDocumentTreeItem(colNode, document);
+
 				await ext.fileSystem.showTextDocument(docNode, {
 					viewColumn: vscode.ViewColumn.Beside,
 				});
@@ -231,6 +238,7 @@ async function executeCommand(
 					const label: string = "Scrapbook-results";
 
 					const fullId: string = `${database.fullId}/${label}`;
+
 					await openReadOnlyContent(
 						{ label, fullId },
 						result,
@@ -280,6 +288,7 @@ export function getAllCommandsFromText(content: string): MongoCommand[] {
 	const lexer = new mongoLexer(new InputStream(content));
 
 	const lexerListener = new LexerErrorListener();
+
 	lexer.removeErrorListeners(); // Default listener outputs to the console
 	lexer.addErrorListener(lexerListener);
 
@@ -288,6 +297,7 @@ export function getAllCommandsFromText(content: string): MongoCommand[] {
 	const parser = new mongoParser.mongoParser(tokens);
 
 	const parserListener = new ParserErrorListener();
+
 	parser.removeErrorListeners(); // Default listener outputs to the console
 	parser.addErrorListener(parserListener);
 
@@ -298,6 +308,7 @@ export function getAllCommandsFromText(content: string): MongoCommand[] {
 
 	// Match errors with commands based on location
 	const errors = lexerListener.errors.concat(parserListener.errors);
+
 	errors.sort((a, b) => {
 		const linediff = a.range.start.line - b.range.start.line;
 
@@ -314,6 +325,7 @@ export function getAllCommandsFromText(content: string): MongoCommand[] {
 
 		if (associatedCommand) {
 			associatedCommand.errors = associatedCommand.errors || [];
+
 			associatedCommand.errors.push(err);
 		} else {
 			// Create a new command to hook this up to
@@ -323,7 +335,9 @@ export function getAllCommandsFromText(content: string): MongoCommand[] {
 				range: err.range,
 				text: "",
 			};
+
 			emptyCommand.errors = [err];
+
 			commands.push(emptyCommand);
 		}
 	}
@@ -344,14 +358,17 @@ export function findCommandAtPosition(
 			if (command.range.contains(position)) {
 				return command;
 			}
+
 			if (command.range.end.line === position.line) {
 				lastCommandOnSameLine = command;
 			}
+
 			if (command.range.end.isBefore(position)) {
 				lastCommandBeforePosition = command;
 			}
 		}
 	}
+
 	return (
 		lastCommandOnSameLine ||
 		lastCommandBeforePosition ||
@@ -369,6 +386,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		).length;
 
 		const stop = nonNullProp(ctx, "stop");
+
 		this.commands.push({
 			range: new vscode.Range(
 				ctx.start.line - 1,
@@ -399,6 +417,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			this.commands[this.commands.length - 1].name =
 				(ctx._FUNCTION_NAME && ctx._FUNCTION_NAME.text) || "";
 		}
+
 		return super.visitFunctionCall(ctx);
 	}
 
@@ -419,6 +438,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 					const argAsObject = this.contextToObject(ctx);
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
 					const argText = EJSON.stringify(argAsObject);
+
 					nonNullProp(lastCommand, "arguments").push(argText);
 
 					const escapeHandled =
@@ -432,8 +452,10 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 					} catch (error) {
 						//EJSON parse failed due to a wrong flag, etc.
 						const parsedError: IParsedError = parseError(error);
+
 						this.addErrorToCommand(parsedError.message, ctx);
 					}
+
 					nonNullProp(lastCommand, "argumentObjects").push(
 						ejsonParsed,
 					);
@@ -441,8 +463,10 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 			}
 		} catch (error) {
 			const parsedError: IParsedError = parseError(error);
+
 			this.addErrorToCommand(parsedError.message, ctx);
 		}
+
 		return super.visitArgument(ctx);
 	}
 
@@ -523,6 +547,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 
 		if (!propertyNameAndValue) {
 			// Argument is {}
+
 			return {};
 		} else {
 			const parsedObject: object = {};
@@ -545,9 +570,11 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 				const propertyValue = <mongoParser.PropertyValueContext>(
 					propertyAssignmentChildren[2]
 				);
+
 				parsedObject[stripQuotes(propertyName.text)] =
 					this.contextToObject(propertyValue);
 			}
+
 			return parsedObject;
 		}
 	}
@@ -699,6 +726,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 				return new Date(tokenText);
 			} catch (error) {
 				const parsedError: IParsedError = parseError(error);
+
 				this.addErrorToCommand(parsedError.message, ctx);
 
 				return {};
@@ -725,11 +753,13 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 				constructedObject = new ObjectId(hexID);
 			} catch (error) {
 				const parsedError: IParsedError = parseError(error);
+
 				this.addErrorToCommand(parsedError.message, ctx);
 
 				return {};
 			}
 		}
+
 		return { $oid: constructedObject.toString() };
 	}
 
@@ -757,6 +787,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		} catch (error) {
 			//User may not have finished typing
 			const parsedError: IParsedError = parseError(error);
+
 			this.addErrorToCommand(parsedError.message, ctx);
 
 			return {};
@@ -768,6 +799,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 		ctx: mongoParser.ArgumentContext | mongoParser.PropertyValueContext,
 	): void {
 		const command = this.commands[this.commands.length - 1];
+
 		command.errors = command.errors || [];
 
 		const stop = nonNullProp(ctx, "stop");
@@ -781,6 +813,7 @@ class FindMongoCommandsVisitor extends MongoVisitor<MongoCommand[]> {
 				stop.charPositionInLine,
 			),
 		};
+
 		command.errors.push(currentErrorDesc);
 	}
 

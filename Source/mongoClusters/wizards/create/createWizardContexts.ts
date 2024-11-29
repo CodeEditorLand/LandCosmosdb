@@ -11,6 +11,7 @@ import { type MongoClusterResourceItem } from "../../tree/MongoClusterResourceIt
 export interface CreateCollectionWizardContext extends IActionContext {
 	/** These values have to be provided for the wizard to function correctly. */
 	credentialsId: string;
+
 	databaseItem: DatabaseItem;
 
 	/** These values will be populated by the wizard. */
@@ -20,6 +21,7 @@ export interface CreateCollectionWizardContext extends IActionContext {
 export interface CreateDatabaseWizardContext extends IActionContext {
 	/** These values have to be provided for the wizard to function correctly. */
 	credentialsId: string;
+
 	mongoClusterItem: MongoClusterResourceItem;
 
 	/** These values will be populated by the wizard. */

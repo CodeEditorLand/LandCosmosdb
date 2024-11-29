@@ -35,7 +35,9 @@ export type TableDataEntry = {
 
 export interface TableData {
 	path: string[];
+
 	headers: string[];
+
 	data: TableDataEntry[];
 }
 
@@ -60,7 +62,9 @@ export class MongoClustersSession {
 	 * and updates it with everything we see until the query text changes.
 	 */
 	private _currentJsonSchema: JSONSchema = {};
+
 	private _currentQueryText: string = "";
+
 	private _currentRawDocuments: WithId<Document>[] = [];
 
 	/**
@@ -80,6 +84,7 @@ export class MongoClustersSession {
 
 		// the query text has changed, caches are now invalid and have to be purged
 		this._currentJsonSchema = {};
+
 		this._currentRawDocuments = [];
 
 		this._currentQueryText = query.trim();

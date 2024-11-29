@@ -19,6 +19,7 @@ export function nonNullProp<TSource, TKey extends keyof TSource>(
 	if (message) {
 		return nonNullValue(value, `${<string>name}, ${message}`);
 	}
+
 	return nonNullValue(value, <string>name);
 }
 

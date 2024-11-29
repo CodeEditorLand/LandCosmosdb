@@ -14,7 +14,10 @@ export interface IDeleteWizardContext
 	extends IActionContext,
 		ExecuteActivityContext {
 	node: AzExtTreeItem;
+
 	deletePostgres: boolean;
+
 	resourceGroupToDelete?: string;
+
 	subscription: ISubscriptionContext;
 }

@@ -152,6 +152,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 			new AzureDBAPIStep(),
 			new ResourceGroupListStep(),
 		];
+
 		LocationListStep.addStep(wizardContext, promptSteps);
 
 		const wizard = new AzureWizard(wizardContext, {
@@ -172,6 +173,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 			wizardContext,
 			"newServerName",
 		);
+
 		wizardContext.activityTitle = localize(
 			"createDBServerMsgActivityTitle",
 			'Create new Azure Database Server "{0}"',
@@ -179,6 +181,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 		);
 
 		await wizard.execute();
+
 		await ext.rgApi.appResourceTree.refresh(context);
 
 		if (
@@ -190,7 +193,9 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 				'Successfully created PostgreSQL server "{0}".',
 				wizardContext.newServerName,
 			);
+
 			void vscode.window.showInformationMessage(createMessage);
+
 			ext.outputChannel.appendLog(createMessage);
 
 			const server = nonNullProp(wizardContext, "server");
@@ -270,6 +275,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 				context.errorHandling.suppressDisplay = true;
 				// rethrow all errors to satisfy initCosmosDBChild contract
 				context.errorHandling.rethrow = true;
+
 				context.telemetry.properties.experience = experience?.api;
 
 				if (experience && experience.api === API.MongoDB) {
@@ -308,6 +314,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 					const forceOAuth = vscode.workspace
 						.getConfiguration()
 						.get<boolean>("azureDatabases.useCosmosOAuth");
+
 					context.telemetry.properties.useCosmosOAuth = (
 						forceOAuth ?? false
 					).toString();
@@ -322,6 +329,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 
 							const localAuthDisabled =
 								acc.disableLocalAuth === true;
+
 							context.telemetry.properties.localAuthDisabled =
 								localAuthDisabled.toString();
 
@@ -335,12 +343,14 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 										resourceGroup,
 										name,
 									);
+
 								keyCred = keyResult?.primaryMasterKey
 									? {
 											type: "key",
 											key: keyResult.primaryMasterKey,
 										}
 									: undefined;
+
 								context.telemetry.properties.receivedKeyCreds =
 									"true";
 							} else {
@@ -360,6 +370,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 								"openSettings",
 								"Open Settings",
 							);
+
 							void vscode.window
 								.showWarningMessage(
 									message,
@@ -415,6 +426,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 								databaseAccount,
 							);
 						}
+
 						case API.Core:
 						default:
 							// Default to DocumentDB, the base type for all Cosmos DB Accounts
@@ -441,6 +453,7 @@ export class SubscriptionTreeItem extends SubscriptionTreeItemBase {
 				),
 			);
 		}
+
 		return newNode;
 	}
 

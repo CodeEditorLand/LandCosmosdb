@@ -25,11 +25,13 @@ export namespace Links {
 
 export interface IThemedIconPath {
 	light: string;
+
 	dark: string;
 }
 
 export interface IThemedIconURI {
 	light: URI;
+
 	dark: URI;
 }
 
@@ -38,6 +40,7 @@ export function getThemedIconPath(iconName: string): IThemedIconPath {
 		light: path.join(getResourcesPath(), "icons", "light", iconName),
 		dark: path.join(getResourcesPath(), "icons", "dark", iconName),
 	};
+
 	assert.ok(fs.existsSync(a.light));
 
 	return a;
@@ -58,6 +61,7 @@ export function getThemeAgnosticIconPath(iconName: string): IThemedIconPath {
 			iconName,
 		),
 	};
+
 	assert.ok(fs.existsSync(a.light));
 
 	return a;
@@ -80,6 +84,7 @@ export function getThemeAgnosticIconURI(iconName: string): IThemedIconURI {
 			iconName,
 		),
 	};
+
 	assert.ok(fs.existsSync(a.light.path));
 
 	return a;
@@ -105,6 +110,7 @@ export const defaultStoredProcedure = `function sample(prefix) {
             // else take 1st element from feed
             if (!feed || !feed.length) {
                 var response = getContext().getResponse();
+
                 response.setBody('no docs found');
             }
 
@@ -112,6 +118,7 @@ export const defaultStoredProcedure = `function sample(prefix) {
                 var response = getContext().getResponse();
 
                 var body = { prefix: prefix, feed: feed[0] };
+
                 response.setBody(JSON.stringify(body));
             }
         });

@@ -51,6 +51,7 @@ export async function launchShell(
 			connectionStringWithUserName,
 			node.databaseInfo.name,
 		);
+
 		shellParameters = `"${connStringWithDb}"`;
 	}
 	// } else if (node instanceof CollectionItem) { // --> --eval terminates, we'd have to launch with a script etc. let's look into it latter
@@ -63,5 +64,6 @@ export async function launchShell(
 	);
 
 	terminal.sendText("mongosh " + shellParameters);
+
 	terminal.show();
 }

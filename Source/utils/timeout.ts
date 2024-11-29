@@ -38,6 +38,7 @@ export async function rejectOnTimeout<T>(
 	return await new Promise<T>(async (resolve, reject) => {
 		let timer: NodeJS.Timeout | undefined = setTimeout(() => {
 			timer = undefined;
+
 			reject(new Error(callerTimeOutMessage || timedOutMessage));
 		}, timeoutMs);
 
@@ -47,11 +48,14 @@ export async function rejectOnTimeout<T>(
 
 		try {
 			value = await action();
+
 			clearTimeout(timer);
+
 			resolve(value);
 		} catch (err) {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			error = err;
+
 			clearTimeout(timer);
 			// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
 			reject(error);

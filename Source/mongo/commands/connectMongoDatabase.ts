@@ -24,6 +24,7 @@ export async function loadPersistedMongoDB(): Promise<void> {
 		"cosmosDB.loadPersistedMongoDB",
 		async (context: IActionContext) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.telemetry.properties.isActivationEvent = "true";
 
 			try {
@@ -43,6 +44,7 @@ export async function loadPersistedMongoDB(): Promise<void> {
 
 					if (persistedNode) {
 						await ext.mongoLanguageClient.client.onReady();
+
 						await connectMongoDatabase(
 							context,
 							persistedNode as MongoDatabaseTreeItem,
@@ -71,6 +73,7 @@ export async function connectMongoDatabase(
 			...context,
 			defaultExperience: MongoExperience,
 		};
+
 		node = await pickMongo<MongoDatabaseTreeItem>(
 			experienceContext,
 			MongoDatabaseTreeItem.contextValue,
@@ -79,13 +82,16 @@ export async function connectMongoDatabase(
 
 	const oldNodeId: string | undefined =
 		ext.connectedMongoDB && ext.connectedMongoDB.fullId;
+
 	await ext.mongoLanguageClient.connect(
 		node.connectionString,
 		node.databaseName,
 	);
+
 	void ext.context.globalState.update(connectedMongoKey, node.fullId);
 
 	setConnectedNode(node);
+
 	await node.refresh(context);
 
 	if (oldNodeId) {

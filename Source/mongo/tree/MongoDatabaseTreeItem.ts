@@ -40,13 +40,19 @@ const executingInShellMsg = "Executing command in Mongo shell";
 
 export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "mongoDb";
+
 	public readonly contextValue: string = MongoDatabaseTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Collection";
+
 	public readonly connectionString: string;
+
 	public readonly databaseName: string;
+
 	public declare readonly parent: MongoAccountTreeItem;
 
 	private _previousShellPathSetting: string | undefined;
+
 	private _cachedShellPathOrCmd: string | undefined;
 
 	constructor(
@@ -55,7 +61,9 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 		connectionString: string,
 	) {
 		super(parent);
+
 		this.databaseName = databaseName;
+
 		this.connectionString = addDatabaseToAccountConnectionString(
 			connectionString,
 			this.databaseName,
@@ -118,6 +126,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 
 	public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
 		const message: string = `Are you sure you want to delete database '${this.label}'?`;
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteMongoDatabase" },
@@ -125,6 +134,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 		);
 
 		const db = await this.connectToDb();
+
 		await db.dropDatabase();
 	}
 
@@ -160,6 +170,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 					return result.result;
 				}
 			}
+
 			return withProgress(
 				this.executeCommandInShell(command, context),
 				executingInShellMsg,
@@ -246,8 +257,10 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 		) {
 			// Only do this if setting changed since last time
 			shellPath = await this._determineShellPathOrCmd(context, shellPath);
+
 			this._previousShellPathSetting = shellPath;
 		}
+
 		this._cachedShellPathOrCmd = shellPath;
 
 		const timeout =
@@ -382,14 +395,17 @@ export function validateMongoCollectionName(
 	if (!collectionName) {
 		return "Collection name cannot be empty";
 	}
+
 	const systemPrefix = "system.";
 
 	if (collectionName.startsWith(systemPrefix)) {
 		return `"${systemPrefix}" prefix is reserved for internal use`;
 	}
+
 	if (/[$]/.test(collectionName)) {
 		return "Collection name cannot contain $";
 	}
+
 	return undefined;
 }
 
@@ -416,5 +432,6 @@ export function stripQuotes(term: string): string {
 	) {
 		return term.substring(1, term.length - 1);
 	}
+
 	return term;
 }

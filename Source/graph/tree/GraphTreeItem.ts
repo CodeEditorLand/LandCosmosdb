@@ -20,8 +20,11 @@ const alternativeGraphVisualizationToolsDocLink =
 
 export class GraphTreeItem extends AzExtTreeItem {
 	public static contextValue: string = "cosmosDBGraphGraph";
+
 	public readonly contextValue: string = GraphTreeItem.contextValue;
+
 	public declare readonly parent: GraphCollectionTreeItem;
+
 	public suppressMaskLabel = true;
 
 	private readonly _collection: ContainerDefinition & Resource;
@@ -31,7 +34,9 @@ export class GraphTreeItem extends AzExtTreeItem {
 		collection: ContainerDefinition & Resource,
 	) {
 		super(parent);
+
 		this.commandId = "cosmosDB.openGraphExplorer";
+
 		this._collection = collection;
 	}
 

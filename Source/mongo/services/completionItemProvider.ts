@@ -37,6 +37,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 		private jsonLanguageService: JsonLanguageService,
 	) {
 		super();
+
 		this.at = this.textDocument.positionAt(this.offset);
 	}
 
@@ -70,6 +71,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 		if (lastTerminalNode) {
 			return this.getCompletionItemsFromTerminalNode(lastTerminalNode);
 		}
+
 		return this.thenable();
 	}
 
@@ -93,6 +95,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 		if (previousNode instanceof TerminalNode) {
 			return this.getCompletionItemsFromTerminalNode(previousNode);
 		}
+
 		return this.thenable();
 	}
 
@@ -108,6 +111,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 				),
 			);
 		}
+
 		return this.thenable();
 	}
 
@@ -144,6 +148,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 				);
 			}
 		}
+
 		return ctx.parent!.accept(this);
 	}
 
@@ -163,6 +168,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 				);
 			}
 		}
+
 		return ctx.parent!.accept(this);
 	}
 
@@ -245,6 +251,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 					const endPositionOffset = document.offsetAt(
 						item.textEdit!.range.end,
 					);
+
 					item.textEdit!.range = Range.create(
 						this.textDocument.positionAt(
 							startPositionOffset + contextOffset,
@@ -265,16 +272,19 @@ export class CompletionItemsVisitor extends MongoVisitor<
 		if (!(parent && parent instanceof mongoParser.ArgumentContext)) {
 			return null!;
 		}
+
 		parent = parent.parent!;
 
 		if (!(parent && parent instanceof mongoParser.ArgumentsContext)) {
 			return null!;
 		}
+
 		parent = parent.parent!;
 
 		if (!(parent && parent instanceof mongoParser.FunctionCallContext)) {
 			return null!;
 		}
+
 		return (<mongoParser.FunctionCallContext>parent)._FUNCTION_NAME.text!;
 	}
 
@@ -284,16 +294,19 @@ export class CompletionItemsVisitor extends MongoVisitor<
 		if (!(parent && parent instanceof mongoParser.ArgumentContext)) {
 			return null!;
 		}
+
 		parent = parent.parent!;
 
 		if (!(parent && parent instanceof mongoParser.ArgumentsContext)) {
 			return null!;
 		}
+
 		parent = parent.parent!;
 
 		if (!(parent && parent instanceof mongoParser.FunctionCallContext)) {
 			return null!;
 		}
+
 		let previousNode = this.getPreviousNode(parent);
 
 		if (
@@ -310,6 +323,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 				return previousNode.text;
 			}
 		}
+
 		return null!;
 	}
 
@@ -321,11 +335,13 @@ export class CompletionItemsVisitor extends MongoVisitor<
 				this.createDbKeywordCompletion(this.createRange(node)),
 			);
 		}
+
 		if (node._symbol.type === mongoParser.mongoParser.SEMICOLON) {
 			return this.thenable(
 				this.createDbKeywordCompletion(this.createRangeAfter(node)),
 			);
 		}
+
 		if (node._symbol.type === mongoParser.mongoParser.DOT) {
 			const previousNode = this.getPreviousNode(node);
 
@@ -346,12 +362,14 @@ export class CompletionItemsVisitor extends MongoVisitor<
 					);
 				}
 			}
+
 			if (previousNode instanceof mongoParser.CollectionContext) {
 				return this.createCollectionFunctionsCompletions(
 					this.createRangeAfter(node),
 				);
 			}
 		}
+
 		if (node instanceof ErrorNode) {
 			const previousNode = this.getPreviousNode(node);
 
@@ -361,9 +379,11 @@ export class CompletionItemsVisitor extends MongoVisitor<
 						previousNode,
 					);
 				}
+
 				return previousNode.accept(this);
 			}
 		}
+
 		return this.thenable();
 	}
 
@@ -390,8 +410,10 @@ export class CompletionItemsVisitor extends MongoVisitor<
 			if (currentNode === node) {
 				break;
 			}
+
 			previousNode = currentNode;
 		}
+
 		return previousNode;
 	}
 
@@ -484,6 +506,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 				})
 			);
 		}
+
 		return Promise.resolve([]);
 	}
 
@@ -614,6 +637,7 @@ export class CompletionItemsVisitor extends MongoVisitor<
 		if (endPosition.line < this.at.line) {
 			return Range.create(Position.create(this.at.line, 0), this.at);
 		}
+
 		const startPosition = this.textDocument.positionAt(start);
 
 		return Range.create(startPosition, endPosition);

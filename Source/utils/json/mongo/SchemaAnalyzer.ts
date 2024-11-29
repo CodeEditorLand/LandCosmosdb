@@ -69,6 +69,7 @@ export function updateSchemaWithDocument(
 	// Initialize schema if it's empty
 	if (!schema.properties) {
 		schema.properties = {};
+
 		schema["x-documentsInspected"] = 0;
 	}
 
@@ -77,9 +78,11 @@ export function updateSchemaWithDocument(
 	// Define the structure of work items to be processed
 	type WorkItem = {
 		fieldName: string;
+
 		fieldMongoType: MongoBSONTypes; // The inferred BSON type
 		propertySchema: JSONSchema; // Reference to the schema entry within 'properties'
 		fieldValue: unknown;
+
 		pathSoFar: string; // Used for debugging and tracing
 	};
 
@@ -104,6 +107,7 @@ export function updateSchemaWithDocument(
 		const propertySchema: JSONSchema = schema.properties[
 			name
 		] as JSONSchema;
+
 		assert(
 			propertySchema !== undefined,
 			"propertySchema should not be undefined",
@@ -130,6 +134,7 @@ export function updateSchemaWithDocument(
 			if (!propertySchema.anyOf) {
 				propertySchema.anyOf = [];
 			}
+
 			propertySchema.anyOf.push(typeEntry);
 		}
 
@@ -192,6 +197,7 @@ export function updateSchemaWithDocument(
 
 					const propertySchema: JSONSchema = item.propertySchema
 						.properties[name] as JSONSchema;
+
 					assert(
 						propertySchema !== undefined,
 						"propertySchema should not be undefined",
@@ -218,6 +224,7 @@ export function updateSchemaWithDocument(
 						if (!propertySchema.anyOf) {
 							propertySchema.anyOf = [];
 						}
+
 						propertySchema.anyOf.push(typeEntry);
 					}
 
@@ -234,6 +241,7 @@ export function updateSchemaWithDocument(
 						pathSoFar: `${item.pathSoFar}.${name}`,
 					});
 				}
+
 				break;
 			}
 
@@ -259,6 +267,7 @@ export function updateSchemaWithDocument(
 
 				const itemsSchema: JSONSchema = item.propertySchema
 					.items as JSONSchema;
+
 				assert(
 					itemsSchema !== undefined,
 					"itemsSchema should not be undefined",
@@ -289,6 +298,7 @@ export function updateSchemaWithDocument(
 						if (!itemsSchema.anyOf) {
 							itemsSchema.anyOf = [];
 						}
+
 						itemsSchema.anyOf.push(itemEntry);
 					}
 
@@ -304,6 +314,7 @@ export function updateSchemaWithDocument(
 							elementMongoType,
 							itemEntry,
 						);
+
 						encounteredMongoTypes.set(elementMongoType, itemEntry);
 					} else {
 						// Subsequent occurrences, aggregate stats
@@ -328,6 +339,7 @@ export function updateSchemaWithDocument(
 						});
 					}
 				}
+
 				break;
 			}
 
@@ -348,6 +360,7 @@ export function updateSchemaWithDocument(
 						item.propertySchema,
 					);
 				}
+
 				break;
 			}
 		}
@@ -376,6 +389,7 @@ function updateMinMaxStats(
 	if (schema[minKey] === undefined || value < schema[minKey]) {
 		schema[minKey] = value;
 	}
+
 	if (schema[maxKey] === undefined || value > schema[maxKey]) {
 		schema[maxKey] = value;
 	}
@@ -383,14 +397,17 @@ function updateMinMaxStats(
 
 export function getSchemaFromDocument(document: WithId<Document>): JSONSchema {
 	const schema: JSONSchema = {};
+
 	schema["x-documentsInspected"] = 1; // we're inspecting one document, this will make sense when we start aggregating stats
 	schema.properties = {};
 
 	type WorkItem = {
 		fieldName: string;
+
 		fieldMongoType: MongoBSONTypes; // the inferred BSON type
 		propertyTypeEntry: JSONSchema; // points to the entry within the 'anyOf' property of the schema
 		fieldValue: unknown;
+
 		pathSoFar: string; // used for debugging
 	};
 
@@ -439,7 +456,9 @@ export function getSchemaFromDocument(document: WithId<Document>): JSONSchema {
 		switch (item.fieldMongoType) {
 			case MongoBSONTypes.Object: {
 				const objKeys = Object.keys(item.fieldValue as object).length;
+
 				item.propertyTypeEntry["x-maxLength"] = objKeys;
+
 				item.propertyTypeEntry["x-minLength"] = objKeys;
 
 				// prepare an entry for the object properties
@@ -470,15 +489,20 @@ export function getSchemaFromDocument(document: WithId<Document>): JSONSchema {
 						pathSoFar: `${item.pathSoFar}.${item.fieldName}`,
 					});
 				}
+
 				break;
 			}
+
 			case MongoBSONTypes.Array: {
 				const arrayLength = (item.fieldValue as unknown[]).length;
+
 				item.propertyTypeEntry["x-maxLength"] = arrayLength;
+
 				item.propertyTypeEntry["x-minLength"] = arrayLength;
 
 				// preapare the array items entry (in two lines for ts not to compalin about the missing type later on)
 				item.propertyTypeEntry.items = {};
+
 				item.propertyTypeEntry.items.anyOf = [];
 
 				const encounteredMongoTypes: Map<MongoBSONTypes, JSONSchema> =
@@ -496,7 +520,9 @@ export function getSchemaFromDocument(document: WithId<Document>): JSONSchema {
 							"x-bsonType": elementMongoType,
 							"x-typeOccurrence": 1, // Initialize type occurrence counter
 						};
+
 						item.propertyTypeEntry.items.anyOf.push(itemEntry);
+
 						encounteredMongoTypes.set(elementMongoType, itemEntry);
 
 						initializeStatsForValue(
@@ -571,7 +597,9 @@ function initializeStatsForValue(
 	switch (mongoType) {
 		case MongoBSONTypes.String: {
 			const currentLength = (value as string).length;
+
 			propertyTypeEntry["x-maxLength"] = currentLength;
+
 			propertyTypeEntry["x-minLength"] = currentLength;
 
 			break;
@@ -583,7 +611,9 @@ function initializeStatsForValue(
 		case MongoBSONTypes.Double:
 		case MongoBSONTypes.Decimal128: {
 			const numericValue = Number(value);
+
 			propertyTypeEntry["x-maxValue"] = numericValue;
+
 			propertyTypeEntry["x-minValue"] = numericValue;
 
 			break;
@@ -591,7 +621,9 @@ function initializeStatsForValue(
 
 		case MongoBSONTypes.Boolean: {
 			const boolValue = value as boolean;
+
 			propertyTypeEntry["x-trueCount"] = boolValue ? 1 : 0;
+
 			propertyTypeEntry["x-falseCount"] = boolValue ? 0 : 1;
 
 			break;
@@ -599,7 +631,9 @@ function initializeStatsForValue(
 
 		case MongoBSONTypes.Date: {
 			const dateValue = (value as Date).getTime();
+
 			propertyTypeEntry["x-maxDate"] = dateValue;
+
 			propertyTypeEntry["x-minDate"] = dateValue;
 
 			break;
@@ -607,7 +641,9 @@ function initializeStatsForValue(
 
 		case MongoBSONTypes.Binary: {
 			const binaryLength = (value as Buffer).length;
+
 			propertyTypeEntry["x-maxLength"] = binaryLength;
+
 			propertyTypeEntry["x-minLength"] = binaryLength;
 
 			break;
@@ -659,6 +695,7 @@ function aggregateStatsForValue(
 			) {
 				propertyTypeEntry["x-maxLength"] = currentLength;
 			}
+
 			break;
 		}
 
@@ -684,6 +721,7 @@ function aggregateStatsForValue(
 			) {
 				propertyTypeEntry["x-maxValue"] = numericValue;
 			}
+
 			break;
 		}
 
@@ -702,6 +740,7 @@ function aggregateStatsForValue(
 			} else {
 				propertyTypeEntry["x-falseCount"] += boolValue ? 0 : 1;
 			}
+
 			break;
 		}
 
@@ -723,6 +762,7 @@ function aggregateStatsForValue(
 			) {
 				propertyTypeEntry["x-maxDate"] = dateValue;
 			}
+
 			break;
 		}
 
@@ -744,6 +784,7 @@ function aggregateStatsForValue(
 			) {
 				propertyTypeEntry["x-maxLength"] = binaryLength;
 			}
+
 			break;
 		}
 

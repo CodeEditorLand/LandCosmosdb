@@ -37,6 +37,7 @@ export function getExperienceFromApi(api: API): Experience {
 			tag: api,
 		};
 	}
+
 	return info;
 }
 
@@ -96,11 +97,14 @@ export interface Experience {
 	api: API;
 
 	longName: string;
+
 	shortName: string;
+
 	description?: string;
 
 	// These properties are what the portal actually looks at to determine the difference between APIs
 	kind?: DBAccountKind;
+
 	capability?: CapabilityName;
 
 	// The defaultExperience tag to place into the resource (has no actual effect in Azure, just imitating the portal)

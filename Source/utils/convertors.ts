@@ -18,9 +18,11 @@ import { type TreeData } from "./slickgrid/mongo/toSlickGridTree";
 
 export type StatsItem = {
 	metric: string;
+
 	value: string | number;
 
 	formattedValue: string;
+
 	tooltip: string;
 };
 
@@ -28,6 +30,7 @@ export type TableRecord = Record<string, string> & { __id: string };
 
 export type TableData = {
 	headers: string[];
+
 	dataset: TableRecord[];
 };
 
@@ -65,6 +68,7 @@ export const queryResultToJSON = (
 				if (!selection.includes(index)) {
 					return null;
 				}
+
 				return doc;
 			})
 			.filter((doc) => doc !== null);
@@ -92,6 +96,7 @@ export const queryResultToTree = (
 			index,
 			`${index}-`,
 		);
+
 		tree.push(...documentTree);
 	});
 
@@ -296,6 +301,7 @@ export const getTableDatasetWithRecordIdentifyColumns = (
 
 			const partitionKeyValues =
 				extractPartitionKey(doc, partitionKey) ?? [];
+
 			partitionKeyPaths.forEach((path, index) => {
 				row[path] = `${partitionKeyValues[index] ?? ""}`;
 			});
@@ -375,6 +381,7 @@ export const queryResultToTable = (
 
 	if (isSelectStar(queryResult.query ?? "")) {
 		reorderColumns = true;
+
 		showServiceColumns = showServiceColumns ?? true;
 	}
 
@@ -512,6 +519,7 @@ export const queryMetricsToTable = (
 			tooltip: "Number of round trips",
 		});
 	}
+
 	if (queryResult.activityId) {
 		stats.push({
 			metric: "Activity id",
@@ -606,6 +614,7 @@ export const queryResultToCsv = (
 				}
 
 				const value = row[header] ?? "";
+
 				rowValues.push(escapeCsvValue(value));
 			});
 

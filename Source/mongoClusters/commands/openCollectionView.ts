@@ -13,9 +13,13 @@ export async function openCollectionView(
 	_context: IActionContext,
 	props: {
 		id: string;
+
 		liveConnectionId: string;
+
 		databaseName: string;
+
 		collectionName: string;
+
 		collectionTreeItem: CollectionItem;
 	},
 ): Promise<void> {

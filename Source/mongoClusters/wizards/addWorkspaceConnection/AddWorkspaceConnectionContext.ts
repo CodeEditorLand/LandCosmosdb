@@ -8,7 +8,9 @@ import { type IActionContext } from "@microsoft/vscode-azext-utils";
 export interface AddWorkspaceConnectionContext extends IActionContext {
 	/** These values will be populated by the wizard. */
 	connectionString?: string;
+
 	username?: string;
+
 	password?: string;
 
 	aborted?: boolean;

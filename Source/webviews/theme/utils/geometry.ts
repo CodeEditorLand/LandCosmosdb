@@ -58,6 +58,7 @@ function getPointsOnCurve(curve: Curve, divisions: number): Vec3[] {
 	for (let d = 0; d <= divisions; d++) {
 		points.push(getPointOnCurve(curve, d / divisions));
 	}
+
 	return points;
 }
 
@@ -81,6 +82,7 @@ export function getPointsOnCurvePath(
 			}
 
 			points.push(point);
+
 			last = point;
 		}
 	}

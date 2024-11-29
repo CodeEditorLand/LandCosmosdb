@@ -20,6 +20,7 @@ export async function deletePostgresDatabase(
 	node?: PostgresDatabaseTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {
@@ -32,6 +33,7 @@ export async function deletePostgresDatabase(
 			},
 		);
 	}
+
 	const message: string = localize(
 		"deletesPostgresDatabase",
 		'Are you sure you want to delete database "{0}"?',
@@ -47,11 +49,14 @@ export async function deletePostgresDatabase(
 	if (result === DialogResponses.deleteResponse) {
 		await node.deleteTreeItem(context);
 	}
+
 	const deleteMessage: string = localize(
 		"deletePostgresDatabaseMsg",
 		'Successfully deleted database "{0}".',
 		node.databaseName,
 	);
+
 	void vscode.window.showInformationMessage(deleteMessage);
+
 	ext.outputChannel.appendLog(deleteMessage);
 }

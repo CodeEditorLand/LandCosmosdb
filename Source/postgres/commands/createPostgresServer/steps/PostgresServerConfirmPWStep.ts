@@ -11,6 +11,7 @@ import { type IPostgresServerWizardContext } from "../IPostgresServerWizardConte
 export class PostgresServerConfirmPWStep extends AzureWizardPromptStep<IPostgresServerWizardContext> {
 	public async prompt(context: IPostgresServerWizardContext): Promise<void> {
 		const prompt: string = localize("confirmPW", "Confirm your password");
+
 		await context.ui.showInputBox({
 			prompt,
 			password: true,

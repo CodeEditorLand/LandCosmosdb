@@ -9,6 +9,7 @@ import { type JSONSchema } from "../../JSONSchema";
 
 export interface FieldEntry {
 	path: string;
+
 	type: string;
 }
 
@@ -32,8 +33,10 @@ export interface FieldEntry {
  */
 export function getKnownFields(schema: JSONSchema): FieldEntry[] {
 	const result: Array<{ path: string; type: string }> = [];
+
 	type QueueItem = {
 		path: string;
+
 		schemaNode: JSONSchema;
 	};
 
@@ -43,6 +46,7 @@ export function getKnownFields(schema: JSONSchema): FieldEntry[] {
 	if (schema.properties) {
 		for (const propName of Object.keys(schema.properties)) {
 			const propSchema = schema.properties[propName] as JSONSchema;
+
 			queue.push({ path: propName, schemaNode: propSchema });
 		}
 	}
@@ -68,6 +72,7 @@ export function getKnownFields(schema: JSONSchema): FieldEntry[] {
 					const childSchema = mostCommonTypeEntry.properties[
 						childName
 					] as JSONSchema;
+
 					queue.push({
 						path: `${path}.${childName}`,
 						schemaNode: childSchema,
@@ -101,13 +106,16 @@ function getMostCommonTypeEntry(schemaNode: JSONSchema): JSONSchema | null {
 
 			if (occurrence > maxOccurrence) {
 				maxOccurrence = occurrence;
+
 				mostCommonTypeEntry = typeEntry;
 			}
 		}
+
 		return mostCommonTypeEntry;
 	} else if (schemaNode.type) {
 		// If 'anyOf' is not present, use the 'type' field directly
 		return schemaNode;
 	}
+
 	return null;
 }

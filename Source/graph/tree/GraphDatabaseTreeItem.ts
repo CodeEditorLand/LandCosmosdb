@@ -20,7 +20,9 @@ import { GraphCollectionTreeItem } from "./GraphCollectionTreeItem";
 
 export class GraphDatabaseTreeItem extends DocDBDatabaseTreeItemBase {
 	public static contextValue: string = "cosmosDBGraphDatabase";
+
 	public readonly contextValue: string = GraphDatabaseTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Graph";
 
 	constructor(
@@ -71,9 +73,11 @@ export class GraphDatabaseTreeItem extends DocDBDatabaseTreeItemBase {
 		if (/[#?\\]/.test(key)) {
 			return "Cannot contain these characters: ?,#,\\, etc.";
 		}
+
 		if (/.+\//.test(key)) {
 			return "Cannot be a nested path";
 		}
+
 		return undefined;
 	}
 }

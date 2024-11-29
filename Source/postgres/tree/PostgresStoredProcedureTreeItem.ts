@@ -15,13 +15,20 @@ import { type PostgresStoredProceduresTreeItem } from "./PostgresStoredProcedure
 
 export class PostgresStoredProcedureTreeItem extends AzExtTreeItem {
 	public static contextValue: string = "postgresStoredProcedure";
+
 	public readonly contextValue: string =
 		PostgresStoredProcedureTreeItem.contextValue;
+
 	public declare readonly parent: PostgresStoredProceduresTreeItem;
+
 	public readonly schema: string;
+
 	public readonly name: string;
+
 	public readonly args: string;
+
 	public readonly isDuplicate: boolean;
+
 	public definition: string;
 
 	constructor(
@@ -30,12 +37,19 @@ export class PostgresStoredProcedureTreeItem extends AzExtTreeItem {
 		isDuplicate: boolean,
 	) {
 		super(parent);
+
 		this.schema = row.schema;
+
 		this.name = row.name;
+
 		this.id = String(row.oid);
+
 		this.commandId = "postgreSQL.openStoredProcedure";
+
 		this.args = row.args;
+
 		this.definition = row.definition;
+
 		this.isDuplicate = isDuplicate;
 	}
 

@@ -67,6 +67,7 @@ export class CollectionItem {
 		);
 
 		let success = false;
+
 		await ext.state.showDeleting(this.id, async () => {
 			success = await client.dropCollection(
 				this.databaseInfo.name,

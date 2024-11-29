@@ -23,25 +23,37 @@ const processStartupTimeout = 60;
 
 export interface IInteractiveChildProcessOptions {
 	command: string;
+
 	args: string[];
+
 	outputChannel?: vscode.OutputChannel;
+
 	workingDirectory?: string;
+
 	showTimeInOutputChannel?: boolean;
+
 	outputFilterSearch?: RegExp;
+
 	outputFilterReplace?: string;
 }
 
 export class InteractiveChildProcess {
 	private _childProc: cp.ChildProcess;
+
 	private readonly _options: IInteractiveChildProcessOptions;
+
 	private _startTime: number;
+
 	private _error: unknown;
+
 	private _isKilling: boolean;
 
 	private readonly _onStdOutEmitter: EventEmitter<string> =
 		new EventEmitter<string>();
+
 	private readonly _onStdErrEmitter: EventEmitter<string> =
 		new EventEmitter<string>();
+
 	private readonly _onErrorEmitter: EventEmitter<unknown> =
 		new EventEmitter<unknown>();
 
@@ -67,6 +79,7 @@ export class InteractiveChildProcess {
 		const child: InteractiveChildProcess = new InteractiveChildProcess(
 			options,
 		);
+
 		await child.startCore();
 
 		return child;
@@ -74,11 +87,13 @@ export class InteractiveChildProcess {
 
 	public kill(): void {
 		this._isKilling = true;
+
 		this._childProc.kill();
 	}
 
 	public writeLine(text: string): void {
 		this.writeLineToOutputChannel(text, stdInPrefix);
+
 		this._childProc.stdin?.write(text + os.EOL);
 	}
 
@@ -101,6 +116,7 @@ export class InteractiveChildProcess {
 		this.writeLineToOutputChannel(
 			`Starting executable: "${this._options.command}" ${formattedArgs}`,
 		);
+
 		this._childProc = cp.spawn(
 			this._options.command,
 			this._options.args,
@@ -109,18 +125,23 @@ export class InteractiveChildProcess {
 
 		this._childProc.stdout?.on("data", (data: string | Buffer) => {
 			const text = data.toString();
+
 			this._onStdOutEmitter.fire(text);
+
 			this.writeLineToOutputChannel(text);
 		});
 
 		this._childProc.stderr?.on("data", (data: string | Buffer) => {
 			const text = data.toString();
+
 			this._onStdErrEmitter.fire(text);
+
 			this.writeLineToOutputChannel(text, stdErrPrefix);
 		});
 
 		this._childProc.on("error", (error: unknown) => {
 			const improvedError = improveError(error);
+
 			this.setError(improvedError);
 		});
 
@@ -154,6 +175,7 @@ export class InteractiveChildProcess {
 
 						break;
 					}
+
 					await delay(50);
 				}
 			}
@@ -175,10 +197,12 @@ export class InteractiveChildProcess {
 			if (this._options.outputChannel) {
 				if (this._options.showTimeInOutputChannel) {
 					const ms = Date.now() - this._startTime;
+
 					text = `${ms}ms: ${text}`;
 				}
 
 				text = (displayPrefix || "") + text;
+
 				this._options.outputChannel.appendLine(text);
 			}
 		}
@@ -186,7 +210,9 @@ export class InteractiveChildProcess {
 
 	private setError(error: unknown): void {
 		this.writeLineToOutputChannel(parseError(error).message, errorPrefix);
+
 		this._error = this._error || error;
+
 		this._onErrorEmitter.fire(error);
 	}
 

@@ -19,5 +19,6 @@ export async function openStoredProcedure(
 			DocDBStoredProcedureTreeItem.contextValue,
 		);
 	}
+
 	await ext.fileSystem.showTextDocument(node);
 }

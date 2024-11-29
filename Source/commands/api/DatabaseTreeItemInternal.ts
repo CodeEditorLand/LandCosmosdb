@@ -25,6 +25,7 @@ export class DatabaseTreeItemInternal
 	implements DatabaseTreeItem
 {
 	public databaseName: string;
+
 	private _dbNode: AzExtTreeItem | undefined;
 
 	constructor(
@@ -40,7 +41,9 @@ export class DatabaseTreeItemInternal
 			| PostgresDatabaseTreeItem,
 	) {
 		super(parsedCS, accountNode);
+
 		this.databaseName = databaseName;
+
 		this._dbNode = dbNode;
 	}
 
@@ -49,6 +52,7 @@ export class DatabaseTreeItemInternal
 			"api.db.reveal",
 			async (context: IActionContext) => {
 				context.errorHandling.suppressDisplay = true;
+
 				context.errorHandling.rethrow = true;
 
 				const accountNode:
@@ -59,6 +63,7 @@ export class DatabaseTreeItemInternal
 
 				if (!this._dbNode) {
 					const databaseId = `${accountNode.fullId}/${this.databaseName}`;
+
 					this._dbNode =
 						await ext.rgApi.workspaceResourceTree.findTreeItem(
 							databaseId,

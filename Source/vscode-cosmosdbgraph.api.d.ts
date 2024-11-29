@@ -11,7 +11,9 @@ export interface CosmosDBGraphExtensionApi {
 
 export interface IGremlinEndpoint {
 	host: string;
+
 	port: number;
+
 	ssl: boolean;
 }
 
@@ -20,10 +22,14 @@ export interface IGraphConfiguration {
 	documentEndpoint: string;
 
 	gremlinEndpoint?: IGremlinEndpoint;
+
 	possibleGremlinEndpoints: IGremlinEndpoint[];
 
 	key: string;
+
 	databaseName: string;
+
 	graphName: string;
+
 	tabTitle: string;
 }

@@ -51,6 +51,7 @@ export class MongoShell extends vscode.Disposable {
 				if (args.indexOf("--ssl") < 0) {
 					args.push("--ssl");
 				}
+
 				if (args.indexOf("--sslAllowInvalidCertificates") < 0) {
 					args.push("--sslAllowInvalidCertificates");
 				}
@@ -130,6 +131,7 @@ export class MongoShell extends vscode.Disposable {
 								}
 							}),
 						);
+
 						disposables.push(
 							this._process.onStdErr((text) => {
 								// Mongo shell only writes to STDERR for errors relating to starting up. Script errors go to STDOUT.
@@ -139,6 +141,7 @@ export class MongoShell extends vscode.Disposable {
 								reject(wrapCheckOutputWindow(text.trim()));
 							}),
 						);
+
 						disposables.push(
 							this._process.onError((error) => {
 								// eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
@@ -154,6 +157,7 @@ export class MongoShell extends vscode.Disposable {
 						// Mark end of result by sending the sentinel wrapped in quotes so the console will spit
 						// it back out as a string value after it's done processing the script
 						const quotedSentinel = `"${sentinel}"`;
+
 						this._process.writeLine(quotedSentinel); // (Don't display the sentinel)
 					} catch (error) {
 						// new Promise() doesn't seem to catch exceptions in an async function, we need to explicitly reject it

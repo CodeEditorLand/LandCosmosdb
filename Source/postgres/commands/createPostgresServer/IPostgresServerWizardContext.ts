@@ -23,9 +23,12 @@ export interface IPostgresServerWizardContext
 	 * Username with server, i.e. "user1@server1"
 	 */
 	longUserName?: string;
+
 	adminPassword?: string;
 
 	server?: PostgresAbstractServer;
+
 	sku?: AbstractSku;
+
 	serverType?: PostgresServerType;
 }

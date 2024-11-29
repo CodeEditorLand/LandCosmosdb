@@ -58,6 +58,7 @@ export async function showNewFile(
 			: undefined,
 		true,
 	);
+
 	await writeToEditor(editor, data);
 }
 
@@ -70,6 +71,7 @@ export async function writeToEditor(
 			const lastLine = editor.document.lineAt(
 				editor.document.lineCount - 1,
 			);
+
 			editBuilder.delete(
 				new vscode.Range(
 					new vscode.Position(0, 0),
@@ -111,6 +113,7 @@ async function getUniqueFileName(
 		if (!pathExists && !editorExists) {
 			return fullFileName;
 		}
+
 		count += 1;
 	}
 
@@ -122,12 +125,14 @@ export function getNodeEditorLabel(node: AzExtTreeItem): string {
 
 	while (node.parent) {
 		node = node.parent;
+
 		labels.unshift(node.label);
 
 		if (isAccountTreeItem(node)) {
 			break;
 		}
 	}
+
 	return labels.join("/");
 }
 
@@ -152,6 +157,7 @@ export function getDocumentTreeItemLabel(
 			}
 		}
 	}
+
 	return String(document._id ?? document.id);
 }
 

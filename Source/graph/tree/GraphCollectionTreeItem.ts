@@ -26,10 +26,13 @@ import { GraphTreeItem } from "./GraphTreeItem";
 
 export class GraphCollectionTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "cosmosDBGraph";
+
 	public readonly contextValue: string = GraphCollectionTreeItem.contextValue;
+
 	public declare readonly parent: GraphDatabaseTreeItem;
 
 	private readonly _graphTreeItem: GraphTreeItem;
+
 	private readonly _storedProceduresTreeItem: DocDBStoredProceduresTreeItem;
 
 	private readonly _collection: ContainerDefinition & Resource;
@@ -39,8 +42,11 @@ export class GraphCollectionTreeItem extends AzExtParentTreeItem {
 		collection: ContainerDefinition & Resource,
 	) {
 		super(parent);
+
 		this._collection = collection;
+
 		this._graphTreeItem = new GraphTreeItem(this, this._collection);
+
 		this._storedProceduresTreeItem = new DocDBStoredProceduresTreeItem(
 			this,
 		);
@@ -78,6 +84,7 @@ export class GraphCollectionTreeItem extends AzExtParentTreeItem {
 
 	public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
 		const message: string = `Are you sure you want to delete graph '${this.label}' and its contents?`;
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteGraphCollection" },
@@ -85,6 +92,7 @@ export class GraphCollectionTreeItem extends AzExtParentTreeItem {
 		);
 
 		const client = this.root.getCosmosClient();
+
 		await this.getContainerClient(client).delete();
 	}
 

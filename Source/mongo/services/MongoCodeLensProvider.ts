@@ -14,7 +14,9 @@ import { getAllCommandsFromTextDocument } from "../MongoScrapbook";
 export class MongoCodeLensProvider implements vscode.CodeLensProvider {
 	private _onDidChangeEmitter: vscode.EventEmitter<void> =
 		new vscode.EventEmitter<void>();
+
 	private _connectedDatabase: string | undefined;
+
 	private _connectedDatabaseInitialized: boolean;
 
 	public get onDidChangeCodeLenses(): vscode.Event<void> {
@@ -23,7 +25,9 @@ export class MongoCodeLensProvider implements vscode.CodeLensProvider {
 
 	public setConnectedDatabase(database: string | undefined): void {
 		this._connectedDatabase = database;
+
 		this._connectedDatabaseInitialized = true;
+
 		this._onDidChangeEmitter.fire();
 	}
 

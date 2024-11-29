@@ -12,8 +12,11 @@ export type CollectionViewWebviewConfigurationType = {
 	id: string; // move to base type
 
 	sessionId: string;
+
 	databaseName: string;
+
 	collectionName: string;
+
 	collectionTreeItem: CollectionItem; // needed to execute commands on the collection as the tree APIv2 doesn't support id-based search for tree items.
 };
 

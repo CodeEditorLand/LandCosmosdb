@@ -28,13 +28,18 @@ import { DocDBTreeItemBase } from "./DocDBTreeItemBase";
  */
 export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 	public static contextValue: string = "cosmosDBDocumentsGroup";
+
 	public readonly contextValue: string = DocDBDocumentsTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Documents";
+
 	public declare readonly parent: DocDBCollectionTreeItem;
+
 	public suppressMaskLabel = true;
 
 	constructor(parent: DocDBCollectionTreeItem) {
 		super(parent);
+
 		this.root = this.parent.root;
 	}
 
@@ -76,7 +81,9 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 		docID = docID.trim();
 
 		let body: ItemDefinition = { id: docID };
+
 		body = await this.promptForPartitionKey(context, body);
+
 		context.showCreatingTreeItem(docID);
 
 		const item: ItemDefinition = await this.createDocument(body);
@@ -102,9 +109,11 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 		if (!partitionKey) {
 			return true;
 		}
+
 		if (partitionKey[0] === "/") {
 			partitionKey = partitionKey.slice(1);
 		}
+
 		const partitionKeyPath = partitionKey.split("/");
 
 		for (const prop of partitionKeyPath) {
@@ -116,6 +125,7 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 				return false;
 			}
 		}
+
 		return true;
 	}
 
@@ -138,6 +148,7 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 				this.createPartitionPathObject(partitionKey, partitionKeyValue),
 			);
 		}
+
 		return body;
 	}
 
@@ -154,6 +165,7 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 		if (partitionKey[0] === "/") {
 			partitionKey = partitionKey.slice(1);
 		}
+
 		const keyPath = partitionKey.split("/");
 
 		const PartitionPath: object = {};
@@ -167,6 +179,7 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			interim = interim[keyPath[i]];
 		}
+
 		interim[keyPath[i]] = partitionKeyValue;
 
 		return PartitionPath;

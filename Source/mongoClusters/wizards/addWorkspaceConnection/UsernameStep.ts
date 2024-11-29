@@ -25,6 +25,7 @@ export class UsernameStep extends AzureWizardPromptStep<AddWorkspaceConnectionCo
 		const parsedCS = new ConnectionString(
 			wizardContext.connectionString as string,
 		);
+
 		this.usernameFromCS = parsedCS.username || "";
 	}
 

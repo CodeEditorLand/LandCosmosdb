@@ -51,24 +51,32 @@ import { PostgresTableTreeItem } from "./PostgresTableTreeItem";
 
 interface IPersistedServer {
 	id: string;
+
 	username: string;
 }
 
 export class PostgresServerTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "postgresServer";
+
 	public static serviceName: string =
 		"ms-azuretools.vscode-azuredatabases.postgresPasswords";
+
 	public static ipAddr: string | undefined;
 
 	public readonly contextValue: string = PostgresServerTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Database";
+
 	public readonly serverType: PostgresServerType;
 
 	public resourceGroup: string | undefined;
+
 	public azureName: string | undefined;
+
 	public partialConnectionString: ParsedPostgresConnectionString;
 
 	public azureId: string | undefined;
+
 	public serverVersion: string | undefined;
 
 	constructor(
@@ -77,19 +85,25 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 		server?: PostgresAbstractServer,
 	) {
 		super(parent);
+
 		this.partialConnectionString = connectionString;
 
 		if (server) {
 			this.azureId = server?.id;
+
 			this.serverVersion = server?.version;
+
 			this.resourceGroup = getResourceGroupFromId(this.fullId);
+
 			this.azureName = server?.name;
+
 			this.serverType = parseAzureResourceId(this.fullId)
 				.provider.toLowerCase()
 				.includes("flexible")
 				? PostgresServerType.Flexible
 				: PostgresServerType.Single;
 		}
+
 		this.valuesToMask.push(
 			connectionString.accountId,
 			connectionString.connectionString,
@@ -120,6 +134,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 		if (this.azureId) {
 			return this.azureId;
 		}
+
 		return this.partialConnectionString.fullId;
 	}
 
@@ -164,6 +179,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 					nonNullProp(this, "azureName"),
 				),
 			);
+
 			dbNames = listOfDatabases.map((db) => db.name);
 		} else if (this.partialConnectionString.databaseName) {
 			dbNames = [this.partialConnectionString.databaseName];
@@ -219,6 +235,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 				),
 			);
 		}
+
 		const getChildrenTask: Promise<AzExtTreeItem[]> =
 			this.getCachedChildren(context);
 
@@ -235,7 +252,9 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 				this,
 				postgresDefaultDatabase,
 			);
+
 		context.showCreatingTreeItem(databaseName);
+
 		await runPostgresQuery(
 			clientConfig,
 			`Create Database ${wrapArgInQuotes(databaseName)};`,
@@ -251,6 +270,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 		]);
 
 		const deletingMessage: string = `Deleting server "${this.label}"...`;
+
 		await vscode.window.withProgress(
 			{
 				location: vscode.ProgressLocation.Notification,
@@ -261,6 +281,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 					nonNullProp(this, "resourceGroup"),
 					nonNullProp(this, "azureName"),
 				);
+
 				await this.deletePostgresCredentials();
 
 				const deleteMessage: string = localize(
@@ -268,7 +289,9 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 					'Successfully deleted server "{0}".',
 					this.label,
 				);
+
 				void vscode.window.showInformationMessage(deleteMessage);
+
 				ext.outputChannel.appendLog(deleteMessage);
 			},
 		);
@@ -276,6 +299,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 
 	public setCredentials(username: string, password: string): void {
 		this.partialConnectionString.username = username;
+
 		this.partialConnectionString.password = password;
 	}
 
@@ -322,6 +346,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 			serviceName,
 			JSON.stringify(servers),
 		);
+
 		await ext.secretStorage.delete(
 			getSecretStorageKey(serviceName, this.id),
 		);
@@ -360,6 +385,7 @@ export class PostgresServerTreeItem extends AzExtParentTreeItem {
 				}
 			}
 		}
+
 		return this.partialConnectionString;
 	}
 
@@ -408,6 +434,7 @@ async function validateDatabaseName(
 	if (!name) {
 		return localize("NameCannotBeEmpty", "Name cannot be empty.");
 	}
+
 	const currDatabaseList = await getChildrenTask;
 
 	const currDatabaseNames: string[] = [];
@@ -417,8 +444,10 @@ async function validateDatabaseName(
 			currDatabaseNames.push(db.databaseName);
 		}
 	}
+
 	if (currDatabaseNames.includes(name)) {
 		return localize("NameExists", 'Database "{0}" already exists.', name);
 	}
+
 	return undefined;
 }

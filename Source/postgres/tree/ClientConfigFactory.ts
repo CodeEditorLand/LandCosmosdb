@@ -37,6 +37,7 @@ export class PostgresClientConfigFactory {
 		databaseName: string,
 	): Promise<{
 		type: "azureAd" | "password" | "connectionString";
+
 		clientConfig: ClientConfig;
 	}> {
 		const parsedConnectionString = await treeItem.getFullConnectionString();
@@ -55,7 +56,9 @@ export class PostgresClientConfigFactory {
 
 			if (session) {
 				hasSubscription = true;
+
 				azureUserId = session?.account.label;
+
 				tokenFunction = getTokenFunction(
 					subscription.credentials,
 					postgresResourceType,
@@ -66,6 +69,7 @@ export class PostgresClientConfigFactory {
 		} catch {
 			hasSubscription = false;
 		}
+
 		const clientConfigs = await getClientConfigs(
 			parsedConnectionString,
 			treeItem.serverType,
@@ -94,9 +98,12 @@ export class PostgresClientConfigFactory {
 					"postgreSQL.testClientConfig",
 					async (context) => {
 						context.errorHandling.rethrow = true;
+
 						context.errorHandling.suppressDisplay = true;
+
 						context.telemetry.properties.clientConfigType =
 							clientConfigType;
+
 						await testClientConfig(clientConfig);
 					},
 				);
@@ -131,6 +138,7 @@ export class PostgresClientConfigFactory {
 						ipMessage =
 							"Your IP address is already in the firewall rules.";
 					}
+
 					const configureFirewallMessage = localize(
 						"mustConfigureFirewall",
 						"Some network environments may not report the actual public-facing IP address needed to access your server. Contact your network administrator to add the actual IP address to the firewall rules.",

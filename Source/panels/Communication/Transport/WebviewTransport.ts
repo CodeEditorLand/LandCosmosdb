@@ -52,6 +52,7 @@ export class WebviewTransport<StateType = unknown> implements Transport {
 			}
 
 			const message = msg as TransportMessage;
+
 			this.listeners.forEach((cb) => {
 				// One callback throwing an error should not prevent other callbacks from being called
 				try {

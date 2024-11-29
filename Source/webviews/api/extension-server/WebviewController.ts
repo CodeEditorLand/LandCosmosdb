@@ -44,6 +44,7 @@ export class WebviewController<
 			| vscode.Uri
 			| {
 					readonly light: vscode.Uri;
+
 					readonly dark: vscode.Uri;
 			  },
 	) {
@@ -155,6 +156,7 @@ export class WebviewController<
 			notification: notification,
 			parameters: parameters,
 		};
+
 		this._panel.webview.postMessage({
 			type: "VSLinkNotification",
 			payload: message,

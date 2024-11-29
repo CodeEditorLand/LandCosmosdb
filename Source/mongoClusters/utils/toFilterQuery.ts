@@ -12,6 +12,7 @@ export function toFilterQueryObj(queryString: string): Filter<Document> {
 		filterObj = JSON.parse(queryString) as Filter<Document>;
 	} catch (e) {
 		console.error("Error parsing filter query", e);
+
 		filterObj = {};
 	}
 

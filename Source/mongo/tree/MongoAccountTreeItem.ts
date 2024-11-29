@@ -30,9 +30,13 @@ import { MongoDocumentTreeItem } from "./MongoDocumentTreeItem";
 
 export class MongoAccountTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "cosmosDBMongoServer";
+
 	public readonly contextValue: string = MongoAccountTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Database";
+
 	public readonly label: string;
+
 	public readonly connectionString: string;
 
 	private _root: IMongoTreeRoot;
@@ -46,10 +50,15 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
 		readonly databaseAccount?: DatabaseAccountGetResults,
 	) {
 		super(parent);
+
 		this.id = id;
+
 		this.label = label;
+
 		this.connectionString = connectionString;
+
 		this._root = { isEmulator };
+
 		this.valuesToMask.push(connectionString);
 	}
 
@@ -76,6 +85,7 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
 			"getChildren",
 			async (context: IActionContext): Promise<AzExtTreeItem[]> => {
 				context.telemetry.properties.experience = API.MongoDB;
+
 				context.telemetry.properties.parentContext = this.contextValue;
 
 				let mongoClient: MongoClient | undefined;
@@ -117,8 +127,10 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
 								.db(testDb)
 								.admin()
 								.listDatabases();
+
 						databases = result.databases;
 					}
+
 					return databases
 						.filter(
 							(database: IDatabaseInfo) =>
@@ -146,6 +158,7 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
 						// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 						error.message = `Unable to reach emulator. See ${Links.LocalConnectionDebuggingTips} for debugging tips.\n${message}`;
 					}
+
 					throw error;
 				} finally {
 					if (mongoClient) {
@@ -167,6 +180,7 @@ export class MongoAccountTreeItem extends AzExtParentTreeItem {
 			stepName: "createMongoDatabase",
 			validateInput: validateDatabaseName,
 		});
+
 		context.showCreatingTreeItem(databaseName);
 
 		return new MongoDatabaseTreeItem(
@@ -207,13 +221,16 @@ export function validateDatabaseName(
 	if (!database || database.length < min || database.length > max) {
 		return `Database name must be between ${min} and ${max} characters.`;
 	}
+
 	if (/[/\\. "$#?=]/.test(database)) {
 		return 'Database name cannot contain these characters - `/\\. "$#?=`';
 	}
+
 	return undefined;
 }
 
 export interface IDatabaseInfo {
 	name?: string;
+
 	empty?: boolean;
 }

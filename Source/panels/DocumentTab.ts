@@ -16,13 +16,17 @@ type DocumentTabMode = "add" | "edit" | "view";
 
 export class DocumentTab extends BaseTab {
 	public static readonly viewType = "cosmosDbDocument";
+
 	public static readonly openTabs: Set<DocumentTab> = new Set<DocumentTab>();
 
 	private readonly session: DocumentSession;
 
 	private connection: NoSqlQueryConnection;
+
 	private documentId: CosmosDbRecordIdentifier | undefined;
+
 	private _mode: DocumentTabMode = "view";
+
 	private isDirty = false;
 
 	protected constructor(
@@ -38,7 +42,9 @@ export class DocumentTab extends BaseTab {
 		DocumentTab.openTabs.add(this);
 
 		this.connection = connection;
+
 		this.documentId = documentId ?? undefined;
+
 		this._mode = mode;
 
 		if (connection.masterKey) {
@@ -46,6 +52,7 @@ export class DocumentTab extends BaseTab {
 		}
 
 		this.telemetryContext.addMaskedValue(connection.databaseId);
+
 		this.telemetryContext.addMaskedValue(connection.containerId);
 
 		this.session = new DocumentSession(connection, this.channel);
@@ -98,6 +105,7 @@ export class DocumentTab extends BaseTab {
 
 			if (openTab) {
 				openTab.mode = mode;
+
 				openTab.panel.reveal(column);
 
 				return openTab;
@@ -130,6 +138,7 @@ export class DocumentTab extends BaseTab {
 	public get mode(): DocumentTabMode {
 		return this._mode;
 	}
+
 	public set mode(value: DocumentTabMode) {
 		if (value === "view" && this._mode === "edit" && this.isDirty) {
 			// do nothing, just keep the edit mode

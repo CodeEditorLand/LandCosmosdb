@@ -19,5 +19,6 @@ export async function openTrigger(
 			DocDBTriggerTreeItem.contextValue,
 		);
 	}
+
 	await ext.fileSystem.showTextDocument(node);
 }

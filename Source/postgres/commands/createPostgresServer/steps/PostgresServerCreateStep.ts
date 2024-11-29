@@ -58,6 +58,7 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
 			);
 
 			ext.outputChannel.appendLog(createMessage);
+
 			progress.report({ message: createMessage });
 
 			const options: AbstractServerCreate = {
@@ -72,6 +73,7 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
 				case PostgresServerType.Single: {
 					const singleClient: SingleModels.PostgreSQLManagementClient =
 						await createPostgreSQLClient(context);
+
 					context.server =
 						await singleClient.servers.beginCreateAndWait(
 							rgName,
@@ -81,9 +83,11 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
 
 					break;
 				}
+
 				case PostgresServerType.Flexible: {
 					const flexiClient: FlexibleModels.PostgreSQLManagementFlexibleServerClient =
 						await createPostgreSQLFlexibleClient(context);
+
 					context.server =
 						await flexiClient.servers.beginCreateAndWait(
 							rgName,
@@ -94,7 +98,9 @@ export class PostgresServerCreateStep extends AzureWizardExecuteStep<IPostgresSe
 					break;
 				}
 			}
+
 			context.server.serverType = serverType;
+
 			context.activityResult = context.server as AppResource;
 		}, password);
 	}

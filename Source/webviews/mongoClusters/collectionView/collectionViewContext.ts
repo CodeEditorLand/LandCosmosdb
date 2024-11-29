@@ -15,25 +15,34 @@ export type CollectionViewContextType = {
 	isLoading: boolean; // this is a concious decision to use 'isLoading' instead of <Suspense> tags. It's not only the data display component that is supposed to react to the lading state but also some input fields, buttons, etc.
 	isFirstTimeLoad: boolean; // this will be set to true during the first data fetch, here we need more time and add more loading animations, but only on the first load
 	currentView: Views;
+
 	currentViewState?: TableViewState; // | TreeViewConfiguration |  other views can get config over time
 	currrentQueryDefinition: {
 		// holds the current query, we run a new database query when this changes
 		queryText: string;
+
 		pageNumber: number;
+
 		pageSize: number;
 	};
+
 	commands: {
 		disableAddDocument: boolean;
+
 		disableViewDocument: boolean;
+
 		disableEditDocument: boolean;
+
 		disableDeleteDocument: boolean;
 	};
+
 	dataSelection: {
 		// real document _id values, for easier lookup
 		selectedDocumentObjectIds: string[];
 		// actual index in the current snapshot of the data, for easier lookup
 		selectedDocumentIndexes: number[];
 	};
+
 	queryEditor?: {
 		getCurrentContent: () => string;
 

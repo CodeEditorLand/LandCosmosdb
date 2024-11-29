@@ -16,7 +16,9 @@ import {
 
 export type PostgresClientConfigs = {
 	password: ClientConfig | undefined;
+
 	azureAd: ClientConfig | undefined;
+
 	connectionString: ClientConfig | undefined;
 };
 
@@ -50,6 +52,7 @@ async function getConnectionStringClientConfig(
 			databaseName,
 		);
 	}
+
 	return { connectionString: connectionString };
 }
 
@@ -139,6 +142,7 @@ export async function getClientConfigs(
 		if (passwordClientConfig) {
 			clientConfigs.password = passwordClientConfig;
 		}
+
 		if (
 			serverType === PostgresServerType.Flexible &&
 			!!azureUserId &&
@@ -151,6 +155,7 @@ export async function getClientConfigs(
 				azureUserId,
 				getToken,
 			);
+
 			clientConfigs.azureAd = azureAdClientConfig;
 		}
 	} else {
@@ -159,6 +164,7 @@ export async function getClientConfigs(
 				parsedConnectionString,
 				databaseName,
 			);
+
 		clientConfigs.connectionString = connectionStringClientConfig;
 	}
 

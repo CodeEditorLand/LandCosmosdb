@@ -11,9 +11,13 @@ import { type PostgresResourcesTreeItemBase } from "./tree/PostgresResourcesTree
 
 export interface IPostgresProceduresQueryRow {
 	schema: string;
+
 	name: string;
+
 	oid: number;
+
 	args: string;
+
 	definition: string;
 }
 
@@ -31,6 +35,7 @@ function getProceduresQuery(conditions: string): string {
         left join pg_language l on p.prolang = l.oid
         where n.nspname not in ('pg_catalog', 'information_schema')
             ${conditions}
+
         order by name;`;
 }
 

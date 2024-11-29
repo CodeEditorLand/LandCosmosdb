@@ -128,6 +128,7 @@ export class MongoClusterResourceItem extends MongoClusterItemBase {
 					console.log(error);
 					// If connection fails, remove cached credentials
 					await MongoClustersClient.deleteClient(this.id);
+
 					CredentialCache.deleteCredentials(this.id);
 
 					// Return null to indicate failure

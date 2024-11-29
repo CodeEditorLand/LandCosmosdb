@@ -19,7 +19,9 @@ export async function createMongoCollection(
 			MongoDatabaseTreeItem.contextValue,
 		);
 	}
+
 	const collectionNode = await node.createChild(context);
+
 	await vscode.commands.executeCommand(
 		"cosmosDB.connectMongoDB",
 		collectionNode.parent,

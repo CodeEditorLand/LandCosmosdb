@@ -34,10 +34,12 @@ export async function getNoSqlQueryPlan(
 				),
 			);
 		}
+
 		queryText = activeEditor.document.getText();
 	} else {
 		queryText = args.queryText;
 	}
+
 	const connectedCollection = KeyValueStore.instance.get(
 		noSqlQueryConnectionKey,
 	);
@@ -56,6 +58,7 @@ export async function getNoSqlQueryPlan(
 		if (masterKey !== undefined) {
 			credentials.push({ type: "key", key: masterKey });
 		}
+
 		credentials.push({ type: "auth" });
 
 		const client = getCosmosClient(endpoint, credentials, isEmulator);
@@ -64,6 +67,7 @@ export async function getNoSqlQueryPlan(
 			.database(databaseId)
 			.container(containerId)
 			.getQueryPlan(queryText);
+
 		await vscodeUtil.showNewFile(
 			JSON.stringify(response.result, undefined, 2),
 			`query results for ${containerId}`,

@@ -20,6 +20,7 @@ export async function deletePostgresFunction(
 	treeItem?: PostgresFunctionTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!treeItem) {
@@ -38,11 +39,13 @@ export async function deletePostgresFunction(
 		'Are you sure you want to delete function "{0}"?',
 		treeItem.label,
 	);
+
 	await context.ui.showWarningMessage(
 		message,
 		{ modal: true, stepName: "deletePostgresFunction" },
 		DialogResponses.deleteResponse,
 	);
+
 	await treeItem.deleteTreeItem(context);
 
 	const deleteMessage: string = localize(
@@ -50,6 +53,8 @@ export async function deletePostgresFunction(
 		'Successfully deleted function "{0}".',
 		treeItem.label,
 	);
+
 	void window.showInformationMessage(deleteMessage);
+
 	ext.outputChannel.appendLog(deleteMessage);
 }

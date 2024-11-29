@@ -95,6 +95,7 @@ export function useTrpcClient() {
 			// a basic type guard here
 			if ((event.data as VsCodeLinkResponseMessage).id) {
 				const message = event.data as VsCodeLinkResponseMessage;
+
 				callback(message);
 			}
 		};
@@ -141,6 +142,7 @@ export function useTrpcClient() {
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 					detail: event.data.payload as VsCodeLinkNotification,
 				});
+
 				vscodeEventTarget.dispatchEvent(customEvent);
 			}
 		};

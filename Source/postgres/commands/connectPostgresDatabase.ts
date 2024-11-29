@@ -25,6 +25,7 @@ export async function connectPostgresDatabase(
 		if (treeItem) {
 			void window.showTextDocument(treeItem);
 		}
+
 		treeItem = await ext.rgApi.pickAppResource<PostgresDatabaseTreeItem>(
 			context,
 			{
@@ -37,7 +38,9 @@ export async function connectPostgresDatabase(
 
 	const oldTreeItemId: string | undefined =
 		ext.connectedPostgresDB && ext.connectedPostgresDB.fullId;
+
 	void ext.context.globalState.update(connectedPostgresKey, treeItem.fullId);
+
 	ext.connectedPostgresDB = treeItem;
 
 	const database = treeItem && treeItem.label;
@@ -45,6 +48,7 @@ export async function connectPostgresDatabase(
 	if (ext.postgresCodeLensProvider) {
 		ext.postgresCodeLensProvider.setConnectedDatabase(database);
 	}
+
 	await treeItem.refresh(context);
 
 	if (oldTreeItemId) {

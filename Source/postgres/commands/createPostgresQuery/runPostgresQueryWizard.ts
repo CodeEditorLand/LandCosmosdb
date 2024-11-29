@@ -22,7 +22,9 @@ export async function runPostgresQueryWizard(
 	treeItem?: PostgresFunctionsTreeItem | PostgresStoredProceduresTreeItem,
 ): Promise<void> {
 	await wizard.prompt();
+
 	await wizard.execute();
+
 	await vscodeUtil.showNewFile(
 		nonNullProp(context, "query"),
 		postgresBaseFileName,

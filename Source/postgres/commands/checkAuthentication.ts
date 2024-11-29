@@ -31,12 +31,14 @@ export async function checkAuthentication(
 
 			continue;
 		}
+
 		try {
 			const getClientConfigResult =
 				await PostgresClientConfigFactory.getClientConfigFromNode(
 					treeItem.parent,
 					treeItem.databaseName,
 				);
+
 			clientConfig = getClientConfigResult.clientConfig;
 		} catch (error) {
 			const parsedError: IParsedError = parseError(error);
@@ -48,5 +50,6 @@ export async function checkAuthentication(
 			}
 		}
 	}
+
 	return clientConfig;
 }

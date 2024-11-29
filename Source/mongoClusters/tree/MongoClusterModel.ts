@@ -13,13 +13,17 @@ export type MongoClusterModel = (MongoCluster | ResourceModelInUse) &
 interface ResourceModelInUse extends Resource {
 	// from the original MongoCluster type
 	id: string;
+
 	name: string;
 
 	administratorLoginPassword?: string;
+
 	connectionString?: string;
 
 	location?: string;
+
 	serverVersion?: string;
+
 	systemData?: {
 		createdAt?: Date;
 	};
@@ -27,8 +31,11 @@ interface ResourceModelInUse extends Resource {
 	// moved from nodeGroupSpecs[0] to the top level
 	// todo: check the spec learn more about the nodeGroupSpecs array
 	sku?: string;
+
 	nodeCount?: number;
+
 	diskSize?: number;
+
 	enableHa?: boolean;
 
 	// introduced new properties

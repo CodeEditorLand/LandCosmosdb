@@ -36,6 +36,7 @@ const nosqlLanguageId = "nosql";
 
 export function registerDocDBCommands(): void {
 	ext.noSqlCodeLensProvider = new NoSqlCodeLensProvider();
+
 	ext.context.subscriptions.push(
 		languages.registerCodeLensProvider(
 			nosqlLanguageId,
@@ -44,7 +45,9 @@ export function registerDocDBCommands(): void {
 	);
 
 	registerCommand("cosmosDB.connectNoSqlContainer", connectNoSqlContainer);
+
 	registerCommand("cosmosDB.executeNoSqlQuery", executeNoSqlQuery);
+
 	registerCommand("cosmosDB.getNoSqlQueryPlan", getNoSqlQueryPlan);
 
 	// #region Account command
@@ -62,6 +65,7 @@ export function registerDocDBCommands(): void {
 		"cosmosDB.createDocDBCollection",
 		createDocDBCollection,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteDocDBDatabase",
 		deleteDocDBDatabase,
@@ -75,14 +79,17 @@ export function registerDocDBCommands(): void {
 		"cosmosDB.writeNoSqlQuery",
 		writeNoSqlQuery,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.openNoSqlQueryEditor",
 		openNoSqlQueryEditor,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteDocDBCollection",
 		deleteDocDBCollection,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.viewDocDBCollectionOffer",
 		viewDocDBCollectionOffer,
@@ -124,10 +131,12 @@ export function registerDocDBCommands(): void {
 		openStoredProcedure,
 		doubleClickDebounceDelay,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteDocDBStoredProcedure",
 		deleteDocDBStoredProcedure,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.executeDocDBStoredProcedure",
 		executeDocDBStoredProcedure,
@@ -151,6 +160,7 @@ export function registerDocDBCommands(): void {
 		openTrigger,
 		doubleClickDebounceDelay,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteDocDBTrigger",
 		deleteDocDBTrigger,

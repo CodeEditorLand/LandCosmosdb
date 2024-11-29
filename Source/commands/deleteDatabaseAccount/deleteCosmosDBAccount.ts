@@ -34,6 +34,7 @@ export async function deleteCosmosDBAccount(
 
 	if (!context.suppressNotification) {
 		const deletingMessage: string = `Deleting account "${accountName}"...`;
+
 		await vscode.window.withProgress(
 			{
 				location: vscode.ProgressLocation.Notification,
@@ -47,7 +48,9 @@ export async function deleteCosmosDBAccount(
 					`Successfully deleted account "{0}".`,
 					accountName,
 				);
+
 				void vscode.window.showInformationMessage(deleteMessage);
+
 				ext.outputChannel.appendLog(deleteMessage);
 			},
 		);

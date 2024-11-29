@@ -20,6 +20,7 @@ export async function deletePostgresTable(
 	node?: PostgresTableTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {
@@ -31,16 +32,19 @@ export async function deletePostgresTable(
 			},
 		);
 	}
+
 	const message: string = localize(
 		"deletesPostgresTable",
 		'Are you sure you want to delete table "{0}"?',
 		node.label,
 	);
+
 	await context.ui.showWarningMessage(
 		message,
 		{ modal: true, stepName: "deletePostgresTable" },
 		DialogResponses.deleteResponse,
 	);
+
 	await node.deleteTreeItem(context);
 
 	const deleteMessage: string = localize(
@@ -48,6 +52,8 @@ export async function deletePostgresTable(
 		'Successfully deleted table "{0}".',
 		node.label,
 	);
+
 	void window.showInformationMessage(deleteMessage);
+
 	ext.outputChannel.appendLog(deleteMessage);
 }

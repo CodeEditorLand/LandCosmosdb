@@ -23,6 +23,7 @@ export class MongoVersionStep extends AzureWizardPromptStep<ICosmosDBWizardConte
 				),
 			},
 		);
+
 		context.mongoVersion = mongoVersionOption.detail;
 	}
 

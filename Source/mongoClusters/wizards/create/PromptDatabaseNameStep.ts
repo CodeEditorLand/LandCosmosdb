@@ -17,6 +17,7 @@ export class DatabaseNameStep extends AzureWizardPromptStep<CreateDatabaseWizard
 			"mongoClusters.databaseNamePrompt",
 			"Enter a database name.",
 		);
+
 		context.newDatabaseName = (
 			await context.ui.showInputBox({
 				prompt,

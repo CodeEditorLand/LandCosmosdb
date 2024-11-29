@@ -97,10 +97,12 @@ async function runExportWithProgressAndDescription(
 						vscode.window.showErrorMessage(
 							"Failed to export documents. Please see the output for details.",
 						);
+
 						ext.outputChannel.appendLog(
 							`MongoDB Clusters: Error exporting documents: ${error}`,
 						);
 					}
+
 					progress.report({ increment: 100 }); // Complete the progress bar
 				},
 			);
@@ -127,6 +129,7 @@ async function exportDocumentsToFile(
 			if (cancellationToken.isCancellationRequested) {
 				// Cancel the operation
 				documentStreamAbortController.abort();
+
 				await vscode.workspace.fs.delete(vscode.Uri.file(filePath)); // Clean up the file if canceled
 				vscode.window.showWarningMessage(
 					"The export operation was canceled.",
@@ -152,6 +155,7 @@ async function exportDocumentsToFile(
 
 			if (buffer.length > bufferLimit) {
 				await appendToFile(filePath, buffer);
+
 				buffer = ""; // Clear the buffer after writing
 			}
 		}

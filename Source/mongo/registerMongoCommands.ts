@@ -42,6 +42,7 @@ export function registerMongoCommands(): void {
 	ext.mongoLanguageClient = new MongoDBLanguageClient();
 
 	ext.mongoCodeLensProvider = new MongoCodeLensProvider();
+
 	ext.context.subscriptions.push(
 		vscode.languages.registerCodeLensProvider(
 			mongoLanguageId,
@@ -51,23 +52,28 @@ export function registerMongoCommands(): void {
 
 	diagnosticsCollection =
 		vscode.languages.createDiagnosticCollection("cosmosDB.mongo");
+
 	ext.context.subscriptions.push(diagnosticsCollection);
 
 	setUpErrorReporting();
+
 	void loadPersistedMongoDB();
 
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.launchMongoShell",
 		launchMongoShell,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.newMongoScrapbook",
 		createMongoSrapbook,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.executeMongoCommand",
 		executeMongoCommand,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.executeAllMongoCommands",
 		executeAllMongoCommand,
@@ -88,10 +94,12 @@ export function registerMongoCommands(): void {
 		"cosmosDB.connectMongoDB",
 		connectMongoDatabase,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.createMongoCollection",
 		createMongoCollection,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteMongoDB",
 		deleteMongoDB,
@@ -105,10 +113,12 @@ export function registerMongoCommands(): void {
 		"cosmosDB.openCollection",
 		openMongoCollection,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.createMongoDocument",
 		createMongoDocument,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"cosmosDB.deleteMongoCollection",
 		deleteMongoCollection,
@@ -144,6 +154,7 @@ function setUpErrorReporting(): void {
 		vscode.workspace.onDidOpenTextDocument,
 		updateErrorsInScrapbook,
 	);
+
 	registerEvent(
 		"vscode.workspace.onDidChangeTextDocument",
 		vscode.workspace.onDidChangeTextDocument,
@@ -157,6 +168,7 @@ function setUpErrorReporting(): void {
 			updateErrorsInScrapbook(context, event.document);
 		},
 	);
+
 	registerEvent(
 		"vscode.workspace.onDidCloseTextDocument",
 		vscode.workspace.onDidCloseTextDocument,
@@ -183,6 +195,7 @@ function updateErrorsInScrapbook(
 ): void {
 	if (document?.languageId === mongoLanguageId) {
 		const errors = getAllErrorsFromTextDocument(document);
+
 		diagnosticsCollection.set(document.uri, errors);
 	} else {
 		context.telemetry.suppressIfSuccessful = true;

@@ -26,17 +26,23 @@ import { getNodeEditorLabel } from "./utils/vscodeUtils";
 
 export interface IEditableTreeItem extends AzExtTreeItem {
 	id: string;
+
 	filePath: string;
+
 	cTime: number;
+
 	mTime: number;
 
 	getFileContent(context: IActionContext): Promise<string>;
+
 	writeFileContent(context: IActionContext, data: string): Promise<void>;
 }
 
 export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> {
 	public static scheme: string = "azureDatabases";
+
 	public scheme: string = DatabasesFileSystem.scheme;
+
 	private _showSaveConfirmation: boolean = true;
 
 	public async statImpl(
@@ -102,6 +108,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 		}
 
 		await node.writeFileContent(context, content.toString());
+
 		await node.refresh(context);
 
 		const updatedMessage: string = localize(
@@ -109,6 +116,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 			'Updated entity "{0}".',
 			nodeEditorLabel,
 		);
+
 		ext.outputChannel.appendLog(updatedMessage);
 	}
 
@@ -118,6 +126,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 
 	public async updateWithoutPrompt(uri: Uri): Promise<void> {
 		const textDoc = await workspace.openTextDocument(uri);
+
 		this._showSaveConfirmation = false;
 
 		try {
@@ -129,6 +138,7 @@ export class DatabasesFileSystem extends AzExtTreeFileSystem<IEditableTreeItem> 
 
 	public fireChangedEvent(node: IEditableTreeItem): void {
 		node.mTime = Date.now();
+
 		this.fireSoon({ type: FileChangeType.Changed, item: node });
 	}
 }

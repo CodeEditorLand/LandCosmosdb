@@ -101,7 +101,9 @@ async function persistUsernamePassword(
 		'Successfully added credentials to server "{0}".',
 		serverName,
 	);
+
 	void vscode.window.showInformationMessage(completedMessage);
+
 	ext.outputChannel.appendLog(completedMessage);
 }
 
@@ -136,5 +138,6 @@ export async function enterPostgresCredentials(
 	await persistUsernamePassword(id, serverName, username, password);
 
 	treeItem.setCredentials(username, password);
+
 	await treeItem.refresh(context);
 }

@@ -12,6 +12,7 @@ export async function showPostgresQuery(
 	treeItem: PostgresFunctionTreeItem | PostgresStoredProcedureTreeItem,
 ): Promise<void> {
 	const fileName: string = `${treeItem.label}-${postgresBaseFileName}`;
+
 	await vscodeUtil.showNewFile(
 		treeItem.definition,
 		fileName,

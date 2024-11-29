@@ -19,6 +19,7 @@ export async function deleteDocDBDatabase(
 	node?: DocDBDatabaseTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {
@@ -27,6 +28,7 @@ export async function deleteDocDBDatabase(
 			DocDBDatabaseTreeItem.contextValue,
 		);
 	}
+
 	await node.deleteTreeItem(context);
 
 	const successMessage = localize(
@@ -34,6 +36,8 @@ export async function deleteDocDBDatabase(
 		'Successfully deleted database "{0}"',
 		node.databaseName,
 	);
+
 	void vscode.window.showInformationMessage(successMessage);
+
 	ext.outputChannel.info(successMessage);
 }

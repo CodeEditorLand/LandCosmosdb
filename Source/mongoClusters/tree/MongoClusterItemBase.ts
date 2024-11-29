@@ -67,6 +67,7 @@ export abstract class MongoClusterItemBase implements TreeElementBase {
 			ext.outputChannel.appendLine(
 				`MongoDB Clusters: Reusing active connection for "${this.mongoCluster.name}".`,
 			);
+
 			mongoClustersClient = await MongoClustersClient.getClient(this.id);
 		} else {
 			// Call to the abstract method to authenticate and connect to the cluster

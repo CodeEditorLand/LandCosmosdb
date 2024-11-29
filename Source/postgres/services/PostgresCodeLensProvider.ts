@@ -21,7 +21,9 @@ import { localize } from "../../utils/localize";
 
 export class PostgresCodeLensProvider implements CodeLensProvider {
 	private _onDidChangeEmitter: EventEmitter<void> = new EventEmitter<void>();
+
 	private _connectedDatabase: string | undefined;
+
 	private _connectedDatabaseInitialized: boolean;
 
 	public get onDidChangeCodeLenses(): Event<void> {
@@ -30,7 +32,9 @@ export class PostgresCodeLensProvider implements CodeLensProvider {
 
 	public setConnectedDatabase(database: string | undefined): void {
 		this._connectedDatabase = database;
+
 		this._connectedDatabaseInitialized = true;
+
 		this._onDidChangeEmitter.fire();
 	}
 

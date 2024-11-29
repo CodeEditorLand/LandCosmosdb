@@ -18,5 +18,6 @@ export async function createDocDBCollection(
 			DocDBDatabaseTreeItem.contextValue,
 		);
 	}
+
 	await node.createChild(context);
 }

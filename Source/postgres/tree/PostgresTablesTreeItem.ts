@@ -14,13 +14,18 @@ import { PostgresTableTreeItem } from "./PostgresTableTreeItem";
 
 export class PostgresTablesTreeItem extends PostgresResourcesTreeItemBase {
 	public static contextValue: string = "postgresTables";
+
 	public readonly contextValue: string = PostgresTablesTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Table";
+
 	public readonly label: string = "Tables";
+
 	public suppressMaskLabel = true;
 
 	constructor(parent: PostgresDatabaseTreeItem, clientConfig: ClientConfig) {
 		super(parent);
+
 		this.clientConfig = clientConfig;
 	}
 
@@ -36,6 +41,7 @@ export class PostgresTablesTreeItem extends PostgresResourcesTreeItemBase {
 		_clearCache: boolean,
 	): Promise<PostgresTableTreeItem[]> {
 		const tables: IPostgresTable[] = await getTables(this.clientConfig);
+
 		this.resourcesAndSchemas = {};
 
 		for (const table of tables) {
@@ -44,6 +50,7 @@ export class PostgresTablesTreeItem extends PostgresResourcesTreeItemBase {
 				table.schemaName,
 			);
 		}
+
 		return tables.map(
 			(table) =>
 				new PostgresTableTreeItem(

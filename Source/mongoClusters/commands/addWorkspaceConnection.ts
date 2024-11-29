@@ -43,6 +43,7 @@ export async function addWorkspaceConnection(
 	);
 
 	context.errorHandling.rethrow = true;
+
 	context.errorHandling.suppressDisplay = true;
 
 	try {
@@ -71,14 +72,18 @@ export async function addWorkspaceConnection(
 	const connectionString = new ConnectionString(
 		wizardContext.connectionString as string,
 	);
+
 	connectionString.username = wizardContext.username as string;
+
 	connectionString.password = wizardContext.password as string;
 
 	const connectionStringWithCredentials = connectionString.toString();
+
 	wizardContext.valuesToMask.push(connectionStringWithCredentials);
 
 	// discover whether it's a MongoDB RU connection string and abort here.
 	let isRU: boolean = false;
+
 	connectionString.hosts.forEach((host) => {
 		if (isMongoDBRU(host)) {
 			isRU = true;
@@ -159,5 +164,6 @@ function isMongoDBRU(host: string): boolean {
 			return true;
 		}
 	}
+
 	return false;
 }

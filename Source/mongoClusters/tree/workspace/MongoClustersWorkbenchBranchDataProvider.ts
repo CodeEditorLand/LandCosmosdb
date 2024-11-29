@@ -41,7 +41,9 @@ export class MongoClustersWorkspaceBranchDataProvider
 			"getChildren",
 			async (context: IActionContext) => {
 				context.telemetry.properties.experience = API.MongoClusters;
+
 				context.telemetry.properties.view = "workspace";
+
 				context.telemetry.properties.parentContext =
 					(await element.getTreeItem()).contextValue ?? "unknown";
 
@@ -52,6 +54,7 @@ export class MongoClustersWorkspaceBranchDataProvider
 							() => this.refresh(child),
 						);
 					}
+
 					return child;
 				});
 			},

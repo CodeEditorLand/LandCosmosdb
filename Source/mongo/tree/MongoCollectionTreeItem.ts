@@ -61,19 +61,29 @@ export class MongoCollectionTreeItem
 	implements IEditableTreeItem
 {
 	public static contextValue: string = "MongoCollection";
+
 	public readonly contextValue: string = MongoCollectionTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Document";
+
 	public readonly collection: Collection;
+
 	public declare parent: AzExtParentTreeItem;
 	// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 	public findArgs?: Object[];
+
 	public readonly cTime: number = Date.now();
+
 	public mTime: number = Date.now();
 
 	private readonly _query: Filter<MongoDocument> | undefined;
+
 	private readonly _projection: object | undefined;
+
 	private _cursor: FindCursor | undefined;
+
 	private _hasMoreChildren: boolean = true;
+
 	private _batchSize: number = getBatchSizeSetting();
 
 	// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
@@ -83,13 +93,17 @@ export class MongoCollectionTreeItem
 		findArgs?: Object[],
 	) {
 		super(parent);
+
 		this.collection = collection;
+
 		this.findArgs = findArgs;
 
 		if (findArgs && findArgs.length) {
 			this._query = findArgs[0];
+
 			this._projection = findArgs.length > 1 ? findArgs[1] : undefined;
 		}
+
 		ext.fileSystem.fireChangedEvent(this);
 	}
 
@@ -113,6 +127,7 @@ export class MongoCollectionTreeItem
 
 		const result: BulkWriteResult =
 			await this.collection.bulkWrite(operations);
+
 		ext.outputChannel.appendLog(
 			`Successfully updated ${result.modifiedCount} document(s), inserted ${result.insertedCount} document(s)`,
 		);
@@ -168,6 +183,7 @@ export class MongoCollectionTreeItem
 
 	public async refreshImpl(): Promise<void> {
 		this._batchSize = getBatchSizeSetting();
+
 		ext.fileSystem.fireChangedEvent(this);
 	}
 
@@ -186,6 +202,7 @@ export class MongoCollectionTreeItem
 
 			if (documentNode) {
 				documentNode.document = doc;
+
 				await documentNode.refresh(context);
 			}
 		}
@@ -208,6 +225,7 @@ export class MongoCollectionTreeItem
 					.find()
 					.batchSize(this._batchSize);
 			}
+
 			if (this._projection) {
 				this._cursor = this._cursor.project(this._projection);
 			}
@@ -222,11 +240,13 @@ export class MongoCollectionTreeItem
 
 			if (this._hasMoreChildren) {
 				documents.push(<IMongoDocument>await this._cursor.next());
+
 				count += 1;
 			} else {
 				break;
 			}
 		}
+
 		this._batchSize *= 2;
 
 		return this.createTreeItemsWithErrorHandling<IMongoDocument>(
@@ -344,15 +364,18 @@ export class MongoCollectionTreeItem
 					`Too few arguments passed to command ${command.name}.`,
 				);
 			}
+
 			if (parameters.length > descriptor.maxShellArgs) {
 				throw new Error(
 					`Too many arguments passed to command ${command.name}`,
 				);
 			}
+
 			if (parameters.length > descriptor.maxHandledArgs) {
 				//this function won't handle these arguments, but the shell will
 				return { deferToShell: true, result: undefined };
 			}
+
 			const result = await reportProgress<string>(
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 				descriptor.mongoFunction.apply(this, parameters),
@@ -361,16 +384,19 @@ export class MongoCollectionTreeItem
 
 			return { deferToShell: false, result };
 		}
+
 		return { deferToShell: true, result: undefined };
 	}
 
 	public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
 		const message: string = `Are you sure you want to delete collection '${this.label}'?`;
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteMongoCollection" },
 			DialogResponses.deleteResponse,
 		);
+
 		await this.drop();
 	}
 

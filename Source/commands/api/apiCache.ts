@@ -61,6 +61,7 @@ export function removeTreeItemFromCache(
 					undefined,
 				);
 			}
+
 			if (actual && actual.accountId === expected.accountId) {
 				sessionCache.delete(key);
 			}

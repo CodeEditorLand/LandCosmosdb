@@ -81,6 +81,7 @@ export class AzureDBAPIStep extends AzureWizardPromptStep<
 
 					break;
 			}
+
 			promptSteps = [
 				new PostgresServerNameStep(),
 				new PostgresServerSkuStep(),
@@ -88,6 +89,7 @@ export class AzureDBAPIStep extends AzureWizardPromptStep<
 				new PostgresServerCredPWStep(),
 				new PostgresServerConfirmPWStep(),
 			];
+
 			executeSteps = [
 				new PostgresServerCreateStep(),
 				new PostgresServerSetCredentialsStep(),
@@ -104,11 +106,13 @@ export class AzureDBAPIStep extends AzureWizardPromptStep<
 				(step): step is AzureWizardPromptStep<ICosmosDBWizardContext> =>
 					step !== undefined,
 			);
+
 			executeSteps = [
 				new CosmosDBAccountCreateStep(),
 				new VerifyProvidersStep(["Microsoft.DocumentDB"]),
 			];
 		}
+
 		return { promptSteps, executeSteps };
 	}
 

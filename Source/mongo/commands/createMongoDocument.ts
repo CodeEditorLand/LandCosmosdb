@@ -19,6 +19,8 @@ export async function createMongoDocument(
 			MongoCollectionTreeItem.contextValue,
 		);
 	}
+
 	const documentNode = await node.createChild(context);
+
 	await vscode.commands.executeCommand("cosmosDB.openDocument", documentNode);
 }

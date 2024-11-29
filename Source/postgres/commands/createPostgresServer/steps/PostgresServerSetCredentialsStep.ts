@@ -35,6 +35,7 @@ export class PostgresServerSetCredentialsStep extends AzureWizardExecuteStep<IPo
 		} else {
 			user = nonNullProp(context, "shortUserName");
 		}
+
 		const newServerName: string = nonNullProp(context, "newServerName");
 
 		const setupMessage: string = localize(
@@ -42,7 +43,9 @@ export class PostgresServerSetCredentialsStep extends AzureWizardExecuteStep<IPo
 			'Setting up Credentials for server "{0}"...',
 			newServerName,
 		);
+
 		progress.report({ message: setupMessage });
+
 		ext.outputChannel.appendLog(setupMessage);
 
 		const password: string = nonNullProp(context, "adminPassword");
@@ -56,7 +59,9 @@ export class PostgresServerSetCredentialsStep extends AzureWizardExecuteStep<IPo
 			'Successfully setup credentials for server "{0}".',
 			newServerName,
 		);
+
 		void vscode.window.showInformationMessage(completedMessage);
+
 		ext.outputChannel.appendLog(completedMessage);
 	}
 

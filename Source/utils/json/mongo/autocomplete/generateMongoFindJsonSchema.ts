@@ -147,6 +147,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
 		} else {
 			examples = ["value", 123, true, null];
 		}
+
 		return examples as [];
 	}
 
@@ -163,6 +164,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
 		} else {
 			examples = [{ $exists: true }];
 		}
+
 		return examples as [];
 	}
 
@@ -212,6 +214,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
 					description: `Embedded '${fieldName}' object containing fields.`,
 				};
 			}
+
 			createNestedProperty(
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
 				obj[fieldName]["properties"],
@@ -240,6 +243,7 @@ export function generateMongoFindJsonSchema(fieldEntries: FieldEntry[]) {
 				return fieldEntry.type;
 			}
 		}
+
 		return undefined;
 	}
 

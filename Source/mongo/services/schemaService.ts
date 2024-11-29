@@ -13,10 +13,12 @@ import {
 
 export class SchemaService {
 	private _db: Db;
+
 	private _schemasCache: Map<string, string> = new Map<string, string>();
 
 	public registerSchemas(db: Db): Thenable<SchemaConfiguration[]> {
 		this._db = db;
+
 		this._schemasCache.clear();
 
 		return this._db.collections().then((collections) => {
@@ -48,6 +50,7 @@ export class SchemaService {
 					],
 				);
 			}
+
 			return schemas;
 		});
 	}
@@ -74,6 +77,7 @@ export class SchemaService {
 		if (schema) {
 			return Promise.resolve(schema);
 		}
+
 		if (uri.startsWith("mongo://query/")) {
 			return this._resolveQueryCollectionSchema(
 				uri.substring(
@@ -87,6 +91,7 @@ export class SchemaService {
 				return sch;
 			});
 		}
+
 		if (uri.startsWith("mongo://aggregate/")) {
 			return this._resolveAggregateCollectionSchema(
 				uri.substring(
@@ -99,6 +104,7 @@ export class SchemaService {
 				return sch;
 			});
 		}
+
 		return Promise.resolve("");
 	}
 
@@ -120,8 +126,11 @@ export class SchemaService {
 				for (const document of result) {
 					this.setSchemaForDocument(null!, document, schema);
 				}
+
 				this.setGlobalOperatorProperties(schema);
+
 				this.setLogicalOperatorProperties(schema, schemaUri);
+
 				resolve(JSON.stringify(schema));
 			});
 		});
@@ -142,6 +151,7 @@ export class SchemaService {
 						this.queryCollectionSchema(collectionName),
 					),
 				};
+
 				resolve(JSON.stringify(schema));
 			});
 		});
@@ -166,6 +176,7 @@ export class SchemaService {
 				if (!parent && ["_id"].indexOf(property) !== -1) {
 					continue;
 				}
+
 				this.setSchemaForDocumentProperty(
 					parent,
 					property,
@@ -191,7 +202,9 @@ export class SchemaService {
 		const propertySchema: JSONSchema = {
 			type: [type, "object"],
 		};
+
 		this.setOperatorProperties(type, propertySchema);
+
 		schema.properties![scopedProperty] = propertySchema;
 
 		if (type === "object") {
@@ -239,6 +252,7 @@ Text searches against earlier versions of the text index are inherently diacriti
 			description: `Matches documents that satisfy a JavaScript expression.
 Use the $where operator to pass either a string containing a JavaScript expression or a full JavaScript function to the query system`,
 		};
+
 		schema.properties!.$comment = {
 			type: "string",
 			description: "Adds a comment to a query predicate",
@@ -257,6 +271,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				$ref: schemaUri,
 			},
 		};
+
 		schema.properties!.$and = {
 			type: "array",
 			description:
@@ -265,6 +280,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				$ref: schemaUri,
 			},
 		};
+
 		schema.properties!.$nor = {
 			type: "array",
 			description:
@@ -289,34 +305,41 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 			type: type,
 			description: "Matches values that are equal to a specified value",
 		};
+
 		expressionSchema.properties.$gt = {
 			type: type,
 			description:
 				"Matches values that are greater than a specified value",
 		};
+
 		expressionSchema.properties.$gte = {
 			type: type,
 			description:
 				"Matches values that are greater than or equal to a specified value",
 		};
+
 		expressionSchema.properties.$lt = {
 			type: type,
 			description: "Matches values that are less than a specified value",
 		};
+
 		expressionSchema.properties.$lte = {
 			type: type,
 			description:
 				"Matches values that are less than or equal to a specified value",
 		};
+
 		expressionSchema.properties.$ne = {
 			type: type,
 			description:
 				"Matches all values that are not equal to a specified value",
 		};
+
 		expressionSchema.properties.$in = {
 			type: "array",
 			description: "Matches any of the values specified in an array",
 		};
+
 		expressionSchema.properties.$nin = {
 			type: "array",
 			description: "Matches none of the values specified in an array",
@@ -327,6 +350,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 			type: "boolean",
 			description: "Matches documents that have the specified field",
 		};
+
 		expressionSchema.properties.$type = {
 			type: "string",
 			description:
@@ -341,6 +365,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 			maxItems: 2,
 			default: [2, 0],
 		};
+
 		expressionSchema.properties.$regex = {
 			type: "string",
 			description:
@@ -371,6 +396,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		};
+
 		expressionSchema.properties.$geoWithin = {
 			type: "object",
 			description:
@@ -391,6 +417,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		};
+
 		expressionSchema.properties.$geoIntersects = {
 			type: "object",
 			description:
@@ -399,6 +426,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				$geometry: geometryPropertySchema,
 			},
 		};
+
 		expressionSchema.properties.$near = {
 			type: "object",
 			description:
@@ -413,6 +441,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		};
+
 		expressionSchema.properties.$nearSphere = {
 			type: "object",
 			description:
@@ -435,6 +464,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				description:
 					"Matches arrays that contain all elements specified in the query",
 			};
+
 			expressionSchema.properties.$size = {
 				type: "number",
 				description:
@@ -448,16 +478,19 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 			description:
 				"Matches numeric or binary values in which a set of bit positions all have a value of 1",
 		};
+
 		expressionSchema.properties.$bitsAnySet = {
 			type: "array",
 			description:
 				"Matches numeric or binary values in which any bit from a set of bit positions has a value of 1",
 		};
+
 		expressionSchema.properties.$bitsAllClear = {
 			type: "array",
 			description:
 				"Matches numeric or binary values in which a set of bit positions all have a value of 0",
 		};
+
 		expressionSchema.properties.$bitsAnyClear = {
 			type: "array",
 			description:
@@ -466,6 +499,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 
 		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 		schema.properties = { ...expressionSchema.properties };
+
 		schema.properties!.$not = {
 			type: "object",
 			description:
@@ -473,6 +507,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
 			properties: { ...expressionSchema.properties },
 		};
+
 		schema.properties!.$elemMatch = {
 			type: "object",
 		};
@@ -482,6 +517,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 		querySchemaUri: string,
 	): JSONSchema {
 		const schemas: JSONSchema[] = [];
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -492,6 +528,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -502,6 +539,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -513,6 +551,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -523,6 +562,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -533,6 +573,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -543,6 +584,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -553,6 +595,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -571,6 +614,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -581,6 +625,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -591,6 +636,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -601,6 +647,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -611,6 +658,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -621,6 +669,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -631,6 +680,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -641,6 +691,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -651,6 +702,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -661,6 +713,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -671,6 +724,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -681,6 +735,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -691,6 +746,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -701,6 +757,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 				},
 			},
 		});
+
 		schemas.push({
 			type: "object",
 			properties: {
@@ -739,6 +796,7 @@ Use the $where operator to pass either a string containing a JavaScript expressi
 
 			void cursor.next().then((doc) => {
 				result.push(doc);
+
 				this.readNext(result, cursor, batchSize, callback);
 			});
 		});

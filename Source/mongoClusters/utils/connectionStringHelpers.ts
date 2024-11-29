@@ -9,6 +9,7 @@ export const removePasswordFromConnectionString = (
 	connectionString: string,
 ): string => {
 	const connectionStringOb = new ConnectionString(connectionString);
+
 	connectionStringOb.password = "";
 
 	return connectionStringOb.toString();
@@ -20,7 +21,9 @@ export const addAuthenticationDataToConnectionString = (
 	password: string | undefined,
 ): string => {
 	const connectionStringOb = new ConnectionString(connectionString);
+
 	connectionStringOb.username = username;
+
 	connectionStringOb.password = password ?? "";
 
 	return connectionStringOb.toString();
@@ -43,6 +46,7 @@ export const addDatabasePathToConnectionString = (
 	databaseName: string,
 ): string => {
 	const connectionStringOb = new ConnectionString(connectionString);
+
 	connectionStringOb.pathname = databaseName;
 
 	return connectionStringOb.toString();

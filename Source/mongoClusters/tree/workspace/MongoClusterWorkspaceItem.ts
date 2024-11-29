@@ -85,6 +85,7 @@ export class MongoClusterWorkspaceItem extends MongoClusterItemBase {
 					);
 
 					username = nonNullProp(wizardContext, "selectedUserName");
+
 					password = nonNullProp(wizardContext, "password");
 				}
 
@@ -106,6 +107,7 @@ export class MongoClusterWorkspaceItem extends MongoClusterItemBase {
 						this.id,
 					).catch((error: Error) => {
 						ext.outputChannel.appendLine("failed.");
+
 						ext.outputChannel.appendLine(`Error: ${error.message}`);
 
 						void vscode.window.showErrorMessage(
@@ -118,6 +120,7 @@ export class MongoClusterWorkspaceItem extends MongoClusterItemBase {
 					console.log(error);
 					// If connection fails, remove cached credentials
 					await MongoClustersClient.deleteClient(this.id);
+
 					CredentialCache.deleteCredentials(this.id);
 
 					// Return null to indicate failure
@@ -159,6 +162,7 @@ export class MongoClusterWorkspaceItem extends MongoClusterItemBase {
 				context.telemetry.properties.view = "workspace";
 
 				context.errorHandling.rethrow = true;
+
 				context.errorHandling.suppressDisplay = false;
 
 				try {

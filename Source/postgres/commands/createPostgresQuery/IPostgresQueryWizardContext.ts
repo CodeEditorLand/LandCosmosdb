@@ -7,5 +7,6 @@ import { type IActionContext } from "@microsoft/vscode-azext-utils";
 
 export interface IPostgresQueryWizardContext extends IActionContext {
 	name?: string;
+
 	query?: string;
 }

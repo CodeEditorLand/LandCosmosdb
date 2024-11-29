@@ -17,11 +17,14 @@ import { Deferred, type DeferredPromise } from "./DeferredPromise";
 
 type ListenerCallback = {
 	type: "on" | "once";
+
 	callback: ChannelCallback;
+
 	calledTimes?: number;
 };
 type Request = {
 	expiresAt: number;
+
 	deferred: DeferredPromise<unknown>;
 };
 
@@ -56,9 +59,11 @@ export function getErrorMessage(error: unknown) {
 
 export class CommonChannel implements Channel {
 	private listeners: Record<string, ListenerCallback[]> = {};
+
 	private pendingRequests: Record<string, Request> = {};
 
 	private readonly handleMessageInternal: (msg: TransportMessage) => void;
+
 	private readonly timeoutId: NodeJS.Timeout;
 
 	private isDisposed = false;
@@ -69,14 +74,17 @@ export class CommonChannel implements Channel {
 	) {
 		this.handleMessageInternal = (msg: TransportMessage) =>
 			this.handleMessage(msg);
+
 		this.transport.on(this.handleMessageInternal);
 
 		// Clean up pending requests every 500ms (we don't expect a lot of requests and accuracy is not critical)
 		this.timeoutId = setInterval(() => {
 			const now = Date.now();
+
 			Object.entries(this.pendingRequests).forEach(([id, request]) => {
 				if (request.expiresAt < now) {
 					request.deferred.reject(new Error(`Request timed out`));
+
 					delete this.pendingRequests[id];
 				}
 			});
@@ -84,7 +92,9 @@ export class CommonChannel implements Channel {
 	}
 
 	postMessage(message: ChannelPayload): PromiseLike<unknown>;
+
 	postMessage(message: ChannelMessage): PromiseLike<unknown>;
+
 	postMessage(
 		message: ChannelMessage | ChannelPayload,
 	): PromiseLike<unknown> {
@@ -100,6 +110,7 @@ export class CommonChannel implements Channel {
 
 		if (payload.type === "request") {
 			const deferred = new Deferred();
+
 			this.pendingRequests[id] = { expiresAt: now + 15000, deferred };
 			// Automatically remove pending request from the list to clean up memory
 			void deferred.promise.then(
@@ -123,6 +134,7 @@ export class CommonChannel implements Channel {
 		if (!this.listeners[event]) {
 			this.listeners[event] = [];
 		}
+
 		this.listeners[event].push({ type: "on", callback, calledTimes: 0 });
 
 		return this;
@@ -136,6 +148,7 @@ export class CommonChannel implements Channel {
 		if (!this.listeners[event]) {
 			this.listeners[event] = [];
 		}
+
 		this.listeners[event].push({ type: "once", callback, calledTimes: 0 });
 
 		return this;
@@ -180,6 +193,7 @@ export class CommonChannel implements Channel {
 
 		// Clean up pending requests
 		clearTimeout(this.timeoutId);
+
 		Object.values(this.pendingRequests).forEach((request) => {
 			request.deferred.reject(new Error("Channel disposed"));
 		});
@@ -226,6 +240,7 @@ export class CommonChannel implements Channel {
 					// One callback throwing an error should not prevent other callbacks from being called
 					try {
 						cb.calledTimes ??= 0;
+
 						cb.calledTimes++;
 
 						if (cb.type === "once" && cb.calledTimes > 1) {
@@ -264,6 +279,7 @@ export class CommonChannel implements Channel {
 							});
 					} catch (error) {
 						const errorMessage = getErrorMessage(error);
+
 						console.error(
 							`[VSCodeTransport] Error occurred calling callback`,
 							errorMessage,
@@ -281,6 +297,7 @@ export class CommonChannel implements Channel {
 					),
 				);
 			}
+
 			console.error(errorMessage);
 		}
 	}

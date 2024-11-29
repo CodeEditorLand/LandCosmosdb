@@ -40,10 +40,12 @@ export class MongoClustersBranchDataProvider
 	implements AzureResourceBranchDataProvider<TreeElementBase>
 {
 	private detailsCacheUpdateRequested = true;
+
 	private detailsCache: Map<string, MongoClusterModel> = new Map<
 		string,
 		MongoClusterModel
 	>();
+
 	private itemsToUpdateInfo: Map<string, MongoClusterResourceItem> = new Map<
 		string,
 		MongoClusterResourceItem
@@ -73,6 +75,7 @@ export class MongoClustersBranchDataProvider
 			"getChildren",
 			async (context: IActionContext) => {
 				context.telemetry.properties.experience = API.MongoClusters;
+
 				context.telemetry.properties.parentContext =
 					(await element.getTreeItem()).contextValue ?? "unknown";
 
@@ -83,6 +86,7 @@ export class MongoClustersBranchDataProvider
 							() => this.refresh(child),
 						);
 					}
+
 					return child;
 				});
 			},
@@ -120,6 +124,7 @@ export class MongoClustersBranchDataProvider
 										value.mongoCluster.id,
 									),
 								};
+
 								this.refresh(value);
 							},
 						);
@@ -173,6 +178,7 @@ export class MongoClustersBranchDataProvider
 
 					setTimeout(() => {
 						this.detailsCache.clear();
+
 						this.detailsCacheUpdateRequested = true;
 					}, cacheDuration); // clear cache after 5 minutes == keep cache for 5 minutes 1000 * 60 * 5
 

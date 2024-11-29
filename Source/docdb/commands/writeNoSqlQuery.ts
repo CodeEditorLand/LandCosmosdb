@@ -20,9 +20,11 @@ export async function writeNoSqlQuery(
 			DocDBCollectionTreeItem.contextValue,
 		);
 	}
+
 	setConnectedNoSqlContainer(node);
 
 	const sampleQuery = `SELECT * FROM ${node.id}`;
+
 	await vscodeUtil.showNewFile(
 		sampleQuery,
 		`query for ${node.label}`,

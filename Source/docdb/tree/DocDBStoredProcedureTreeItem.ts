@@ -29,10 +29,14 @@ export class DocDBStoredProcedureTreeItem
 	implements IEditableTreeItem
 {
 	public static contextValue: string = "cosmosDBStoredProcedure";
+
 	public readonly contextValue: string =
 		DocDBStoredProcedureTreeItem.contextValue;
+
 	public readonly cTime: number = Date.now();
+
 	public declare readonly parent: DocDBStoredProceduresTreeItem;
+
 	public mTime: number = Date.now();
 
 	constructor(
@@ -40,7 +44,9 @@ export class DocDBStoredProcedureTreeItem
 		public procedure: StoredProcedureDefinition & Resource,
 	) {
 		super(parent);
+
 		ext.fileSystem.fireChangedEvent(this);
+
 		this.commandId = "cosmosDB.openStoredProcedure";
 	}
 
@@ -84,6 +90,7 @@ export class DocDBStoredProcedureTreeItem
 			.getContainerClient(client)
 			.scripts.storedProcedure(this.id)
 			.replace({ id: this.id, body: content });
+
 		this.procedure = nonNullProp(replace, "resource");
 	}
 
@@ -97,6 +104,7 @@ export class DocDBStoredProcedureTreeItem
 			`Are you sure you want to delete stored procedure '{0}'?`,
 			this.label,
 		);
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteStoredProcedure" },
@@ -104,6 +112,7 @@ export class DocDBStoredProcedureTreeItem
 		);
 
 		const client = this.root.getCosmosClient();
+
 		await this.parent
 			.getContainerClient(client)
 			.scripts.storedProcedure(this.id)
@@ -124,6 +133,7 @@ export class DocDBStoredProcedureTreeItem
 
 		try {
 			const resultFileName = `${this.label}-result`;
+
 			await openReadOnlyJson(
 				{
 					label: resultFileName,

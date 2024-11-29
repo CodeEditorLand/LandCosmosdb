@@ -15,6 +15,7 @@ import { type AppRouter } from "../configuration/appRouter";
  */
 export interface VsCodeLinkRequestMessage {
 	id: string;
+
 	op: Operation<unknown>;
 }
 
@@ -26,18 +27,25 @@ export interface VsCodeLinkRequestMessage {
  */
 export interface VsCodeLinkResponseMessage {
 	id: string;
+
 	result?: unknown;
+
 	error?: {
 		code?: number;
+
 		message: string;
+
 		data?: unknown;
+
 		name: string;
 	};
+
 	complete?: boolean;
 }
 
 export interface VsCodeLinkNotification {
 	notification: string;
+
 	parameters: unknown;
 }
 

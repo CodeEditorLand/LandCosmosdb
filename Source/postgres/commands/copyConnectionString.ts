@@ -39,6 +39,7 @@ export async function copyConnectionString(
 
 	if (node.parent.azureName) {
 		const parsedCS = await node.parent.getFullConnectionString();
+
 		connectionString = copyPostgresConnectionString(
 			parsedCS.hostName,
 			parsedCS.port,
@@ -59,5 +60,6 @@ export async function copyConnectionString(
 		"copiedPostgresConnectStringMsg",
 		"The connection string has been copied to the clipboard",
 	);
+
 	void vscode.window.showInformationMessage(message);
 }

@@ -43,7 +43,9 @@ export interface CosmosDbRecord {
  */
 export type CosmosDbRecordIdentifier = {
 	id?: string;
+
 	partitionKey?: PartitionKey;
+
 	_rid?: string;
 };
 
@@ -51,12 +53,19 @@ export type QueryResult = {
 	activityId?: string;
 
 	documents: QueryResultRecord[];
+
 	iteration: number;
+
 	metadata: ResultViewMetadata;
+
 	indexMetrics: string;
+
 	queryMetrics?: QueryMetrics;
+
 	requestCharge: number;
+
 	roundTrips: number;
+
 	hasMoreResults: boolean;
 };
 
@@ -64,18 +73,29 @@ export type SerializedQueryMetrics = {
 	documentLoadTime: number;
 
 	documentWriteTime: number;
+
 	indexHitDocumentCount: number;
+
 	outputDocumentCount: number;
+
 	outputDocumentSize: number;
+
 	indexLookupTime: number;
+
 	retrievedDocumentCount: number;
+
 	retrievedDocumentSize: number;
+
 	vmExecutionTime: number;
+
 	runtimeExecutionTimes: {
 		queryEngineExecutionTime: number;
+
 		systemFunctionExecutionTime: number;
+
 		userDefinedFunctionExecutionTime: number;
 	};
+
 	totalQueryExecutionTime: number;
 };
 
@@ -83,12 +103,19 @@ export type SerializedQueryResult = {
 	activityId?: string;
 
 	documents: QueryResultRecord[];
+
 	iteration: number;
+
 	metadata: ResultViewMetadata;
+
 	indexMetrics: string;
+
 	queryMetrics?: SerializedQueryMetrics;
+
 	requestCharge: number;
+
 	roundTrips: number;
+
 	hasMoreResults: boolean;
 
 	query: string; // The query that was executed
@@ -96,5 +123,6 @@ export type SerializedQueryResult = {
 
 export type ResultViewMetadata = {
 	countPerPage?: number;
+
 	timeout?: number; // How long the query is allowed to run in seconds
 };

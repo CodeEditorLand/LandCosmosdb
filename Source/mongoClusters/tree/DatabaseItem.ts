@@ -68,6 +68,7 @@ export class DatabaseItem {
 		);
 
 		let success = false;
+
 		await ext.state.showDeleting(this.id, async () => {
 			success = await client.dropDatabase(this.databaseInfo.name);
 		});

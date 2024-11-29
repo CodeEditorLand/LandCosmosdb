@@ -29,6 +29,7 @@ export function parseDocDBConnectionString(
 	if (!endpoint || !masterKey) {
 		throw new Error("Invalid Document DB connection string.");
 	}
+
 	return new ParsedDocDBConnectionString(
 		connectionString,
 		endpoint,
@@ -50,9 +51,11 @@ function getPropertyFromConnectionString(
 
 export class ParsedDocDBConnectionString extends ParsedConnectionString {
 	public readonly hostName: string;
+
 	public readonly port: string;
 
 	public readonly documentEndpoint: string;
+
 	public readonly masterKey: string;
 
 	constructor(
@@ -62,11 +65,15 @@ export class ParsedDocDBConnectionString extends ParsedConnectionString {
 		databaseName: string | undefined,
 	) {
 		super(connectionString, databaseName);
+
 		this.documentEndpoint = endpoint;
+
 		this.masterKey = masterKey;
 
 		const parsedEndpoint = url.parse(endpoint);
+
 		this.hostName = nonNullProp(parsedEndpoint, "hostname");
+
 		this.port = nonNullProp(parsedEndpoint, "port");
 	}
 }

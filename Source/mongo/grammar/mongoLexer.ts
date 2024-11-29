@@ -27,29 +27,53 @@ import { VocabularyImpl } from "antlr4ts/VocabularyImpl";
 
 export class mongoLexer extends Lexer {
 	public static readonly T__0 = 1;
+
 	public static readonly T__1 = 2;
+
 	public static readonly T__2 = 3;
+
 	public static readonly T__3 = 4;
+
 	public static readonly T__4 = 5;
+
 	public static readonly T__5 = 6;
+
 	public static readonly T__6 = 7;
+
 	public static readonly T__7 = 8;
+
 	public static readonly RegexLiteral = 9;
+
 	public static readonly SingleLineComment = 10;
+
 	public static readonly MultiLineComment = 11;
+
 	public static readonly StringLiteral = 12;
+
 	public static readonly NullLiteral = 13;
+
 	public static readonly BooleanLiteral = 14;
+
 	public static readonly NumericLiteral = 15;
+
 	public static readonly DecimalLiteral = 16;
+
 	public static readonly LineTerminator = 17;
+
 	public static readonly SEMICOLON = 18;
+
 	public static readonly DOT = 19;
+
 	public static readonly DB = 20;
+
 	public static readonly IDENTIFIER = 21;
+
 	public static readonly DOUBLE_QUOTED_STRING_LITERAL = 22;
+
 	public static readonly SINGLE_QUOTED_STRING_LITERAL = 23;
+
 	public static readonly WHITESPACE = 24;
+
 	public static readonly modeNames: string[] = ["DEFAULT_MODE"];
 
 	public static readonly ruleNames: string[] = [
@@ -107,6 +131,7 @@ export class mongoLexer extends Lexer {
 		"'.'",
 		"'db'",
 	];
+
 	private static readonly _SYMBOLIC_NAMES: (string | undefined)[] = [
 		undefined,
 		undefined,
@@ -134,6 +159,7 @@ export class mongoLexer extends Lexer {
 		"SINGLE_QUOTED_STRING_LITERAL",
 		"WHITESPACE",
 	];
+
 	public static readonly VOCABULARY: Vocabulary = new VocabularyImpl(
 		mongoLexer._LITERAL_NAMES,
 		mongoLexer._SYMBOLIC_NAMES,
@@ -152,6 +178,7 @@ export class mongoLexer extends Lexer {
 
 	constructor(input: CharStream) {
 		super(input);
+
 		this._interp = new LexerATNSimulator(mongoLexer._ATN, this);
 	}
 
@@ -185,8 +212,10 @@ export class mongoLexer extends Lexer {
 			case 21:
 				return this.IDENTIFIER_sempred(_localctx, predIndex);
 		}
+
 		return true;
 	}
+
 	private IDENTIFIER_sempred(
 		_localctx: RuleContext,
 		predIndex: number,
@@ -195,6 +224,7 @@ export class mongoLexer extends Lexer {
 			case 0:
 				return !this.isExternalIdentifierText(this.text);
 		}
+
 		return true;
 	}
 
@@ -312,7 +342,9 @@ export class mongoLexer extends Lexer {
 		"\x02\x02\xF0\xF1\b\x1E\x03\x02\xF1<\x03\x02\x02\x02\x1C\x02QVX_ju\x7F" +
 		"\x8F\x92\x9B\x9E\xA4\xA7\xAB\xAD\xBC\xBE\xC5\xC7\xCF\xD1\xDE\xE1\xE5\xEA" +
 		"\x04\x02\x03\x02\b\x02\x02";
+
 	public static __ATN: ATN;
+
 	public static get _ATN(): ATN {
 		if (!mongoLexer.__ATN) {
 			mongoLexer.__ATN = new ATNDeserializer().deserialize(

@@ -39,6 +39,7 @@ export async function configurePostgresFirewall(
 	}
 
 	const ip: string = await getPublicIp(context);
+
 	await context.ui.showWarningMessage(
 		localize(
 			"firewallRuleWillBeAdded",
@@ -91,7 +92,9 @@ export async function setFirewallRule(
 		location: vscode.ProgressLocation.Notification,
 		title: progressMessage,
 	};
+
 	ext.outputChannel.appendLog(progressMessage);
+
 	await vscode.window.withProgress(options, async () => {
 		await client.firewallRules.beginCreateOrUpdateAndWait(
 			resourceGroup,
@@ -107,8 +110,11 @@ export async function setFirewallRule(
 		ip,
 		serverName,
 	);
+
 	void vscode.window.showInformationMessage(completedMessage);
+
 	ext.outputChannel.appendLog(completedMessage);
+
 	await treeItem.refresh(context);
 }
 

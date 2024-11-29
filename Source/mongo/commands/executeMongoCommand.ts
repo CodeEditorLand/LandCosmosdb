@@ -14,5 +14,6 @@ export async function executeMongoCommand(
 	position?: vscode.Position,
 ): Promise<void> {
 	await loadPersistedMongoDB();
+
 	await executeCommandFromActiveEditor(context, position);
 }

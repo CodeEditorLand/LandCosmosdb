@@ -61,7 +61,9 @@ export class DatabaseResolver implements AppResourceResolver {
 					);
 
 					const name = nonNullProp(resource, "name");
+
 					context.valuesToMask.push(resource.id);
+
 					context.valuesToMask.push(resource.name);
 
 					let postgresServer: PostgresAbstractServer;
@@ -80,6 +82,7 @@ export class DatabaseResolver implements AppResourceResolver {
 									resourceGroupName,
 									name,
 								);
+
 							dbChild =
 								await SubscriptionTreeItem.initCosmosDBChild(
 									client,
@@ -100,6 +103,7 @@ export class DatabaseResolver implements AppResourceResolver {
 										resource,
 									);
 						}
+
 						case resourceTypes[1]:
 						case resourceTypes[2]: {
 							const postgresClient =
@@ -117,6 +121,7 @@ export class DatabaseResolver implements AppResourceResolver {
 								resourceGroupName,
 								name,
 							);
+
 							dbChild =
 								await SubscriptionTreeItem.initPostgresChild(
 									postgresServer,
@@ -128,6 +133,7 @@ export class DatabaseResolver implements AppResourceResolver {
 								resource,
 							);
 						}
+
 						default:
 							return null;
 					}

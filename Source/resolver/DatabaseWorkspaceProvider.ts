@@ -32,6 +32,7 @@ export class DatabaseWorkspaceProvider implements WorkspaceResourceProvider {
 			},
 		);
 	}
+
 	private _projectDisposables: Disposable[] = [];
 
 	public dispose(): void {

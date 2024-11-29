@@ -73,6 +73,7 @@ export class MongoClustersExtension implements vscode.Disposable {
 
 				ext.mongoClustersBranchDataProvider =
 					new MongoClustersBranchDataProvider();
+
 				ext.rgApiV2.resources.registerAzureResourceBranchDataProvider(
 					AzExtResourceType.MongoClusters,
 					ext.mongoClustersBranchDataProvider,
@@ -80,12 +81,14 @@ export class MongoClustersExtension implements vscode.Disposable {
 
 				ext.workspaceDataProvider =
 					new SharedWorkspaceResourceProvider();
+
 				ext.rgApiV2.resources.registerWorkspaceResourceProvider(
 					ext.workspaceDataProvider,
 				);
 
 				ext.mongoClustersWorkspaceBranchDataProvider =
 					new MongoClustersWorkspaceBranchDataProvider();
+
 				ext.rgApiV2.resources.registerWorkspaceResourceBranchDataProvider(
 					WorkspaceResourceType.MongoClusters,
 					ext.mongoClustersWorkspaceBranchDataProvider,
@@ -98,6 +101,7 @@ export class MongoClustersExtension implements vscode.Disposable {
 					"command.internal.mongoClusters.containerView.open",
 					openCollectionView,
 				);
+
 				registerCommand(
 					"command.internal.mongoClusters.documentView.open",
 					openDocumentView,
@@ -107,6 +111,7 @@ export class MongoClustersExtension implements vscode.Disposable {
 					"command.internal.mongoClusters.importDocuments",
 					mongoClustersImportDocuments,
 				);
+
 				registerCommand(
 					"command.internal.mongoClusters.exportDocuments",
 					mongoClustersExportQueryResults,
@@ -121,6 +126,7 @@ export class MongoClustersExtension implements vscode.Disposable {
 					"command.mongoClusters.dropCollection",
 					dropCollection,
 				);
+
 				registerCommandWithTreeNodeUnwrapping(
 					"command.mongoClusters.dropDatabase",
 					dropDatabase,
@@ -130,6 +136,7 @@ export class MongoClustersExtension implements vscode.Disposable {
 					"command.mongoClusters.createCollection",
 					createCollection,
 				);
+
 				registerCommandWithTreeNodeUnwrapping(
 					"command.mongoClusters.createDatabase",
 					createDatabase,
@@ -139,6 +146,7 @@ export class MongoClustersExtension implements vscode.Disposable {
 					"command.mongoClusters.importDocuments",
 					mongoClustersImportDocuments,
 				);
+
 				registerCommandWithTreeNodeUnwrapping(
 					"command.mongoClusters.exportDocuments",
 					mongoClustersExportEntireCollection,
@@ -148,6 +156,7 @@ export class MongoClustersExtension implements vscode.Disposable {
 					"command.mongoClusters.addWorkspaceConnection",
 					addWorkspaceConnection,
 				);
+
 				registerCommandWithTreeNodeUnwrapping(
 					"command.mongoClusters.removeWorkspaceConnection",
 					removeWorkspaceConnection,

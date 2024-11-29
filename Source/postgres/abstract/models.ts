@@ -52,9 +52,13 @@ export interface AbstractSku {
 
 export interface AbstractServerCreate {
 	location: string;
+
 	sku: AbstractSku;
+
 	administratorLogin: string;
+
 	administratorLoginPassword: string;
+
 	size: number;
 }
 

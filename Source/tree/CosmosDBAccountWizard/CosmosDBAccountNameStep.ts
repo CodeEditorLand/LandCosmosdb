@@ -16,6 +16,7 @@ import { type ICosmosDBWizardContext } from "./ICosmosDBWizardContext";
 export class CosmosDBAccountNameStep extends AzureNameStep<ICosmosDBWizardContext> {
 	public async prompt(context: ICosmosDBWizardContext): Promise<void> {
 		const client = await createCosmosDBClient(context);
+
 		context.newServerName = (
 			await context.ui.showInputBox({
 				placeHolder: "Account name",
@@ -24,7 +25,9 @@ export class CosmosDBAccountNameStep extends AzureNameStep<ICosmosDBWizardContex
 					validateCosmosDBAccountName(name, client),
 			})
 		).trim();
+
 		context.valuesToMask.push(context.newServerName);
+
 		context.relatedNameTask = this.generateRelatedName(
 			context,
 			context.newServerName,

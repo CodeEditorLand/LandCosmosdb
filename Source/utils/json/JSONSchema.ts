@@ -24,51 +24,72 @@ export interface JSONSchema {
 	id?: string;
 	$id?: string;
 	$schema?: string;
+
 	type?: string | string[];
 	"x-documentsInspected"?: number;
 	"x-occurrence"?: number;
 	"x-typeOccurrence"?: number;
 	"x-bsonType"?: string; // Explicitly declare the key with a dash using quotes
 	title?: string;
+
 	definitions?: {
 		[name: string]: JSONSchema;
 	};
+
 	description?: string;
+
 	properties?: JSONSchema; // changed from: JSONSchemaMap;
+
 	patternProperties?: JSONSchemaMap;
+
 	additionalProperties?: JSONSchemaRef;
+
 	minProperties?: number;
+
 	maxProperties?: number;
+
 	dependencies?:
 		| JSONSchemaMap
 		| {
 				[prop: string]: string[];
 		  };
+
 	items?: JSONSchemaRef | JSONSchemaRef[];
 
 	required?: string[];
 	$ref?: string;
+
 	anyOf?: JSONSchemaRef[];
+
 	allOf?: JSONSchemaRef[];
+
 	oneOf?: JSONSchemaRef[];
+
 	not?: JSONSchemaRef;
+
 	enum?: undefined[];
 
 	format?: string;
 
 	const?: undefined;
+
 	contains?: JSONSchemaRef;
+
 	propertyNames?: JSONSchemaRef;
+
 	examples?: undefined[];
 	$comment?: string;
 
 	$defs?: {
 		[name: string]: JSONSchema;
 	};
+
 	markdownEnumDescriptions?: string[];
+
 	markdownDescription?: string;
 
 	doNotSuggest?: boolean;
+
 	suggestSortText?: string;
 }
 export interface JSONSchemaMap {

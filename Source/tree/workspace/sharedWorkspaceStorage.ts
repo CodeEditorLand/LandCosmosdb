@@ -84,11 +84,13 @@ export class SharedWorkspaceStorage {
 							`Failed to parse secrets for key ${key}:`,
 							error,
 						);
+
 						secrets = [];
 					}
 				}
 
 				item.secrets = secrets;
+
 				items.push(item);
 			}
 		}
@@ -143,6 +145,7 @@ export class SharedWorkspaceStorage {
 
 		// Remove secrets from the item before storing in globalState
 		const itemToStore = { ...item };
+
 		delete itemToStore.secrets;
 
 		// Save the item in globalState

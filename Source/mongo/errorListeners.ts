@@ -35,6 +35,7 @@ export class ParserErrorListener implements ANTLRErrorListener<Token> {
 			range: range,
 			exception: e,
 		};
+
 		this._errors.push(error);
 	}
 }
@@ -63,6 +64,7 @@ export class LexerErrorListener implements ANTLRErrorListener<number> {
 			range: range,
 			exception: e,
 		};
+
 		this._errors.push(error);
 	}
 }

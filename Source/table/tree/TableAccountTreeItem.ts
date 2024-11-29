@@ -17,6 +17,7 @@ import { DocDBAccountTreeItemBase } from "../../docdb/tree/DocDBAccountTreeItemB
 
 export class TableAccountTreeItem extends DocDBAccountTreeItemBase {
 	public static contextValue: string = "cosmosDBTableAccount";
+
 	public contextValue: string = TableAccountTreeItem.contextValue;
 
 	public hasMoreChildrenImpl(): boolean {
@@ -34,6 +35,7 @@ export class TableAccountTreeItem extends DocDBAccountTreeItemBase {
 			"getChildren",
 			(context: IActionContext): AzExtTreeItem[] => {
 				context.telemetry.properties.experience = API.Table;
+
 				context.telemetry.properties.parentContext = this.contextValue;
 
 				const tableNotFoundTreeItem: AzExtTreeItem =
@@ -41,6 +43,7 @@ export class TableAccountTreeItem extends DocDBAccountTreeItemBase {
 						contextValue: "tableNotSupported",
 						label: "Table Accounts are not supported yet.",
 					});
+
 				tableNotFoundTreeItem.suppressMaskLabel = true;
 
 				return [tableNotFoundTreeItem];

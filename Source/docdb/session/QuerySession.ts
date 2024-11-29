@@ -34,21 +34,31 @@ import { QuerySessionResult } from "./QuerySessionResult";
 
 export class QuerySession {
 	public readonly id: string;
+
 	private readonly channel: Channel;
+
 	private readonly connection: NoSqlQueryConnection;
+
 	private readonly databaseId: string;
+
 	private readonly containerId: string;
+
 	private readonly resultViewMetadata: ResultViewMetadata = {};
+
 	private readonly query: string;
 	// For telemetry
 	private readonly endpoint: string;
+
 	private readonly masterKey: string;
 
 	private readonly sessionResult: QuerySessionResult;
 
 	private abortController: AbortController | null = null;
+
 	private iterator: QueryIterator<QueryResultRecord> | null = null;
+
 	private currentIteration = 0;
+
 	private isDisposed = false;
 
 	constructor(
@@ -60,13 +70,21 @@ export class QuerySession {
 		const { databaseId, containerId, endpoint, masterKey } = connection;
 
 		this.id = uuid();
+
 		this.channel = channel;
+
 		this.connection = connection;
+
 		this.databaseId = databaseId;
+
 		this.containerId = containerId;
+
 		this.endpoint = endpoint;
+
 		this.masterKey = masterKey ?? "";
+
 		this.resultViewMetadata = resultViewMetadata;
+
 		this.query = query;
 
 		this.sessionResult = new QuerySessionResult(
@@ -151,7 +169,9 @@ export class QuerySession {
 
 				await this.wrappedFetch(context, async () => {
 					const response = await this.iterator!.fetchAll();
+
 					this.sessionResult.push(response);
+
 					this.currentIteration++;
 				});
 			},
@@ -195,6 +215,7 @@ export class QuerySession {
 						this.sessionResult.iterationsCount
 					) {
 						const response = await this.iterator!.fetchNext();
+
 						this.sessionResult.push(response);
 					}
 
@@ -297,6 +318,7 @@ export class QuerySession {
 
 	public dispose(): void {
 		this.isDisposed = true;
+
 		this.abortController?.abort();
 	}
 
@@ -311,11 +333,13 @@ export class QuerySession {
 
 			const message: string =
 				error.body?.message ?? `Query failed with status code ${code}`;
+
 			await this.channel.postMessage({
 				type: "event",
 				name: "queryError",
 				params: [this.id, message],
 			});
+
 			void this.logAndThrowError("Query failed", error);
 		} else if (error instanceof TimeoutError) {
 			await this.channel.postMessage({
@@ -323,6 +347,7 @@ export class QuerySession {
 				name: "queryError",
 				params: [this.id, "Query timed out"],
 			});
+
 			void this.logAndThrowError("Query timed out", error);
 		} else if (
 			error instanceof AbortError ||
@@ -333,15 +358,18 @@ export class QuerySession {
 				name: "queryError",
 				params: [this.id, "Query was aborted"],
 			});
+
 			void this.logAndThrowError("Query was aborted", error);
 		} else {
 			// always force unexpected query errors to be included in report issue command
 			context.errorHandling.forceIncludeInReportIssueCommand = true;
+
 			await this.channel.postMessage({
 				type: "event",
 				name: "queryError",
 				params: [this.id, getErrorMessage(error)],
 			});
+
 			await this.logAndThrowError("Query failed", error);
 		}
 	}
@@ -389,6 +417,7 @@ export class QuerySession {
 			//TODO: parseError does not handle "Message : {JSON}" format coming from Cosmos DB SDK
 			// we need to parse the error message and show it in a better way in the UI
 			const parsedError = parseError(error);
+
 			ext.outputChannel.error(`${message}: ${parsedError.message}`);
 
 			if (parsedError.message) {
@@ -407,6 +436,7 @@ export class QuerySession {
 			if (await vscode.window.showErrorMessage(message, showLogButton)) {
 				ext.outputChannel.show();
 			}
+
 			throw new Error(`${message}, ${parsedError.message}`);
 		} else {
 			await vscode.window.showErrorMessage(message);
@@ -425,21 +455,26 @@ export class QuerySession {
 		);
 
 		context.errorHandling.suppressDisplay = true;
+
 		context.errorHandling.suppressReportIssue = true;
 
 		context.telemetry.properties.sessionId = this.id;
+
 		context.telemetry.properties.query = crypto
 			.createHash("sha256")
 			.update(this.query)
 			.digest("hex");
+
 		context.telemetry.properties.databaseId = crypto
 			.createHash("sha256")
 			.update(this.databaseId)
 			.digest("hex");
+
 		context.telemetry.properties.containerId = crypto
 			.createHash("sha256")
 			.update(this.containerId)
 			.digest("hex");
+
 		context.telemetry.properties.countPerPage =
 			this.resultViewMetadata?.countPerPage?.toString() ?? "";
 	}

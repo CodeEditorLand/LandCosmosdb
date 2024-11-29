@@ -31,6 +31,7 @@ export async function loadPersistedPostgresDatabase(): Promise<void> {
 		"postgreSQL.loadPersistedDatabase",
 		async (context: IActionContext) => {
 			context.errorHandling.suppressDisplay = true;
+
 			context.telemetry.properties.isActivationEvent = "true";
 
 			try {
@@ -109,6 +110,7 @@ export async function executePostgresQueryInDocument(
 		clientConfig,
 		query,
 	);
+
 	ext.outputChannel.appendLog(
 		localize(
 			"executedQuery",
@@ -140,10 +142,12 @@ export async function executePostgresQueryInDocument(
 				// eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
 				fieldValues.push(row[field]);
 			}
+
 			csvData += `${fieldValues.join(",")}${EOL}`;
 		}
 
 		await vscodeUtil.showNewFile(csvData, outputFileName, ".csv");
 	}
+
 	await treeItem.refresh(context);
 }

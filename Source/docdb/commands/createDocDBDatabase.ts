@@ -16,6 +16,8 @@ export async function createDocDBDatabase(
 	if (!node) {
 		node = await pickDocDBAccount<DocDBAccountTreeItem>(context);
 	}
+
 	const databaseNode: DocDBDatabaseTreeItem = await node.createChild(context);
+
 	await databaseNode.createChild(context);
 }

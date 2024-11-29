@@ -34,15 +34,20 @@ import { DocDBTriggerTreeItem } from "./DocDBTriggerTreeItem";
  */
 export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> {
 	public static contextValue: string = "cosmosDBTriggersGroup";
+
 	public readonly contextValue: string = DocDBTriggersTreeItem.contextValue;
+
 	public readonly childTypeLabel: string = "Trigger";
+
 	public declare readonly parent:
 		| DocDBCollectionTreeItem
 		| GraphCollectionTreeItem;
+
 	public suppressMaskLabel = true;
 
 	constructor(parent: DocDBCollectionTreeItem | GraphCollectionTreeItem) {
 		super(parent);
+
 		this.root = this.parent.root;
 	}
 
@@ -89,6 +94,7 @@ export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> 
 			triggerType: triggerType,
 			triggerOperation: triggerOperation,
 		};
+
 		context.showCreatingTreeItem(triggerID);
 
 		const response =
@@ -139,9 +145,11 @@ export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> 
 				"Name contains illegal chars: /, \\, ?, #, &",
 			);
 		}
+
 		if (name[name.length - 1] === " ") {
 			return localize("endsWithSpace", "Name cannot end with a space.");
 		}
+
 		if (currTriggerNames.includes(name)) {
 			return localize(
 				"nameExists",

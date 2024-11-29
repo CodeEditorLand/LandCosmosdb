@@ -62,7 +62,9 @@ function linearInterpolationThroughPoint(
 
 	// Set start, inBetween and end points in the result array
 	result[0] = start;
+
 	result[inBetweenIndex] = inBetween;
+
 	result[numSamples - 1] = end;
 
 	// Calculate the step size for each segment
@@ -95,6 +97,7 @@ const getLogSpace = (min: number, max: number, n: number) => {
 	for (let i = 1; i < n; i += 1) {
 		result.push(Math.pow(Math.E, a + delta * i));
 	}
+
 	result.push(Math.pow(Math.E, b));
 
 	return result;

@@ -25,6 +25,7 @@ export class PasswordStep extends AzureWizardPromptStep<AddWorkspaceConnectionCo
 		const parsedCS = new ConnectionString(
 			wizardContext.connectionString as string,
 		);
+
 		this.passwordFromCS = parsedCS.password || "";
 	}
 

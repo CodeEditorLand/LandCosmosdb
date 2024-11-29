@@ -12,5 +12,6 @@ export async function executeAllMongoCommand(
 	context: IActionContext,
 ): Promise<void> {
 	await loadPersistedMongoDB();
+
 	await executeAllCommandsFromActiveEditor(context);
 }

@@ -22,6 +22,7 @@ export class ResolvedMongoAccountResource
 		super(ti, resource);
 
 		this.connectionString = ti.connectionString;
+
 		this.root = ti.root;
 	}
 }

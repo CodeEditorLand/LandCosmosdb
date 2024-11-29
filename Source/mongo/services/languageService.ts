@@ -31,11 +31,15 @@ export class LanguageService {
 	private textDocuments: TextDocuments<TextDocument> = new TextDocuments(
 		TextDocument,
 	);
+
 	private readonly mongoDocumentsManager: MongoScriptDocumentManager;
+
 	private db: Db;
 
 	private jsonLanguageService: JsonLanguageService;
+
 	private schemaService: SchemaService;
+
 	private schemas: SchemaConfiguration[];
 
 	constructor(connection: IConnection) {
@@ -67,6 +71,7 @@ export class LanguageService {
 					connectionParams.extensionUserAgent,
 				).then((account) => {
 					this.db = account.db(connectionParams.databaseName);
+
 					void this.schemaService
 						.registerSchemas(this.db)
 						.then((schemas) => {

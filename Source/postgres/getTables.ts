@@ -9,8 +9,11 @@ import { runPostgresQuery } from "./runPostgresQuery";
 
 export interface IPostgresTable {
 	schemaName: string;
+
 	name: string;
+
 	oid: string;
+
 	columnNames: string[];
 }
 
@@ -46,5 +49,6 @@ export async function getTables(
 			columnNames: row.columnnames,
 		});
 	}
+
 	return tablesArray;
 }

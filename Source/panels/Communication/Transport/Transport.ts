@@ -21,7 +21,10 @@ export interface Transport {
 	readonly name: string;
 
 	post(message: TransportMessage): PromiseLike<boolean>;
+
 	on(callback: (message: TransportMessage) => void): void;
+
 	off(callback: (message: TransportMessage) => void): void;
+
 	dispose(): void;
 }

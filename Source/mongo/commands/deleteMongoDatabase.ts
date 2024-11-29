@@ -21,6 +21,7 @@ export async function deleteMongoDB(
 	node?: MongoDatabaseTreeItem,
 ): Promise<void> {
 	const suppressCreateContext: ITreeItemPickerContext = context;
+
 	suppressCreateContext.suppressCreatePick = true;
 
 	if (!node) {
@@ -29,19 +30,24 @@ export async function deleteMongoDB(
 			MongoDatabaseTreeItem.contextValue,
 		);
 	}
+
 	await node.deleteTreeItem(context);
 
 	if (ext.connectedMongoDB && ext.connectedMongoDB.fullId === node.fullId) {
 		setConnectedNode(undefined);
+
 		void ext.context.globalState.update(connectedMongoKey, undefined);
 		// Temporary workaround for https://github.com/microsoft/vscode-cosmosdb/issues/1754
 		void ext.mongoLanguageClient.disconnect();
 	}
+
 	const successMessage = localize(
 		"deleteMongoDatabaseMsg",
 		'Successfully deleted database "{0}"',
 		node.databaseName,
 	);
+
 	void vscode.window.showInformationMessage(successMessage);
+
 	ext.outputChannel.info(successMessage);
 }

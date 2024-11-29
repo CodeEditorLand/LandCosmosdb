@@ -17,6 +17,7 @@ export class ConnectionStringStep extends AzureWizardPromptStep<AddWorkspaceConn
 			"mongoClusters.addWorkspaceConnection.connectionString.prompt",
 			"Enter the connection string of your MongoDB cluster.",
 		);
+
 		context.connectionString = (
 			await context.ui.showInputBox({
 				prompt: prompt,

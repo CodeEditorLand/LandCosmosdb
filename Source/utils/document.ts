@@ -33,6 +33,7 @@ export const extractPartitionKey = (
 				return null; // It is not correct to return null, in other cases it should exception
 			}
 		}
+
 		if (
 			interim === null ||
 			typeof interim === "string" ||

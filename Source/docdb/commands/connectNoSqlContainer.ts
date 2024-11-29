@@ -38,7 +38,9 @@ export function setConnectedNoSqlContainer(
 	node: DocDBCollectionTreeItem,
 ): void {
 	const noSqlQueryConnection = createNoSqlQueryConnection(node);
+
 	KeyValueStore.instance.set(noSqlQueryConnectionKey, noSqlQueryConnection);
+
 	ext.noSqlCodeLensProvider.updateCodeLens();
 }
 
@@ -71,5 +73,6 @@ export async function getNoSqlQueryConnection(): Promise<
 
 export async function disconnectNoSqlContainer(): Promise<void> {
 	KeyValueStore.instance.set(noSqlQueryConnectionKey, null);
+
 	ext.noSqlCodeLensProvider.updateCodeLens();
 }

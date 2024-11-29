@@ -21,11 +21,15 @@ import { type IDocDBTreeRoot } from "./IDocDBTreeRoot";
  */
 export abstract class DocDBTreeItemBase<T> extends AzExtParentTreeItem {
 	public abstract readonly label: string;
+
 	public abstract readonly contextValue: string;
+
 	public abstract readonly childTypeLabel: string;
 
 	private _hasMoreChildren: boolean = true;
+
 	private _iterator: QueryIterator<T> | undefined;
+
 	private _batchSize: number = getBatchSizeSetting();
 
 	public hasMoreChildrenImpl(): boolean {
@@ -52,6 +56,7 @@ export abstract class DocDBTreeItemBase<T> extends AzExtParentTreeItem {
 			this._hasMoreChildren = true;
 
 			const client = this.root.getCosmosClient();
+
 			this._iterator = this.getIterator(client, {
 				maxItemCount: this._batchSize,
 			});
@@ -65,6 +70,7 @@ export abstract class DocDBTreeItemBase<T> extends AzExtParentTreeItem {
 		if (resourceFeed) {
 			resourceArray.push(...resourceFeed);
 		}
+
 		this._hasMoreChildren = this._iterator.hasMoreResults();
 
 		this._batchSize *= 2;

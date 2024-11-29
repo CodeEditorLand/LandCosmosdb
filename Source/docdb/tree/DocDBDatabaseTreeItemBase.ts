@@ -42,6 +42,7 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 	ContainerDefinition & Resource
 > {
 	public declare readonly parent: DocDBAccountTreeItemBase;
+
 	private readonly _database: DatabaseDefinition & Resource;
 
 	constructor(
@@ -49,7 +50,9 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 		database: DatabaseDefinition & Resource,
 	) {
 		super(parent);
+
 		this._database = database;
+
 		this.root = this.parent.root;
 	}
 
@@ -89,6 +92,7 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 	// Delete the database
 	public async deleteTreeItemImpl(context: IActionContext): Promise<void> {
 		const message: string = `Are you sure you want to delete database '${this.label}' and its contents?`;
+
 		await context.ui.showWarningMessage(
 			message,
 			{ modal: true, stepName: "deleteDatabase" },
@@ -96,6 +100,7 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 		);
 
 		const client = this.root.getCosmosClient();
+
 		await client.database(this.id).delete();
 	}
 
@@ -122,6 +127,7 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 				paths: [partitionKey],
 			};
 		}
+
 		const options: RequestOptions = {};
 
 		if (!this.parent.isServerless) {
@@ -178,6 +184,7 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 		if (/[#?\\]/.test(key)) {
 			return "Cannot contain these characters: ?,#,\\, etc.";
 		}
+
 		return undefined;
 	}
 
@@ -185,12 +192,15 @@ export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 		if (!name) {
 			return `${this.childTypeLabel} name cannot be empty`;
 		}
+
 		if (name.endsWith(" ")) {
 			return `${this.childTypeLabel} name cannot end with space`;
 		}
+
 		if (/[/\\?#]/.test(name)) {
 			return `${this.childTypeLabel} name cannot contain the characters '\\', '/', '#', '?'`;
 		}
+
 		return undefined;
 	}
 }
@@ -220,5 +230,6 @@ function validateThroughput(
 	} catch {
 		return "Input must be a number";
 	}
+
 	return undefined;
 }

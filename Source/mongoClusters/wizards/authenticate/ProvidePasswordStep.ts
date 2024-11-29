@@ -22,6 +22,7 @@ export class ProvidePasswordStep extends AzureWizardPromptStep<AuthenticateWizar
 		});
 
 		context.password = passwordTemp.trim();
+
 		context.valuesToMask.push(context.password);
 	}
 

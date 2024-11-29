@@ -33,6 +33,7 @@ export function valueToDisplayString(
 		case MongoBSONTypes.String: {
 			return value as string;
 		}
+
 		case MongoBSONTypes.Number:
 		case MongoBSONTypes.Int32:
 		case MongoBSONTypes.Double:
@@ -40,38 +41,49 @@ export function valueToDisplayString(
 		case MongoBSONTypes.Long: {
 			return (value as number).toString();
 		}
+
 		case MongoBSONTypes.Boolean: {
 			return (value as boolean).toString();
 		}
+
 		case MongoBSONTypes.Date: {
 			return (value as Date).toISOString();
 		}
+
 		case MongoBSONTypes.ObjectId: {
 			return (value as ObjectId).toHexString();
 		}
+
 		case MongoBSONTypes.Null: {
 			return "null";
 		}
+
 		case MongoBSONTypes.RegExp: {
 			const v = value as BSONRegExp;
 
 			return `${v.pattern} ${v.options}`;
 		}
+
 		case MongoBSONTypes.Binary: {
 			return `Binary[${(value as Binary).length()}]`;
 		}
+
 		case MongoBSONTypes.Symbol: {
 			return (value as symbol).toString();
 		}
+
 		case MongoBSONTypes.Timestamp: {
 			return (value as { toString: () => string }).toString();
 		}
+
 		case MongoBSONTypes.MinKey: {
 			return "MinKey";
 		}
+
 		case MongoBSONTypes.MaxKey: {
 			return "MaxKey";
 		}
+
 		case MongoBSONTypes.Code:
 		case MongoBSONTypes.CodeWithScope: {
 			return JSON.stringify(value);

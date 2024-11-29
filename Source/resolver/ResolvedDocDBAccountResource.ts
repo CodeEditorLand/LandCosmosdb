@@ -27,6 +27,7 @@ export class ResolvedDocDBAccountResource
 	public root: IDocDBTreeRoot;
 
 	initChild: (resource: Resource) => AzExtTreeItem;
+
 	isServerless?: boolean;
 
 	getIterator?: (
@@ -38,10 +39,13 @@ export class ResolvedDocDBAccountResource
 		super(ti, resource);
 
 		this.connectionString = ti.connectionString;
+
 		this.root = ti.root;
 
 		this.isServerless = ti.isServerless;
+
 		this.getIterator = ti.getIterator;
+
 		this.initChild = ti.initChild;
 	}
 }

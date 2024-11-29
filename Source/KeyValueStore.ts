@@ -15,6 +15,7 @@ export class KeyValueStore {
 		if (!this._instance) {
 			this._instance = new KeyValueStore();
 		}
+
 		return this._instance;
 	}
 

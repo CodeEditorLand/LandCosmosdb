@@ -18,6 +18,7 @@ import { GraphTreeItem } from "./GraphTreeItem";
 
 export class GraphAccountTreeItem extends DocDBAccountTreeItemBase {
 	public static contextValue: string = "cosmosDBGraphAccount";
+
 	public contextValue: string = GraphAccountTreeItem.contextValue;
 
 	constructor(
@@ -39,6 +40,7 @@ export class GraphAccountTreeItem extends DocDBAccountTreeItemBase {
 			isEmulator,
 			databaseAccount,
 		);
+
 		this.valuesToMask.push(documentEndpoint);
 
 		if (_gremlinEndpoint) {

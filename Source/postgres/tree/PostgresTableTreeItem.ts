@@ -16,8 +16,11 @@ import { type PostgresTablesTreeItem } from "./PostgresTablesTreeItem";
 
 export class PostgresTableTreeItem extends AzExtParentTreeItem {
 	public static contextValue: string = "postgresTable";
+
 	public readonly contextValue: string = PostgresTableTreeItem.contextValue;
+
 	public readonly table: IPostgresTable;
+
 	public declare readonly parent: PostgresTablesTreeItem;
 
 	private _isDuplicate: boolean;
@@ -28,7 +31,9 @@ export class PostgresTableTreeItem extends AzExtParentTreeItem {
 		isDuplicate: boolean,
 	) {
 		super(parent);
+
 		this.table = table;
+
 		this._isDuplicate = isDuplicate;
 	}
 

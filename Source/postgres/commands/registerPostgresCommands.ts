@@ -36,6 +36,7 @@ import { showPasswordlessWiki } from "./showPasswordlessWiki";
 
 export function registerPostgresCommands(): void {
 	ext.postgresCodeLensProvider = new PostgresCodeLensProvider();
+
 	ext.context.subscriptions.push(
 		languages.registerCodeLensProvider(
 			postgresLanguageId,
@@ -52,6 +53,7 @@ export function registerPostgresCommands(): void {
 		"postgreSQL.executeQuery",
 		executePostgresQueryInDocument,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.showPasswordlessWiki",
 		showPasswordlessWiki,
@@ -63,14 +65,17 @@ export function registerPostgresCommands(): void {
 		"postgreSQL.deleteServer",
 		deletePostgresServer,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.enterCredentials",
 		enterPostgresCredentials,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.configureFirewall",
 		configurePostgresFirewall,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.createDatabase",
 		createPostgresDatabase,
@@ -84,10 +89,12 @@ export function registerPostgresCommands(): void {
 		"postgreSQL.deleteDatabase",
 		deletePostgresDatabase,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.connectDatabase",
 		connectPostgresDatabase,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.copyConnectionString",
 		copyConnectionString,
@@ -133,6 +140,7 @@ export function registerPostgresCommands(): void {
 		openPostgresStoredProcedure,
 		doubleClickDebounceDelay,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.deleteStoredProcedure",
 		deletePostgresStoredProcedure,
@@ -147,6 +155,7 @@ export function registerPostgresCommands(): void {
 		openPostgresFunction,
 		doubleClickDebounceDelay,
 	);
+
 	registerCommandWithTreeNodeUnwrapping(
 		"postgreSQL.deleteFunction",
 		deletePostgresFunction,
