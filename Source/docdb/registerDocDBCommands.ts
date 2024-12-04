@@ -3,168 +3,105 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import {
-	registerCommand,
-	registerCommandWithTreeNodeUnwrapping,
-} from "@microsoft/vscode-azext-utils";
-import { languages } from "vscode";
+import { registerCommand, registerCommandWithTreeNodeUnwrapping } from '@microsoft/vscode-azext-utils';
+import { languages } from 'vscode';
+import { doubleClickDebounceDelay } from '../constants';
+import { ext } from '../extensionVariables';
+import { connectNoSqlContainer } from './commands/connectNoSqlContainer';
+import { createDocDBCollection } from './commands/createDocDBCollection';
+import { createDocDBDatabase } from './commands/createDocDBDatabase';
+import { createDocDBDocument } from './commands/createDocDBDocument';
+import { createDocDBStoredProcedure } from './commands/createDocDBStoredProcedure';
+import { createDocDBTrigger } from './commands/createDocDBTrigger';
+import { deleteDocDBCollection } from './commands/deleteDocDBCollection';
+import { deleteDocDBDatabase } from './commands/deleteDocDBDatabase';
+import { deleteDocDBDocument } from './commands/deleteDocDBDocument';
+import { deleteDocDBStoredProcedure } from './commands/deleteDocDBStoredProcedure';
+import { deleteDocDBTrigger } from './commands/deleteDocDBTrigger';
+import { executeDocDBStoredProcedure } from './commands/executeDocDBStoredProcedure';
+import { executeNoSqlQuery } from './commands/executeNoSqlQuery';
+import { getNoSqlQueryPlan } from './commands/getNoSqlQueryPlan';
+import { openNoSqlQueryEditor } from './commands/openNoSqlQueryEditor';
+import { openStoredProcedure } from './commands/openStoredProcedure';
+import { openTrigger } from './commands/openTrigger';
+import { viewDocDBCollectionOffer } from './commands/viewDocDBCollectionOffer';
+import { viewDocDBDatabaseOffer } from './commands/viewDocDBDatabaseOffer';
+import { writeNoSqlQuery } from './commands/writeNoSqlQuery';
+import { NoSqlCodeLensProvider } from './NoSqlCodeLensProvider';
 
-import { doubleClickDebounceDelay } from "../constants";
-import { ext } from "../extensionVariables";
-import { connectNoSqlContainer } from "./commands/connectNoSqlContainer";
-import { createDocDBCollection } from "./commands/createDocDBCollection";
-import { createDocDBDatabase } from "./commands/createDocDBDatabase";
-import { createDocDBDocument } from "./commands/createDocDBDocument";
-import { createDocDBStoredProcedure } from "./commands/createDocDBStoredProcedure";
-import { createDocDBTrigger } from "./commands/createDocDBTrigger";
-import { deleteDocDBCollection } from "./commands/deleteDocDBCollection";
-import { deleteDocDBDatabase } from "./commands/deleteDocDBDatabase";
-import { deleteDocDBDocument } from "./commands/deleteDocDBDocument";
-import { deleteDocDBStoredProcedure } from "./commands/deleteDocDBStoredProcedure";
-import { deleteDocDBTrigger } from "./commands/deleteDocDBTrigger";
-import { executeDocDBStoredProcedure } from "./commands/executeDocDBStoredProcedure";
-import { executeNoSqlQuery } from "./commands/executeNoSqlQuery";
-import { getNoSqlQueryPlan } from "./commands/getNoSqlQueryPlan";
-import { openNoSqlQueryEditor } from "./commands/openNoSqlQueryEditor";
-import { openStoredProcedure } from "./commands/openStoredProcedure";
-import { openTrigger } from "./commands/openTrigger";
-import { viewDocDBCollectionOffer } from "./commands/viewDocDBCollectionOffer";
-import { writeNoSqlQuery } from "./commands/writeNoSqlQuery";
-import { NoSqlCodeLensProvider } from "./NoSqlCodeLensProvider";
-
-const nosqlLanguageId = "nosql";
+const nosqlLanguageId = 'nosql';
 
 export function registerDocDBCommands(): void {
-	ext.noSqlCodeLensProvider = new NoSqlCodeLensProvider();
+    ext.noSqlCodeLensProvider = new NoSqlCodeLensProvider();
+    ext.context.subscriptions.push(languages.registerCodeLensProvider(nosqlLanguageId, ext.noSqlCodeLensProvider));
 
-	ext.context.subscriptions.push(
-		languages.registerCodeLensProvider(
-			nosqlLanguageId,
-			ext.noSqlCodeLensProvider,
-		),
-	);
+    registerCommand('cosmosDB.connectNoSqlContainer', connectNoSqlContainer);
+    registerCommand('cosmosDB.executeNoSqlQuery', executeNoSqlQuery);
+    registerCommand('cosmosDB.getNoSqlQueryPlan', getNoSqlQueryPlan);
 
-	registerCommand("cosmosDB.connectNoSqlContainer", connectNoSqlContainer);
+    // #region Account command
 
-	registerCommand("cosmosDB.executeNoSqlQuery", executeNoSqlQuery);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.createDocDBDatabase', createDocDBDatabase);
 
-	registerCommand("cosmosDB.getNoSqlQueryPlan", getNoSqlQueryPlan);
+    // #endregion
 
-	// #region Account command
+    // #region Database command
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.createDocDBDatabase",
-		createDocDBDatabase,
-	);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.createDocDBCollection', createDocDBCollection);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.deleteDocDBDatabase', deleteDocDBDatabase);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.viewDocDBDatabaseOffer', viewDocDBDatabaseOffer);
 
-	// #endregion
+    // #endregion
 
-	// #region Database command
+    // #region Collection command
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.createDocDBCollection",
-		createDocDBCollection,
-	);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.writeNoSqlQuery', writeNoSqlQuery);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.openNoSqlQueryEditor', openNoSqlQueryEditor);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.deleteDocDBCollection', deleteDocDBCollection);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.viewDocDBCollectionOffer', viewDocDBCollectionOffer);
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.deleteDocDBDatabase",
-		deleteDocDBDatabase,
-	);
+    // #endregion
 
-	// #endregion
+    // #region DocumentGroup command
 
-	// #region Collection command
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.createDocDBDocument', createDocDBDocument);
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.writeNoSqlQuery",
-		writeNoSqlQuery,
-	);
+    // #endregion
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.openNoSqlQueryEditor",
-		openNoSqlQueryEditor,
-	);
+    // #region Document command
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.deleteDocDBCollection",
-		deleteDocDBCollection,
-	);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.deleteDocDBDocument', deleteDocDBDocument);
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.viewDocDBCollectionOffer",
-		viewDocDBCollectionOffer,
-	);
+    // #endregion
 
-	// #endregion
+    // #region StoredProcedureGroup command
 
-	// #region DocumentGroup command
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.createDocDBStoredProcedure', createDocDBStoredProcedure);
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.createDocDBDocument",
-		createDocDBDocument,
-	);
+    // #endregion
 
-	// #endregion
+    // #region StoredProcedure command
 
-	// #region Document command
+    registerCommandWithTreeNodeUnwrapping(
+        'cosmosDB.openStoredProcedure',
+        openStoredProcedure,
+        doubleClickDebounceDelay,
+    );
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.deleteDocDBStoredProcedure', deleteDocDBStoredProcedure);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.executeDocDBStoredProcedure', executeDocDBStoredProcedure);
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.deleteDocDBDocument",
-		deleteDocDBDocument,
-	);
+    // #endregion
 
-	// #endregion
+    // #region TriggerGroup command
 
-	// #region StoredProcedureGroup command
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.createDocDBTrigger', createDocDBTrigger);
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.createDocDBStoredProcedure",
-		createDocDBStoredProcedure,
-	);
+    // #endregion
 
-	// #endregion
+    // #region Trigger command
 
-	// #region StoredProcedure command
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.openTrigger', openTrigger, doubleClickDebounceDelay);
+    registerCommandWithTreeNodeUnwrapping('cosmosDB.deleteDocDBTrigger', deleteDocDBTrigger);
 
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.openStoredProcedure",
-		openStoredProcedure,
-		doubleClickDebounceDelay,
-	);
-
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.deleteDocDBStoredProcedure",
-		deleteDocDBStoredProcedure,
-	);
-
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.executeDocDBStoredProcedure",
-		executeDocDBStoredProcedure,
-	);
-
-	// #endregion
-
-	// #region TriggerGroup command
-
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.createDocDBTrigger",
-		createDocDBTrigger,
-	);
-
-	// #endregion
-
-	// #region Trigger command
-
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.openTrigger",
-		openTrigger,
-		doubleClickDebounceDelay,
-	);
-
-	registerCommandWithTreeNodeUnwrapping(
-		"cosmosDB.deleteDocDBTrigger",
-		deleteDocDBTrigger,
-	);
-
-	// #endregion
+    // #endregion
 }
