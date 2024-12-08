@@ -1,6 +1,0 @@
-/.azure-pipelines @Microsoft/vscodeazuretoolsdev @Microsoft/cosmosdb-vscode-engineering
-/.config @Microsoft/vscodeazuretoolsdev @Microsoft/cosmosdb-vscode-engineering
-/src/mongoClusters @tnaum-ms @sevoku
-/src/mongo @tnaum-ms @sevoku
-/src/docdb @bk201- @sevoku
-* @Microsoft/cosmosdb-vscode-engineering
