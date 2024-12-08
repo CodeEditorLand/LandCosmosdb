@@ -166,14 +166,37 @@ export const DocumentView = (): JSX.Element => {
     // }
 
     function handleOnRefreshRequest(): void {
-        const documentId: string = configuration.documentId;
+        if (configuration.documentId === undefined) {
+            return;
+        }
 
         setIsLoading(true);
 
-        void trpcClient.mongoClusters.documentView.getDocumentById.query(documentId).then((response) => {
-            setContent(response);
-            setIsLoading(false);
-        });
+        let documentLength = 0;
+
+        void trpcClient.mongoClusters.documentView.getDocumentById
+            .query(configuration.documentId)
+            .then((response) => {
+                documentLength = response.length ?? 0;
+                setContent(response);
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+
+        trpcClient.common.reportEvent
+            .mutate({
+                eventName: 'refreshDocument',
+                properties: {
+                    ui: 'button',
+                },
+                measurements: {
+                    documentLength: documentLength,
+                },
+            })
+            .catch((error) => {
+                console.debug('Failed to report event:', error);
+            });
     }
 
     function handleOnSaveRequest(): void {
@@ -198,10 +221,24 @@ export const DocumentView = (): JSX.Element => {
                 setIsDirty(false);
             })
             .catch((error) => {
-                console.error('Error saving document:', error);
+                console.debug('Error saving document:', error);
             })
             .finally(() => {
                 setIsLoading(false);
+            });
+
+        trpcClient.common.reportEvent
+            .mutate({
+                eventName: 'saveDocument',
+                properties: {
+                    ui: 'button',
+                },
+                measurements: {
+                    documentLength: editorContent.length,
+                },
+            })
+            .catch((error) => {
+                console.debug('Failed to report event:', error);
             });
     }
 
