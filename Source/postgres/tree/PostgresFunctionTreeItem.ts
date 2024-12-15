@@ -19,7 +19,7 @@ export class PostgresFunctionTreeItem extends AzExtTreeItem {
 	public readonly contextValue: string =
 		PostgresFunctionTreeItem.contextValue;
 
-	public declare readonly parent: PostgresFunctionsTreeItem;
+	declare public readonly parent: PostgresFunctionsTreeItem;
 
 	public readonly schema: string;
 

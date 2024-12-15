@@ -3,107 +3,129 @@
  *  Licensed under the MIT License. See License.txt in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 
-import { EJSON } from 'bson';
-import { type Document } from 'mongodb';
-import { z } from 'zod';
-import { type MongoClustersClient } from '../../../mongoClusters/MongoClustersClient';
-import { MongoClustersSession } from '../../../mongoClusters/MongoClusterSession';
-import { showConfirmationAsInSettings } from '../../../utils/dialogs/showConfirmation';
-import { localize } from '../../../utils/localize';
-import { type BaseRouterContext } from '../../api/configuration/appRouter';
-import { publicProcedure, router, trpcToTelemetry } from '../../api/extension-server/trpc';
+import { EJSON } from "bson";
+import { type Document } from "mongodb";
+import { z } from "zod";
+
+import { type MongoClustersClient } from "../../../mongoClusters/MongoClustersClient";
+import { MongoClustersSession } from "../../../mongoClusters/MongoClusterSession";
+import { showConfirmationAsInSettings } from "../../../utils/dialogs/showConfirmation";
+import { localize } from "../../../utils/localize";
+import { type BaseRouterContext } from "../../api/configuration/appRouter";
+import {
+	publicProcedure,
+	router,
+	trpcToTelemetry,
+} from "../../api/extension-server/trpc";
 
 export type RouterContext = BaseRouterContext & {
-    sessionId: string;
-    databaseName: string;
-    collectionName: string;
-    documentId: string;
+	sessionId: string;
+	databaseName: string;
+	collectionName: string;
+	documentId: string;
 
-    viewPanelTitleSetter: (title: string) => void;
+	viewPanelTitleSetter: (title: string) => void;
 };
 
 export const documentsViewRouter = router({
-    getInfo: publicProcedure.query(({ ctx }) => {
-        const myCtx = ctx as RouterContext;
+	getInfo: publicProcedure.query(({ ctx }) => {
+		const myCtx = ctx as RouterContext;
 
-        return 'Info from the webview: ' + JSON.stringify(myCtx);
-    }),
-    getDocumentById: publicProcedure
-        .use(trpcToTelemetry)
-        // parameters
-        .input(z.string())
-        // procedure type
-        .query(async ({ input, ctx }) => {
-            const myCtx = ctx as RouterContext;
+		return "Info from the webview: " + JSON.stringify(myCtx);
+	}),
+	getDocumentById: publicProcedure
+		.use(trpcToTelemetry)
+		// parameters
+		.input(z.string())
+		// procedure type
+		.query(async ({ input, ctx }) => {
+			const myCtx = ctx as RouterContext;
 
-            // run query
-            const client: MongoClustersClient = MongoClustersSession.getSession(myCtx.sessionId).getClient();
-            const documentContent = await client.pointRead(myCtx.databaseName, myCtx.collectionName, input);
+			// run query
+			const client: MongoClustersClient = MongoClustersSession.getSession(
+				myCtx.sessionId,
+			).getClient();
+			const documentContent = await client.pointRead(
+				myCtx.databaseName,
+				myCtx.collectionName,
+				input,
+			);
 
-            /**
-             * Please note, the document is a 'Document' object, which is a BSON object.
-             * Not all BSON objects can be serialized to JSON. Therefore, we're using
-             * EJSON to serialize the document to an object that can be serialized to JSON.
-             */
-            const extendedJson = EJSON.stringify(documentContent, undefined, 4);
+			/**
+			 * Please note, the document is a 'Document' object, which is a BSON object.
+			 * Not all BSON objects can be serialized to JSON. Therefore, we're using
+			 * EJSON to serialize the document to an object that can be serialized to JSON.
+			 */
+			const extendedJson = EJSON.stringify(documentContent, undefined, 4);
 
-            //const documentContetntAsString = JSON.stringify(extendedJson, null, 4);
+			//const documentContetntAsString = JSON.stringify(extendedJson, null, 4);
 
-            return extendedJson;
-        }),
-    saveDocument: publicProcedure
-        .use(trpcToTelemetry)
-        // parameteres
-        .input(z.object({ documentContent: z.string() }))
-        // procedure type
-        .mutation(async ({ input, ctx }) => {
-            const myCtx = ctx as RouterContext;
+			return extendedJson;
+		}),
+	saveDocument: publicProcedure
+		.use(trpcToTelemetry)
+		// parameteres
+		.input(z.object({ documentContent: z.string() }))
+		// procedure type
+		.mutation(async ({ input, ctx }) => {
+			const myCtx = ctx as RouterContext;
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const documentBson: Document = EJSON.parse(input.documentContent);
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+			const documentBson: Document = EJSON.parse(input.documentContent);
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let documentId: any;
-            if (documentBson['_id']) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-                documentId = documentBson['_id'];
-            }
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			let documentId: any;
+			if (documentBson["_id"]) {
+				// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+				documentId = documentBson["_id"];
+			}
 
-            // run query
-            const client: MongoClustersClient = MongoClustersSession.getSession(myCtx.sessionId).getClient();
+			// run query
+			const client: MongoClustersClient = MongoClustersSession.getSession(
+				myCtx.sessionId,
+			).getClient();
 
-            // when a document is saved and is missing an _id field, the _id field is added on the server
-            // or by the mongodb driver.
-            const upsertResult = await client.upsertDocument(
-                myCtx.databaseName,
-                myCtx.collectionName,
-                documentId ? EJSON.stringify(documentId) : '',
-                documentBson,
-            );
+			// when a document is saved and is missing an _id field, the _id field is added on the server
+			// or by the mongodb driver.
+			const upsertResult = await client.upsertDocument(
+				myCtx.databaseName,
+				myCtx.collectionName,
+				documentId ? EJSON.stringify(documentId) : "",
+				documentBson,
+			);
 
-            // extract the _id field from the document
-            const newDocumentId = EJSON.stringify(upsertResult.documentId);
+			// extract the _id field from the document
+			const newDocumentId = EJSON.stringify(upsertResult.documentId);
 
-            /**
-             * Please note, the document is a 'Document' object, which is a BSON object.
-             * Not all BSON objects can be serialized to JSON. Therefore, we're using
-             * EJSON to serialize the document to an object that can be serialized to JSON.
-             */
-            const extendedJson = EJSON.serialize(upsertResult.document);
-            const newDocumentStringified = JSON.stringify(extendedJson, null, 4);
+			/**
+			 * Please note, the document is a 'Document' object, which is a BSON object.
+			 * Not all BSON objects can be serialized to JSON. Therefore, we're using
+			 * EJSON to serialize the document to an object that can be serialized to JSON.
+			 */
+			const extendedJson = EJSON.serialize(upsertResult.document);
+			const newDocumentStringified = JSON.stringify(
+				extendedJson,
+				null,
+				4,
+			);
 
-            myCtx.viewPanelTitleSetter(`${myCtx.databaseName}/${myCtx.collectionName}/${newDocumentId}`);
+			myCtx.viewPanelTitleSetter(
+				`${myCtx.databaseName}/${myCtx.collectionName}/${newDocumentId}`,
+			);
 
-            showConfirmationAsInSettings(
-                localize(
-                    'showConfirmation.mongoClusters.documentView.saveDocument',
-                    'The document with the _id "{0}" has been saved.',
-                    newDocumentId,
-                ),
-            );
+			showConfirmationAsInSettings(
+				localize(
+					"showConfirmation.mongoClusters.documentView.saveDocument",
+					'The document with the _id "{0}" has been saved.',
+					newDocumentId,
+				),
+			);
 
-            return { documentStringified: newDocumentStringified, documentId: newDocumentId };
-        }),
+			return {
+				documentStringified: newDocumentStringified,
+				documentId: newDocumentId,
+			};
+		}),
 });
 
 // function extractIdFromJson(jsonString: string): string | null {

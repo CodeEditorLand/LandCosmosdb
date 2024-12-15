@@ -39,7 +39,7 @@ export class DocDBTriggersTreeItem extends DocDBTreeItemBase<TriggerDefinition> 
 
 	public readonly childTypeLabel: string = "Trigger";
 
-	public declare readonly parent:
+	declare public readonly parent:
 		| DocDBCollectionTreeItem
 		| GraphCollectionTreeItem;
 

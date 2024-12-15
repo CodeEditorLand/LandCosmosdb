@@ -29,7 +29,7 @@ export class GraphCollectionTreeItem extends AzExtParentTreeItem {
 
 	public readonly contextValue: string = GraphCollectionTreeItem.contextValue;
 
-	public declare readonly parent: GraphDatabaseTreeItem;
+	declare public readonly parent: GraphDatabaseTreeItem;
 
 	private readonly _graphTreeItem: GraphTreeItem;
 

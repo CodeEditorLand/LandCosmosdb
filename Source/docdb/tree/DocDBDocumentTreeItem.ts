@@ -44,7 +44,7 @@ export class DocDBDocumentTreeItem
 
 	public readonly contextValue: string = DocDBDocumentTreeItem.contextValue;
 
-	public declare readonly parent: DocDBDocumentsTreeItem;
+	declare public readonly parent: DocDBDocumentsTreeItem;
 
 	public readonly cTime: number = Date.now();
 

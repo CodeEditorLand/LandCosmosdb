@@ -23,7 +23,7 @@ export class GraphTreeItem extends AzExtTreeItem {
 
 	public readonly contextValue: string = GraphTreeItem.contextValue;
 
-	public declare readonly parent: GraphCollectionTreeItem;
+	declare public readonly parent: GraphCollectionTreeItem;
 
 	public suppressMaskLabel = true;
 

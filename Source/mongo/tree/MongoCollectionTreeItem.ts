@@ -68,7 +68,7 @@ export class MongoCollectionTreeItem
 
 	public readonly collection: Collection;
 
-	public declare parent: AzExtParentTreeItem;
+	declare public parent: AzExtParentTreeItem;
 	// eslint-disable-next-line @typescript-eslint/no-wrapper-object-types
 	public findArgs?: Object[];
 

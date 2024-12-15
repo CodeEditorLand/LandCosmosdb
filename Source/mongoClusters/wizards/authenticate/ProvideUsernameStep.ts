@@ -4,27 +4,30 @@
  *--------------------------------------------------------------------------------------------*/
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { AzureWizardPromptStep } from '@microsoft/vscode-azext-utils';
-import { localize } from '../../../utils/localize';
+import { AzureWizardPromptStep } from "@microsoft/vscode-azext-utils";
 
-import { type AuthenticateWizardContext } from './AuthenticateWizardContext';
+import { localize } from "../../../utils/localize";
+import { type AuthenticateWizardContext } from "./AuthenticateWizardContext";
 
 export class ProvideUserNameStep extends AzureWizardPromptStep<AuthenticateWizardContext> {
-    public async prompt(context: AuthenticateWizardContext): Promise<void> {
-        const username = await context.ui.showInputBox({
-            prompt: `Please provide the username for '${context.resourceName}':`,
-            placeHolder: `Username for ${context.resourceName}`,
-            value: context.adminUserName,
-            title: localize('mongoClustersAuthenticateCluster', 'Authenticate to connect with your MongoDB cluster'),
-            ignoreFocusOut: true,
-        });
+	public async prompt(context: AuthenticateWizardContext): Promise<void> {
+		const username = await context.ui.showInputBox({
+			prompt: `Please provide the username for '${context.resourceName}':`,
+			placeHolder: `Username for ${context.resourceName}`,
+			value: context.adminUserName,
+			title: localize(
+				"mongoClustersAuthenticateCluster",
+				"Authenticate to connect with your MongoDB cluster",
+			),
+			ignoreFocusOut: true,
+		});
 
-        context.selectedUserName = username.trim();
+		context.selectedUserName = username.trim();
 
-        context.valuesToMask.push(context.selectedUserName, username);
-    }
+		context.valuesToMask.push(context.selectedUserName, username);
+	}
 
-    public shouldPrompt(context: AuthenticateWizardContext): boolean {
-        return context.selectedUserName === undefined;
-    }
+	public shouldPrompt(context: AuthenticateWizardContext): boolean {
+		return context.selectedUserName === undefined;
+	}
 }

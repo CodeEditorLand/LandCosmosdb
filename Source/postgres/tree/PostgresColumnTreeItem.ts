@@ -18,7 +18,7 @@ export class PostgresColumnTreeItem extends AzExtTreeItem {
 
 	public readonly columnName: string;
 
-	public declare readonly parent: PostgresTableTreeItem;
+	declare public readonly parent: PostgresTableTreeItem;
 
 	constructor(parent: PostgresTableTreeItem, columnName: string) {
 		super(parent);

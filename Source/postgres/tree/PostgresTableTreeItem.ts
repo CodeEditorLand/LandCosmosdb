@@ -21,7 +21,7 @@ export class PostgresTableTreeItem extends AzExtParentTreeItem {
 
 	public readonly table: IPostgresTable;
 
-	public declare readonly parent: PostgresTablesTreeItem;
+	declare public readonly parent: PostgresTablesTreeItem;
 
 	private _isDuplicate: boolean;
 

@@ -43,7 +43,7 @@ export class MongoDocumentTreeItem
 
 	public document: IMongoDocument;
 
-	public declare readonly parent: MongoCollectionTreeItem;
+	declare public readonly parent: MongoCollectionTreeItem;
 
 	public readonly cTime: number = Date.now();
 

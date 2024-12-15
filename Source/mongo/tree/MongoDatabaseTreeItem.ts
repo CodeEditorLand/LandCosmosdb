@@ -49,7 +49,7 @@ export class MongoDatabaseTreeItem extends AzExtParentTreeItem {
 
 	public readonly databaseName: string;
 
-	public declare readonly parent: MongoAccountTreeItem;
+	declare public readonly parent: MongoAccountTreeItem;
 
 	private _previousShellPathSetting: string | undefined;
 

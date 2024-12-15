@@ -36,7 +36,7 @@ export class DocDBTriggerTreeItem
 
 	public readonly cTime: number = Date.now();
 
-	public declare readonly parent: DocDBTriggersTreeItem;
+	declare public readonly parent: DocDBTriggersTreeItem;
 
 	public trigger: TriggerDefinition & Resource;
 

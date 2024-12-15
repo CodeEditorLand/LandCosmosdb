@@ -41,7 +41,7 @@ const throughputStepSize = 100;
 export abstract class DocDBDatabaseTreeItemBase extends DocDBTreeItemBase<
 	ContainerDefinition & Resource
 > {
-	public declare readonly parent: DocDBAccountTreeItemBase;
+	declare public readonly parent: DocDBAccountTreeItemBase;
 
 	private readonly _database: DatabaseDefinition & Resource;
 

@@ -38,7 +38,7 @@ export class PostgresDatabaseTreeItem extends AzExtParentTreeItem {
 
 	public readonly databaseName: string;
 
-	public declare readonly parent: PostgresServerTreeItem;
+	declare public readonly parent: PostgresServerTreeItem;
 
 	public autoSelectInTreeItemPicker: boolean = true;
 

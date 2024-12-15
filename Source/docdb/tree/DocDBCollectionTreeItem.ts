@@ -36,7 +36,7 @@ export class DocDBCollectionTreeItem extends AzExtParentTreeItem {
 
 	public readonly contextValue: string = DocDBCollectionTreeItem.contextValue;
 
-	public declare readonly parent: DocDBDatabaseTreeItem;
+	declare public readonly parent: DocDBDatabaseTreeItem;
 
 	public readonly documentsTreeItem: DocDBDocumentsTreeItem;
 

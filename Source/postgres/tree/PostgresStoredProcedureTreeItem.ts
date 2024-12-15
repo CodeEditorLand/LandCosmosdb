@@ -19,7 +19,7 @@ export class PostgresStoredProcedureTreeItem extends AzExtTreeItem {
 	public readonly contextValue: string =
 		PostgresStoredProcedureTreeItem.contextValue;
 
-	public declare readonly parent: PostgresStoredProceduresTreeItem;
+	declare public readonly parent: PostgresStoredProceduresTreeItem;
 
 	public readonly schema: string;
 

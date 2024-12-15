@@ -33,7 +33,7 @@ export class DocDBDocumentsTreeItem extends DocDBTreeItemBase<ItemDefinition> {
 
 	public readonly childTypeLabel: string = "Documents";
 
-	public declare readonly parent: DocDBCollectionTreeItem;
+	declare public readonly parent: DocDBCollectionTreeItem;
 
 	public suppressMaskLabel = true;
 

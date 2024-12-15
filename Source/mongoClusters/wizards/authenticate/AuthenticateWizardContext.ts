@@ -6,9 +6,9 @@
 import { type IActionContext } from "@microsoft/vscode-azext-utils";
 
 export interface AuthenticateWizardContext extends IActionContext {
-    /** These values have to be provided for the wizard to function correctly. */
-    adminUserName: string | undefined;
-    resourceName: string;
+	/** These values have to be provided for the wizard to function correctly. */
+	adminUserName: string | undefined;
+	resourceName: string;
 
 	otherUserNames: string[];
 

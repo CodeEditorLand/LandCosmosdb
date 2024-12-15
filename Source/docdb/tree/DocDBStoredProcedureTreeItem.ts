@@ -35,7 +35,7 @@ export class DocDBStoredProcedureTreeItem
 
 	public readonly cTime: number = Date.now();
 
-	public declare readonly parent: DocDBStoredProceduresTreeItem;
+	declare public readonly parent: DocDBStoredProceduresTreeItem;
 
 	public mTime: number = Date.now();
 

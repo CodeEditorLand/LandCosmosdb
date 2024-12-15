@@ -37,7 +37,7 @@ export class DocDBStoredProceduresTreeItem extends DocDBTreeItemBase<StoredProce
 
 	public readonly childTypeLabel: string = "Stored Procedure";
 
-	public declare readonly parent:
+	declare public readonly parent:
 		| DocDBCollectionTreeItem
 		| GraphCollectionTreeItem;
 
