@@ -1243,7 +1243,7 @@
 		"prettier-plugin-organize-imports": "4.1.0",
 		"rimraf": "6.0.1",
 		"run-script-os": "1.1.6",
-		"sass": "1.83.3",
+		"sass": "1.83.4",
 		"sass-loader": "16.0.4",
 		"style-loader": "4.0.0"
 	},
