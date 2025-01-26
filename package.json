@@ -1219,7 +1219,7 @@
 		"pg-structure": "7.15.3",
 		"react-hotkeys-hook": "4.6.1",
 		"semver": "7.6.3",
-		"slickgrid-react": "5.12.0",
+		"slickgrid-react": "5.12.1",
 		"uuid": "11.0.5",
 		"zod": "3.24.1"
 	},
